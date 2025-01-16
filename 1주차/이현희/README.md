@@ -10,8 +10,8 @@
 
 <hr>
 
-![예약발행글1](image-1.png)  
-![예약발행글2](image.png)
+![예약발행글1](assets/예약발행글%20리스트1.png)  
+![예약발행글2](assets/예약발행글%20리스트2.png)
 
 <hr>
 
@@ -149,14 +149,14 @@ https://bottlenose-twist-ec3.notion.site/177b7e3f38b8804f9ac8c9802931da7d?pvs=4
 # Figma
 
 - 인프런에서 강의를 듣고 있습니다
-  ![인프런 강의](image-2.png)
+  ![인프런강의](assets/인프런%20강의.png)
 
 <br>
 <br>
 
 - 강의를 듣고 혼자 열쇠구멍 아이콘을 만들며 단축키를 익히고 아이콘 마무리, export를 연습해보았습니다.
 
-  ![alt text](image-3.png)
+  ![피그마연습 - 열쇠구멍](assets/피그마연습%20-%20열쇠구멍.png)
 
 <br>
 <br>
@@ -164,7 +164,7 @@ https://bottlenose-twist-ec3.notion.site/177b7e3f38b8804f9ac8c9802931da7d?pvs=4
 - 디자인을 구상하며 목업을 만들어봤는데, 어째서인지 맨 위에 컴포넌트가 혼자 색이 어둡습니다.
 - 머리속에 있는 걸 그대로 표현할 만큼 아직 실력이 좋진 않아 답답합니다.
 - 디자인은 매우 마음에 안들지만 그래도 좋은 연습이었습니다.
-![alt text](image-4.png)
+![피그마연습 - 목업](assets/피그마연습%20-%20목업.png)
 <hr>
 
 <br>
