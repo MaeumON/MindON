@@ -14,7 +14,15 @@ function HomePage() {
     };
     fetchGroups();
   }, []);
-  return <div>홈페이지</div>;
+  return (
+    <>
+      <div className="text-3xl font-jamsilRegular">잠실 레귤러</div>
+      <div className="text-3xl font-jamsilMedium">잠실 미디엄</div>
+      <div className="text-3xl font-jamsilBold">잠실 볼드</div>
+      <div className="text-3xl font-suite ">스위트</div>
+      <div className="text-3xl font-suite font-bold">스위트 볼드</div>
+    </>
+  );
 }
 
 export default HomePage;
