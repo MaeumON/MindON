@@ -7,4 +7,16 @@ export default defineConfig({
     port: 3000,
   },
   plugins: [react()],
+  resolve: {
+    alias: {
+      "@": "/src",
+      "@components": "/src/components",
+      "@pages": "/src/pages",
+      "@assets": "/src/assets",
+      "@apis": "/src/apis",
+      "@stores": "/src/stores",
+      "@hooks": "/src/hooks",
+      "@utils": "/src/utils",
+    },
+  },
 });
