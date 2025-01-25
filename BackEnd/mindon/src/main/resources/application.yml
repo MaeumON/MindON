@@ -17,3 +17,6 @@ spring:
 jwt:
   issuer: jsjs3489@gmail.com
   secret_key: qlalfdldi
+
+liquibase:
+  change-log: classpath:/db/changelog/changelog-master.yaml
