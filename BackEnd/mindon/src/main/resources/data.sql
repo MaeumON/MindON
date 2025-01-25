@@ -158,8 +158,8 @@ CREATE TRIGGER CheckMeetingWeekBeforeInsert
 BEGIN
     IF NEW.meeting_week < 1 OR NEW.meeting_week > `groups`.period THEN
         SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'meeting_week must be between 1 and the value of period';
-    END IF;
+        SET MESSAGE_TEXT = 'meeting_week must be between 1 and the value of period';
+END IF;
 END$$
 
 CREATE TRIGGER CheckMeetingWeekBeforeUpdate
@@ -168,8 +168,8 @@ CREATE TRIGGER CheckMeetingWeekBeforeUpdate
 BEGIN
     IF NEW.meeting_week < 1 OR NEW.meeting_week > `groups`.period THEN
         SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'meeting_week must be between 1 and the value of period';
-    END IF;
+        SET MESSAGE_TEXT = 'meeting_week must be between 1 and the value of period';
+END IF;
 END$$
 
 DELIMITER ;
@@ -198,20 +198,20 @@ BEGIN
     -- 코드 중복 검사
     SELECT COUNT(*) INTO code_exists FROM `groups` WHERE invite_code = new_code;
     WHILE code_exists > 0 DO
-            SET new_code = (SELECT CONCAT(
-                                           SUBSTRING('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', FLOOR(RAND()*36)+1, 1),
-                                           SUBSTRING('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', FLOOR(RAND()*36)+1, 1),
-                                           SUBSTRING('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', FLOOR(RAND()*36)+1, 1),
-                                           SUBSTRING('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', FLOOR(RAND()*36)+1, 1),
-                                           SUBSTRING('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', FLOOR(RAND()*36)+1, 1),
-                                           SUBSTRING('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', FLOOR(RAND()*36)+1, 1),
-                                           SUBSTRING('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', FLOOR(RAND()*36)+1, 1),
-                                           SUBSTRING('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', FLOOR(RAND()*36)+1, 1)
-                                   ));
-            SELECT COUNT(*) INTO code_exists FROM `groups` WHERE invite_code = new_code;
-        END WHILE;
+        SET new_code = (SELECT CONCAT(
+            SUBSTRING('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', FLOOR(RAND()*36)+1, 1),
+            SUBSTRING('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', FLOOR(RAND()*36)+1, 1),
+            SUBSTRING('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', FLOOR(RAND()*36)+1, 1),
+            SUBSTRING('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', FLOOR(RAND()*36)+1, 1),
+            SUBSTRING('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', FLOOR(RAND()*36)+1, 1),
+            SUBSTRING('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', FLOOR(RAND()*36)+1, 1),
+            SUBSTRING('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', FLOOR(RAND()*36)+1, 1),
+            SUBSTRING('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', FLOOR(RAND()*36)+1, 1)
+        ));
+    SELECT COUNT(*) INTO code_exists FROM `groups` WHERE invite_code = new_code;
+END WHILE;
 
-    SET NEW.invite_code = new_code;
+SET NEW.invite_code = new_code;
 END$$
 
 DELIMITER ;
@@ -227,91 +227,91 @@ BEGIN
     UPDATE users
     SET reported_cnt = reported_cnt + 1
     WHERE user_id = NEW.reported_user_id;
-END$$
+    END$$
 
-DELIMITER ;
+    DELIMITER ;
 
 -- groups의 종료 날짜 자동 생성 트리거
 DELIMITER $$
 
-CREATE TRIGGER CalculateEndDateBeforeInsert
-    BEFORE INSERT ON `groups`
-    FOR EACH ROW
-BEGIN
-    -- start_date로부터 period 주 만큼 후의 날짜를 end_date로 계산
-    SET NEW.end_date = DATE_ADD(NEW.start_date, INTERVAL (NEW.period - 1) WEEK);
+    CREATE TRIGGER CalculateEndDateBeforeInsert
+        BEFORE INSERT ON `groups`
+        FOR EACH ROW
+    BEGIN
+        -- start_date로부터 period 주 만큼 후의 날짜를 end_date로 계산
+        SET NEW.end_date = DATE_ADD(NEW.start_date, INTERVAL (NEW.period - 1) WEEK);
 END$$
 
-DELIMITER ;
+        DELIMITER ;
 
 -- groups의 날짜에 시간 정보 추가하기 (status 자동 변경을 위해)
 DELIMITER $$
 
-CREATE TRIGGER SetGroupTimesBeforeInsertOrUpdate
-    BEFORE INSERT ON `groups`
-    FOR EACH ROW
-BEGIN
-    -- start_date와 end_date의 시간을 meeting_time 값으로 설정
-    SET NEW.start_date = CONCAT(DATE(NEW.start_date), ' ', LPAD(NEW.meeting_time, 2, '0'), ':00:00');
-    SET NEW.end_date = CONCAT(DATE(NEW.end_date), ' ', LPAD(NEW.meeting_time, 2, '0'), ':00:00');
+        CREATE TRIGGER SetGroupTimesBeforeInsertOrUpdate
+            BEFORE INSERT ON `groups`
+            FOR EACH ROW
+        BEGIN
+            -- start_date와 end_date의 시간을 meeting_time 값으로 설정
+            SET NEW.start_date = CONCAT(DATE(NEW.start_date), ' ', LPAD(NEW.meeting_time, 2, '0'), ':00:00');
+            SET NEW.end_date = CONCAT(DATE(NEW.end_date), ' ', LPAD(NEW.meeting_time, 2, '0'), ':00:00');
 END$$
 
-CREATE TRIGGER SetGroupTimesBeforeUpdate
-    BEFORE UPDATE ON `groups`
-    FOR EACH ROW
-BEGIN
-    -- start_date와 end_date의 시간을 meeting_time 값으로 설정
-    SET NEW.start_date = CONCAT(DATE(NEW.start_date), ' ', LPAD(NEW.meeting_time, 2, '0'), ':00:00');
-    SET NEW.end_date = CONCAT(DATE(NEW.end_date), ' ', LPAD(NEW.meeting_time, 2, '0'), ':00:00');
+            CREATE TRIGGER SetGroupTimesBeforeUpdate
+                BEFORE UPDATE ON `groups`
+                FOR EACH ROW
+            BEGIN
+                -- start_date와 end_date의 시간을 meeting_time 값으로 설정
+                SET NEW.start_date = CONCAT(DATE(NEW.start_date), ' ', LPAD(NEW.meeting_time, 2, '0'), ':00:00');
+                SET NEW.end_date = CONCAT(DATE(NEW.end_date), ' ', LPAD(NEW.meeting_time, 2, '0'), ':00:00');
 END$$
 
-DELIMITER ;
+                DELIMITER ;
 
 
 --  group_status 상태 자동 변경 스케줄러
 DELIMITER $$
 
 CREATE EVENT UpdateGroupStatusHourly
-    ON SCHEDULE EVERY 1 hour STARTS TIMESTAMP(CURRENT_DATE, '00:00:00')
-    DO
-    BEGIN
-        UPDATE `groups`
-        SET group_status = CASE
-                               WHEN CURDATE() < start_date THEN 0
-                               WHEN CURDATE() >= start_date AND CURDATE() <= DATE_ADD(end_date, INTERVAL 1 HOUR) THEN 1
-                               ELSE 2
-            END;
-    END$$
+ON SCHEDULE EVERY 1 hour STARTS TIMESTAMP(CURRENT_DATE, '00:00:00')
+DO
+                BEGIN
+                UPDATE `groups`
+                SET group_status = CASE
+                                       WHEN CURDATE() < start_date THEN 0
+                                       WHEN CURDATE() >= start_date AND CURDATE() <= DATE_ADD(end_date, INTERVAL 1 HOUR) THEN 1
+                                       ELSE 2
+                    END;
+                END$$
 
-DELIMITER ;
+                DELIMITER ;
 
 -- group_user 행 추가시 groups total_member 증가 트리거
 DELIMITER $$
 
-CREATE TRIGGER IncreaseTotalMembers
-    AFTER INSERT ON user_group
-    FOR EACH ROW
-BEGIN
-    UPDATE `groups`
-    SET total_member = total_member + 1
-    WHERE group_id = NEW.group_id;
-END$$
+                CREATE TRIGGER IncreaseTotalMembers
+                    AFTER INSERT ON user_group
+                    FOR EACH ROW
+                BEGIN
+                    UPDATE `groups`
+                    SET total_member = total_member + 1
+                    WHERE group_id = NEW.group_id;
+                    END$$
 
-DELIMITER ;
+                    DELIMITER ;
 
 -- group_user 행 삭제시 groups total_member 감소 트리거
 DELIMITER $$
 
-CREATE TRIGGER DecreaseTotalMembers
-    AFTER DELETE ON user_group
-    FOR EACH ROW
-BEGIN
-    UPDATE `groups`
-    SET total_member = total_member - 1
-    WHERE group_id = OLD.group_id;
-END$$
+                    CREATE TRIGGER DecreaseTotalMembers
+                        AFTER DELETE ON user_group
+                        FOR EACH ROW
+                    BEGIN
+                        UPDATE `groups`
+                        SET total_member = total_member - 1
+                        WHERE group_id = OLD.group_id;
+                        END$$
 
-DELIMITER ;
+                        DELIMITER ;
 
 -- 스케줄러로 progress_weeks 자동 업데이트alter
 -- DELIMITER $$
@@ -331,85 +331,85 @@ DELIMITER ;
 -- users 신고 횟수 3회 이상이면 계정 정지
 DELIMITER $$
 
-CREATE TRIGGER BeforeUpdateReportCount
-    BEFORE UPDATE ON users
-    FOR EACH ROW
-BEGIN
-    IF NEW.reported_cnt >= 3 AND OLD.reported_cnt < 3 THEN
+                        CREATE TRIGGER BeforeUpdateReportCount
+                            BEFORE UPDATE ON users
+                            FOR EACH ROW
+                        BEGIN
+                            IF NEW.reported_cnt >= 3 AND OLD.reported_cnt < 3 THEN
         SET NEW.user_status = 2;
-    END IF;
-END$$
+                        END IF;
+                        END$$
 
-DELIMITER ;
+                        DELIMITER ;
 
 
 
 -- 인덱스 추가 (groups)
-CREATE INDEX idx_groups_disease_id ON `groups`(disease_id);
-CREATE INDEX idx_groups_is_private ON `groups`(is_private);
-CREATE INDEX idx_groups_is_host ON `groups`(is_host);
-CREATE INDEX idx_groups_day_of_week ON `groups`(day_of_week);
+                        CREATE INDEX idx_groups_disease_id ON `groups`(disease_id);
+                        CREATE INDEX idx_groups_is_private ON `groups`(is_private);
+                        CREATE INDEX idx_groups_is_host ON `groups`(is_host);
+                        CREATE INDEX idx_groups_day_of_week ON `groups`(day_of_week);
 
 
-INSERT INTO diseases (disease_name) VALUES ('소아암');
-select * from diseases;
+                        INSERT INTO diseases (disease_name) VALUES ('소아암');
+                        select * from diseases;
 
-INSERT INTO users (user_id, user_name, email, password, phone, disease_id)
-values ("user1", "우담", "user1@ssafy.com", "ssafy1234", "01012345678", 1),
-       ("user2", "현", "user2@ssafy.com", "ssafy1234", "01012345677", 1),
-       ("user3", "현희", "user3@ssafy.com", "ssafy1234", "01012345676", 1),
-       ("user4", "하영", "user4@ssafy.com", "ssafy1234", "01012345675", 1),
-       ("user5", "수인", "user5@ssafy.com", "ssafy1234", "01012345674", 1),
-       ("user6", "아현", "user6@ssafy.com", "ssafy1234", "01012345673", 1);
-select * from users;
+                        INSERT INTO users (user_id, user_name, email, password, phone, disease_id)
+                        values ("user1", "우담", "user1@ssafy.com", "ssafy1234", "01012345678", 1),
+                               ("user2", "현", "user2@ssafy.com", "ssafy1234", "01012345677", 1),
+                               ("user3", "현희", "user3@ssafy.com", "ssafy1234", "01012345676", 1),
+                               ("user4", "하영", "user4@ssafy.com", "ssafy1234", "01012345675", 1),
+                               ("user5", "수인", "user5@ssafy.com", "ssafy1234", "01012345674", 1),
+                               ("user6", "아현", "user6@ssafy.com", "ssafy1234", "01012345673", 1);
+                        select * from users;
 
-INSERT INTO `groups` (title, description, disease_id, is_private, private_password, is_host, start_date, period, meeting_time, day_of_week, min_member, max_member, created_user_id)
-values ("소아암 자조모임","같이하자", 1, true, "1234", true, '2025-01-24',2,17,1,2,8,'user2'),
-       ("소아암 자조모임", "같이해", 1, false, null, true, '2025-01-01',4,12,1,4,6,'user1'),
-       ("상태 자동 변경 확인용", "룰룰라룰ㄹ", 1, false, null, true, '2025-02-01',4,12,1,4,6,'user1');
-select * from `groups`;
+                        INSERT INTO `groups` (title, description, disease_id, is_private, private_password, is_host, start_date, period, meeting_time, day_of_week, min_member, max_member, created_user_id)
+                        values ("소아암 자조모임","같이하자", 1, true, "1234", true, '2025-01-24',2,17,1,2,8,'user2'),
+                               ("소아암 자조모임", "같이해", 1, false, null, true, '2025-01-01',4,12,1,4,6,'user1'),
+                               ("상태 자동 변경 확인용", "룰룰라룰ㄹ", 1, false, null, true, '2025-02-01',4,12,1,4,6,'user1');
+                        select * from `groups`;
 
-INSERT INTO user_group (user_id, group_id)
-values ("user2" , 1),
-       ("user1" , 1);
-select * from user_group;
-select * from `groups`;
+                        INSERT INTO user_group (user_id, group_id)
+                        values ("user2" , 1),
+                               ("user1" , 1);
+                        select * from user_group;
+                        select * from `groups`;
 
-INSERT INTO reasons (reason_name)
-values ("욕설 및 비방"),
-       ("광고");
+                        INSERT INTO reasons (reason_name)
+                        values ("욕설 및 비방"),
+                               ("광고");
 
-INSERT INTO reports (reason_id, reason, reporting_user_id, reported_user_id, group_id)
-values (1, "욕을 자꾸 하자나요 쟤가", 'user1', 'user2',1),
-       (2, "광고 같아요;;;;", 'user1', 'user2',1),
-       (2, "광고 같음", 'user1', 'user2',1);
-select * from reports;
-select * from users;
+                        INSERT INTO reports (reason_id, reason, reporting_user_id, reported_user_id, group_id)
+                        values (1, "욕을 자꾸 하자나요 쟤가", 'user1', 'user2',1),
+                               (2, "광고 같아요;;;;", 'user1', 'user2',1),
+                               (2, "광고 같음", 'user1', 'user2',1);
+                        select * from reports;
+                        select * from users;
 
-DELETE FROM user_group
-WHERE user_id = 'user1' AND group_id = 1;
-select * from user_group;
-select * from `groups`; -- total_member 감소 확인
+                        DELETE FROM user_group
+                        WHERE user_id = 'user1' AND group_id = 1;
+                        select * from user_group;
+                        select * from `groups`; -- total_member 감소 확인
 
-INSERT INTO questions (curriculum_week, detail)
-values (1, "1주차"),
-       (2, "2주차"),
-       (3, "3주차"),
-       (4, "4주차"),
-       (5, "5주차"),
-       (6, "6주차"),
-       (7, "7주차"),
-       (8, "8주차");
-select * from questions;
+                        INSERT INTO questions (curriculum_week, detail)
+                        values (1, "1주차"),
+                               (2, "2주차"),
+                               (3, "3주차"),
+                               (4, "4주차"),
+                               (5, "5주차"),
+                               (6, "6주차"),
+                               (7, "7주차"),
+                               (8, "8주차");
+                        select * from questions;
 
-INSERT INTO emotions(emotion_id, emotion)
-VALUES (0,"기본"),
-       (1,"기쁜"),
-       (2,"슬픈"),
-       (3,"평범한"),
-       (4,"불쾌한"),
-       (5,"설레는"),
-       (6,"놀란"),
-       (7,"두려운"),
-       (8,"화나는");
-select * from emotions;
+                        INSERT INTO emotions(emotion_id, emotion)
+                        VALUES (0,"기본"),
+                               (1,"기쁜"),
+                               (2,"슬픈"),
+                               (3,"평범한"),
+                               (4,"불쾌한"),
+                               (5,"설레는"),
+                               (6,"놀란"),
+                               (7,"두려운"),
+                               (8,"화나는");
+                        select * from emotions;
