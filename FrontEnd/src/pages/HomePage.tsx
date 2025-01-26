@@ -9,7 +9,7 @@ function HomePage() {
         const response = await axios.get(VITE_API_BASE + "/api/groups/list");
         console.log(response.data);
       } catch (err) {
-        console.error("error");
+        console.error("error", err);
       }
     };
     fetchGroups();
