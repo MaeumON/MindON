@@ -28,6 +28,15 @@ export default {
         cardContent2: "#9D9D9D",
         cardSubcontent: "#DDDDDD",
       },
+
+      fontSize: {
+        "14px": "0.875rem",
+        "16px": "1rem",
+        "18px": "1.125rem",
+        "20px": "1.25rem",
+        "24px": "1.5rem",
+        "28px": "1.75rem",
+      },
     },
   },
   plugins: [],
