@@ -16,7 +16,7 @@ function HomePage() {
   }, []);
   return (
     <div className="container m-auto sm:max-w-360 sm:bg-yellow100 md:max-w-412 md:bg-green100 ">
-      <div className="text-3xl font-jamsilRegular text-cardTitle">잠실 레귤러 & Card Title</div>
+      <div className="text-3xl font-jamsilRegular text-cardTitle text-20px">잠실 레귤러 & Card Title & 20px</div>
       <div className="text-3xl font-jamsilMedium text-cardLongContent">잠실 미디엄 & Card Long Content</div>
       <div className="text-3xl font-jamsilBold text-cardContent">잠실 볼드 & Card Content</div>
       <div className="text-3xl font-suite text-cardSubcontent"> 스위트 & Card Subcontent</div>
