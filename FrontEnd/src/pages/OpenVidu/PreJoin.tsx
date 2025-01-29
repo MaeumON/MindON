@@ -1,11 +1,11 @@
+import UserModel from "@/components/Openvidu-call/models/user-model";
+import { UserModelType, VideoRoomState } from "@/utils/openviduTypes";
 import axios from "axios";
+import { OpenVidu, Publisher } from "openvidu-browser";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { OpenVidu, Publisher } from "openvidu-browser";
-import Room from "@pages/OpenVidu/Room";
-import UserModel from "@components/Openvidu-call/models/user-model";
+import Room from "./Room";
 import OpenViduLayout from "@/components/Openvidu-call/layout/openvidu-layout";
-import { UserModelType, VideoRoomState } from "@utils/openviduTypes";
 
 /*
 실제 화상채팅으로 진입하기 전에,
@@ -20,13 +20,14 @@ const APPLICATION_SERVER_URL = process.env.NODE_ENV === "production" ? "" : `htt
 
 let USER_NAME = "user1"; //추후 유저 값으로 변경
 const SESSION_ID = "GroupID"; //전역에 설정되어야하는 값
+const GROUP_NAME = "소아암 아이를 키우는 부모 모임"; //임시, 추후 참가하기 버튼에 있던 그룹 정보에서 가져오기
 
 const localUser = new UserModel();
 
 function PreJoin() {
   const navigate = useNavigate();
   const [state, setState] = useState<VideoRoomState>({
-    mySessionId: SESSION_ID,
+    mySessionId: SESSION_ID, //meetingID
     myUserName: USER_NAME,
     session: undefined,
     localUser: undefined, //publisher
@@ -398,8 +399,10 @@ function PreJoin() {
 
   return (
     <section className="container m-auto h-screen bg-offWhite flex flex-col justify-center items-center">
+      <div className="w-full font-jamsilMedium text-28px text-center">{GROUP_NAME}</div>
       {state.session && (
         <Room
+          mySessionId={state.mySessionId}
           localUser={localUser}
           subscribers={state.subscribers}
           showNotification={state.messageReceived}
@@ -412,17 +415,18 @@ function PreJoin() {
         />
       )}
       {!state.session && (
-        <>
-          <div className="h-[10%]">모임 제목</div>
-          <input
-            type="text"
-            value={state.myUserName}
-            onChange={(e) => setState({ ...state, myUserName: e.target.value })}
-          />
-          <button onClick={joinSession} className="p-2 bg-green100 color-white">
-            참여하기
-          </button>
-        </>
+        <div className="w-full h-[80%] flex flex-col justify-around items-center">
+          <div className="">
+            <input
+              type="text"
+              value={state.myUserName}
+              onChange={(e) => setState({ ...state, myUserName: e.target.value })}
+            />
+            <button onClick={joinSession} className="p-2 bg-green100 color-white">
+              참여하기
+            </button>
+          </div>
+        </div>
       )}
     </section>
   );
