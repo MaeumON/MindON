@@ -25,3 +25,19 @@
   font-weight: 300;
   src: url("./assets/fonts/SUITE-Variable.ttf") format("truetype");
 }
+
+html,
+body {
+  margin: 0px;
+  width: 100%;
+  background-color: rgb(246, 246, 246);
+}
+
+#root {
+  background-color: #faf9f6;
+  max-width: clamp(360px, 100vw, 412px);
+  width: 100%;
+  margin: 0 auto;
+  min-height: 100vh;
+  height: 100%;
+}
