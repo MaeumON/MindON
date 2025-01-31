@@ -10,9 +10,10 @@ spring:
     # 테이블 생성 후에 data.sql 실행 - 애플리케이션 시작 시점에 data.sql 파일 실행
     defer-datasource-initialization: true
   datasource:
-    url: jdbc:mysql://localhost:3306/on_board?useSSL=false&serverTimezone=UTC  # MySQL 서버 URL 및 데이터베이스 이름 / useSSL=false : SSL연결 사용 안함
-    username: ssafy
-    password: ssafy
+    # url: jdbc:mysql://localhost:3306/on_board?useSSL=false&serverTimezone=UTC  # MySQL 서버 URL 및 데이터베이스 이름 / useSSL=false : SSL연결 사용 안함
+    url: jdbc:mysql://mysql:3306/on_board?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver  # MySQL JDBC 드라이버
   data:
     redis:
@@ -24,3 +25,12 @@ jwt:
 
 liquibase:
   change-log: classpath:/db/changelog/changelog-master.yaml
+
+
+# 오픈비두 설정 아직 dev 합치기 전이라 일단 dev에서 작업 후 머지 때 합칠 예정
+#openvidu:
+#  url: http://i12b103.p.ssafy.io:5443 # OpenVidu 서버 URL
+#  secret: qlalfzldi         # OpenVidu 비밀 키(docker-compose.yml 과 동일)
+#  session:
+#    inactive-timeout: 31536000
+  # secret: ${OPENVIDU_SECRET} .env 파일 참고
