@@ -1,5 +1,4 @@
 import Button from "@/components/common/Button";
-import Input from "@/components/common/InputBox";
 
 function Welcome() {
   return (
@@ -11,7 +10,6 @@ function Welcome() {
         <Button text={"로그인"} type="GREEN" />
         <Button text={"회원가입"} type="WHITE" />
       </div>
-      <Input />
     </div>
   );
 }
