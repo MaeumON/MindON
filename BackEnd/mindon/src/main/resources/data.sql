@@ -2,7 +2,7 @@ DROP DATABASE IF EXISTS on_board;
 CREATE DATABASE on_board DEFAULT CHARSET utf8mb4;
 USE on_board;
 
-SET GLOBAL event_scheduler = ON;
+SET GLOBAL event_scheduler = ON; -- root애서 실행해야함.
 
 CREATE TABLE `diseases` (
                             `disease_id` TINYINT AUTO_INCREMENT NOT NULL,

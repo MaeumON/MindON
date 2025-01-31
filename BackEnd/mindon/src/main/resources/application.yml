@@ -1,12 +1,12 @@
 spring:
   jpa:
+    hibernate:
+      ddl-auto: update  # 자동으로 DDL 실행 -> 어플리케이션 실행 시 데이터 베이스 스키마가 자동으로 업데이트됨
     # 전송 쿼리 확인
     show-sql: true
     properties:
       hibernate:
         format_sql: true
-        ddl-auto: update  # 자동으로 DDL 실행 -> 어플리케이션 실행 시 데이터 베이스 스키마가 자동으로 업데이트됨
-
     # 테이블 생성 후에 data.sql 실행 - 애플리케이션 시작 시점에 data.sql 파일 실행
     defer-datasource-initialization: true
   datasource:
@@ -18,9 +18,10 @@ spring:
     redis:
       host: localhost
       port: 6379
+#  data.sql 파일은 sql 쿼리문 참고용임. 실행할 필요 없음.
+#  sql:
+#    init:
+#      mode: always  # 모든 데이터베이스로 초기화 대상 변경
 jwt:
   issuer: jsjs3489@gmail.com
   secret_key: qlalfdldi
-
-liquibase:
-  change-log: classpath:/db/changelog/changelog-master.yaml
