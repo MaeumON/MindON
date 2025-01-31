@@ -6,7 +6,7 @@ function Login() {
     <div className="font-suite flex flex-col items-center justify-center w-full h-full px-[20px] gap-[30px]">
       <div className="flex flex-col font-suite font-bold justify-start gap-[60px] w-full">
         <section className="text-2xl ">
-          <div>어서오세요</div>
+          <div>어서오세요,</div>
           <div>온기를 나눌 준비가 되셨나요?</div>
         </section>
         <section className="flex flex-col gap-[30px]">
