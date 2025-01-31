@@ -4,13 +4,13 @@ interface ButtonProps {
 }
 
 const Button = ({ text, type }: ButtonProps) => {
-  if (type === "Green") {
+  if (type === "GREEN") {
     return (
       <button className="bg-green100 font-suite rounded-xl py-3 px-4 text-white text-lg font-bold whitespace-nowrap w-full">
         {text}
       </button>
     );
-  } else if (type === "White") {
+  } else if (type === "WHITE") {
     return (
       <button className="bg-offWhite font-suite rounded-xl py-3 px-4 text-cardLongContent text-lg font-bold whitespace-nowrap w-full">
         {text}
