@@ -12,11 +12,11 @@ function ModifyPwd() {
         <section className="flex flex-col gap-[30px]">
           <div className="flex flex-col gap-3">
             <div className="text-xl">새 비밀번호</div>
-            <InputBox text={"8자 이상/영어,숫자 필수"} />
+            <InputBox text={"8자 이상 / 영어, 숫자 필수"} />
           </div>
           <div className="flex flex-col gap-3">
             <div className="text-xl">새 비밀번호 확인</div>
-            <InputBox text={"8자 이상/영어,숫자 필수"} />
+            <InputBox text={"8자 이상 / 영어, 숫자 필수"} />
           </div>
         </section>
         <Button text={"비밀번호 수정"} type={"GREEN"} />
