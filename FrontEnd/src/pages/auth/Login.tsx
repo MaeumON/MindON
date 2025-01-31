@@ -12,12 +12,13 @@ function Login() {
         <section className="flex flex-col gap-[30px]">
           <div className="flex flex-col gap-3">
             <div className="text-xl">아이디</div>
-            <InputBox />
+            <InputBox text={"아이디"} />
           </div>
           <div className="flex flex-col gap-3">
             <div className="text-xl">비밀번호</div>
             <input
               type="password"
+              placeholder="비밀번호"
               className="grow shrink basis-0 font-suite rounded-xl py-3 px-4 text-cardLongContent bg-White text-lg justify-start items-center font-bold whitespace-nowrap w-full outline-none border-2 focus:border-yellow100 focus:border-yellow100  focus:ring-0.5 focus:ring-yellow100"
             />
           </div>

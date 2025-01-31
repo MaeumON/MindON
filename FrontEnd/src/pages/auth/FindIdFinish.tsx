@@ -1,7 +1,7 @@
 import InputBox from "@/components/common/InputBox";
 import Button from "@/components/common/Button";
 
-function FindPwd() {
+function FindIdFinish() {
   return (
     <div className="font-suite flex flex-col items-center justify-center w-full h-full px-[20px] gap-[30px]">
       <div className="flex flex-col font-suite font-bold justify-start gap-[60px] w-full">
@@ -19,10 +19,10 @@ function FindPwd() {
             <InputBox text={"이메일"} />
           </div>
         </section>
-        <Button text={"비밀번호 찾기"} type={"GREEN"} />
+        <Button text={"아이디 찾기"} type={"GREEN"} />
       </div>
     </div>
   );
 }
 
-export default FindPwd;
+export default FindIdFinish;
