@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
     // 회원 데이터를 저장하거나 조회하는 JPA Repository
+    User findByUserId(String userId);
 }
