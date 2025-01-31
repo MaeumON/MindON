@@ -32,6 +32,7 @@ public class AuthController {
         return ResponseEntity.ok(tokens);
     }
 
+    // 리프레시 토큰 갱신 (액세스 토큰이 만료일 때)
     @PostMapping("/refresh")
     public ResponseEntity<Map<String, String>> refresh(@RequestBody Map<String, String> refreshTokenRequest) {
         String userId = refreshTokenRequest.get("userId");
@@ -39,5 +40,12 @@ public class AuthController {
 
         Map<String, String> newTokens = authService.refresh(userId, refreshToken);
         return ResponseEntity.ok(newTokens);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody Map<String, String> logoutRequest) {
+        String userId = logoutRequest.get("userId");
+        authService.logout(userId); // 로그아웃 처리 (Redis에서 리프레시 토큰 삭제)
+        return ResponseEntity.ok("Logout successful"); // 성공 메시지 반환
     }
 }
