@@ -6,6 +6,7 @@ import Login from "@/pages/auth/Login";
 import SignUp from "@/pages/auth/SignUp";
 import FindId from "@/pages/auth/FindId";
 import FindPwd from "@/pages/auth/FindPwd";
+import Main from "./pages/Main";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path="/signup" element={<SignUp />} />
       <Route path="/findid" element={<FindId />} />
       <Route path="/findpwd" element={<FindPwd />} />
+      <Route path="/main" element={<Main />} />
     </Routes>
   );
 }
