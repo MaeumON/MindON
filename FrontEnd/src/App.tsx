@@ -2,12 +2,12 @@ import { Route, Routes } from "react-router-dom";
 import HomePage from "@pages/HomePage";
 import PreJoin from "@pages/OpenVidu/PreJoin";
 import Welcome from "@pages/Welcome";
-import Login from "@/pages/auth/Login";
-import SignUp from "@/pages/auth/SignUp";
-import FindId from "@/pages/auth/FindId";
-import FindPwd from "@/pages/auth/FindPwd";
-import ModifyPwd from "@/pages/auth/ModifyPwd";
-import FindIdFinish from "@/pages/auth/FindIdFinish";
+import Login from "@pages/auth/Login";
+import SignUp from "@pages/auth/SignUp";
+import FindId from "@pages/auth/FindId";
+import FindPwd from "@pages/auth/FindPwd";
+import ModifyPwd from "@pages/auth/ModifyPwd";
+import FindIdFinish from "@pages/auth/FindIdFinish";
 import Main from "./pages/Main";
 
 function App() {
