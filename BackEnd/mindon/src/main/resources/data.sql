@@ -150,29 +150,29 @@ ALTER TABLE questions ADD CONSTRAINT chk_curriculum_week CHECK (curriculum_week 
 ALTER TABLE meetings ADD CONSTRAINT chk_meeting_status CHECK (meeting_status IN (0, 1, 2));
 
 -- 6. 'meetings' 테이블의 'meeting_week' 동적 범위 트리거 설정
-DELIMITER $$
-
-CREATE TRIGGER CheckMeetingWeekBeforeInsert
-    BEFORE INSERT ON meetings
-    FOR EACH ROW
-BEGIN
-    IF NEW.meeting_week < 1 OR NEW.meeting_week > `groups`.period THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'meeting_week must be between 1 and the value of period';
-END IF;
-END$$
-
-CREATE TRIGGER CheckMeetingWeekBeforeUpdate
-    BEFORE UPDATE ON meetings
-    FOR EACH ROW
-BEGIN
-    IF NEW.meeting_week < 1 OR NEW.meeting_week > `groups`.period THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'meeting_week must be between 1 and the value of period';
-END IF;
-END$$
-
-DELIMITER ;
+-- DELIMITER $$
+--
+-- CREATE TRIGGER CheckMeetingWeekBeforeInsert
+--     BEFORE INSERT ON meetings
+--     FOR EACH ROW
+-- BEGIN
+--     IF NEW.meeting_week < 1 OR NEW.meeting_week > `groups`.period THEN
+--         SIGNAL SQLSTATE '45000'
+--         SET MESSAGE_TEXT = 'meeting_week must be between 1 and the value of period';
+-- END IF;
+-- END$$
+--
+-- CREATE TRIGGER CheckMeetingWeekBeforeUpdate
+--     BEFORE UPDATE ON meetings
+--     FOR EACH ROW
+-- BEGIN
+--     IF NEW.meeting_week < 1 OR NEW.meeting_week > `groups`.period THEN
+--         SIGNAL SQLSTATE '45000'
+--         SET MESSAGE_TEXT = 'meeting_week must be between 1 and the value of period';
+-- END IF;
+-- END$$
+--
+-- DELIMITER ;
 
 -- 초대 코드 랜덤 생성 트리거
 DELIMITER $$
@@ -413,3 +413,9 @@ DELIMITER $$
                                (7,"두려운"),
                                (8,"화나는");
                         select * from emotions;
+
+                        INSERT INTO meetings (meeting_week, group_id, date, meeting_status, curriculum)
+                        VALUES
+                            (1, 1, '2025-02-01 10:00:00', 0, 2);
+
+                        select * from meetings;
