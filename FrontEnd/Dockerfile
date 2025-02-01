@@ -2,16 +2,15 @@
 FROM node:20.10.0 AS build
 WORKDIR /app
 
-# 2️⃣ 패키지 관련 파일 복사 및 설정
+# 2️⃣ 필수 패키지 설치 (Yarn 설치)
+RUN npm install -g yarn  # 🔥 Node.js에 yarn 설치 (중요)
+
+# 3️⃣ 패키지 관련 파일 복사 및 설정
 COPY package.json yarn.lock ./
 
 # Corepack 활성화 및 Yarn 최신 버전 적용
 RUN corepack enable
 RUN yarn set version berry  # 🔥 Yarn Berry(PnP) 방식 유지
-# RUN yarn plugin import typescript  # 🔥 TypeScript 플러그인 추가
-
-# 📌 PnP 방식 설정을 위해 node-modules 사용 안함
-# RUN yarn config set nodeLinker pnp
 
 # 3️⃣ 프로젝트 코드 복사 후 의존성 설치
 COPY . . 
