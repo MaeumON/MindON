@@ -7,12 +7,14 @@ import SignUp from "@/pages/auth/SignUp";
 import FindId from "@/pages/auth/FindId";
 import FindPwd from "@/pages/auth/FindPwd";
 import Main from "./pages/Main";
+import RecordingPrejoin from "./pages/OpenVidu/RecordingPrejoin";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/prejoin" element={<PreJoin />} />
+      <Route path="/record-prejoin" element={<RecordingPrejoin />} />
       <Route path="/welcome" element={<Welcome />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />

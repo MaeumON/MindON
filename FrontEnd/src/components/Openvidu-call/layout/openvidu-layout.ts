@@ -34,14 +34,14 @@ class OpenViduLayout {
 
   private fixAspectRatio(elem: HTMLElement, width: number): void {
     const sub = elem.querySelector(".OT_root");
-    if (sub) {
-      // If this is the parent of a subscriber or publisher then we need
-      // to force the mutation observer on the publisher or subscriber to
-      // trigger to get it to fix it's layout
-      const oldWidth = sub.style.width;
-      sub.style.width = width + "px";
-      sub.style.width = oldWidth || "";
-    }
+    // if (sub) {
+    //   // If this is the parent of a subscriber or publisher then we need
+    //   // to force the mutation observer on the publisher or subscriber to
+    //   // trigger to get it to fix it's layout
+    //   const oldWidth = sub.style.width;
+    //   sub.style.width = width + "px";
+    //   sub.style.width = oldWidth || "";
+    // }
   }
 
   private positionElement(
@@ -61,17 +61,17 @@ class OpenViduLayout {
 
     this.fixAspectRatio(elem, width);
 
-    if (animate && $) {
-      $(elem).stop();
-      $(elem).animate(targetPosition, animate.duration || 200, animate.easing || "swing", () => {
-        this.fixAspectRatio(elem, width);
-        if (animate && typeof animate !== "boolean" && animate.complete) {
-          animate.complete.call(this);
-        }
-      });
-    } else {
-      $(elem).css(targetPosition);
-    }
+    // if (animate && $) {
+    //   $(elem).stop();
+    //   $(elem).animate(targetPosition, animate.duration || 200, animate.easing || "swing", () => {
+    //     this.fixAspectRatio(elem, width);
+    //     if (animate && typeof animate !== "boolean" && animate.complete) {
+    //       animate.complete.call(this);
+    //     }
+    //   });
+    // } else {
+    //   $(elem).css(targetPosition);
+    // }
     this.fixAspectRatio(elem, width);
   }
 

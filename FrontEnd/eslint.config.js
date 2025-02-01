@@ -27,6 +27,8 @@ export default [
       prettier: pluginPrettier,
     },
     rules: {
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "warn",
       ...pluginJs.configs.recommended.rules, // 기본 JS 규칙
       ...tseslint.configs.recommended.rules, // TypeScript 규칙
       ...pluginReact.configs.flat.recommended.rules, // React 규칙

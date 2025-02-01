@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { fetchQuestions } from "@apis/questionApi";
 import { questionType } from "@/apis/types/questions";
 import { UserModelType } from "@/utils/openviduTypes";
-import ChatComponent from "@components/Openvidu-call/components/chat/ChatComponent";
+// import ChatComponent from "@components/Openvidu-call/components/chat/ChatComponent";
 import StreamComponent from "@components/Openvidu-call/components/stream/StreamComponent";
 import ToolbarComponent from "@components/Openvidu-call/components/toolbar/ToolbarComponent";
 import UserModel from "@components/Openvidu-call/models/user-model";
+import Recording from "./Recording";
 
 /*
 - 미팅 시작하기 전, 시작하겠습니다 멘트
@@ -41,7 +42,7 @@ function Room({
   localUser,
   subscribers,
   showNotification,
-  checkNotification,
+  // checkNotification,
   camStatusChanged,
   micStatusChanged,
   leaveSession,
@@ -53,9 +54,12 @@ function Room({
 
   const [questions, setQuestions] = useState<questionType[]>([]); //질문 목록
   const [currentQuestionNumber, setCurrentQuestionNumber] = useState<number>(0); //현재 질문 번호
-  const [users, setUsers] = useState<number[]>([1, 2, 3, 4, 5]); //참여자 목록
   const [currentUser, setCurrentUser] = useState<number>(0); //현재 답변자 번호
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false); //현재 발언 중인지 여부
+
+  //setUsers를 사용하지 않아 일단 주석 처리
+  // const [users, setUsers] = useState<number[]>([1, 2, 3, 4, 5]); //참여자 목록
+  const users = [1, 2, 3, 4, 5];
 
   const [currentQuestion, setCurrentQuestion] = useState<string>(""); //현재 질문
   const [currentBtnText, setCurrentBtnText] = useState<string>(""); //현재 버튼 텍스트
@@ -142,8 +146,8 @@ function Room({
   }, []);
 
   return (
-    <section className="container m-auto h-screen flex flex-col justify-center items-center bg-offWhite font-suite">
-      <div className="m-4 p-2 w-[90%] flex flex-col justify-center bg-white rounded-[12px]">
+    <section className="w-full h-full flex flex-col justify-center items-center bg-offWhite font-suite">
+      <div className="p-2 w-full flex flex-col justify-center bg-white rounded-[12px]">
         <div className="m-2 p-4 rounded-[12px] font-bold text-24px bg-offWhite">{currentQuestion}</div>
         <div className="m-2 p-2 text-center">
           <button
@@ -180,14 +184,19 @@ function Room({
 
         {localUser && localUser.getStreamManager() && (
           <div className="" style={{ display: stateChatDisplay }}>
+            {/*
+            채팅 기능 구현 시 주석 삭제 
             <ChatComponent
-              user={localUser as UserModel}
+              user={localUser && localUser.getStreamManager() ? localUser : undefined}
               chatDisplay={stateChatDisplay}
               close={toggleChat}
               messageReceived={checkNotification}
-            />
+            /> */}
           </div>
         )}
+      </div>
+      <div>
+        <Recording />
       </div>
       <div className="h-[10%]">
         <ToolbarComponent

@@ -398,8 +398,8 @@ function PreJoin() {
   }, []);
 
   return (
-    <section className="container m-auto h-screen bg-offWhite flex flex-col justify-center items-center">
-      <div className="w-full font-jamsilMedium text-28px text-center">{GROUP_NAME}</div>
+    <section className="h-full flex flex-col justify-center items-center">
+      <div className="w-full h-[10%] font-jamsilMedium text-28px text-center">{GROUP_NAME}</div>
       {state.session && (
         <Room
           mySessionId={state.mySessionId}
@@ -415,7 +415,7 @@ function PreJoin() {
         />
       )}
       {!state.session && (
-        <div className="w-full h-[80%] flex flex-col justify-around items-center">
+        <div className="h-[70%] flex flex-col justify-around items-center">
           <div className="">
             <input
               type="text"
