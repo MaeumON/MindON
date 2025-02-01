@@ -10,14 +10,16 @@ RUN corepack enable
 RUN yarn set version berry  # 🔥 Yarn Berry(PnP) 방식 유지
 # RUN yarn plugin import typescript  # 🔥 TypeScript 플러그인 추가
 
-# 3️⃣ PnP 실행을 위한 환경 설정
-ENV NODE_OPTIONS="--require .pnp.cjs"
+# 📌 PnP 방식 설정을 위해 node-modules 사용 안함
+# RUN yarn config set nodeLinker pnp
 
-# 4️⃣ 프로젝트 코드 복사 후 의존성 설치
+# 3️⃣ 프로젝트 코드 복사 후 의존성 설치
 COPY . . 
+
+# 📌 `.pnp.cjs`가 정상 생성되도록 `yarn install`
 RUN yarn install --immutable
 
-# 5️⃣ TypeScript 패키지 확인 (없으면 설치)
+# 4️⃣ TypeScript 패키지 확인 (없으면 설치)
 RUN yarn why typescript || yarn add --dev typescript
 
 # 6️⃣ TypeScript 오류 무시하면서 빌드 진행
