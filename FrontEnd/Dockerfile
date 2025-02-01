@@ -19,4 +19,4 @@ RUN yarn why typescript || echo "⚠️ TypeScript 패키지 없음!"
 
 # 코드 복사 및 빌드 실행
 COPY . .
-RUN yarn build--skipLibCheck --noEmitOnError false || true
+RUN yarn build --skipLibCheck --noEmitOnError false || true
