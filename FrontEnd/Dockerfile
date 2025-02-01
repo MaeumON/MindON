@@ -1,21 +1,31 @@
-# 1. Node.js 20 버전 기반으로 빌드
+# 1️⃣ Node.js 20 버전 기반으로 빌드
 FROM node:20 AS build
 WORKDIR /app
 
-# 2. 패키지 설치 및 빌드
+# 2️⃣ 패키지 관련 파일 복사 및 설정
 COPY package.json yarn.lock ./
 
-# Corepack 활성화 및 Yarn 버전 고정
+# Corepack 활성화 및 Yarn 최신 버전 적용
 RUN corepack enable
-RUN yarn set version 4.6.0  
+RUN yarn set version berry  # 🔥 Yarn Berry(PnP) 방식 유지
+RUN yarn plugin import typescript  # 🔥 TypeScript 플러그인 추가
 
-# 3. 패키지 설치 및 빌드
+# 3️⃣ PnP 실행을 위한 환경 설정
+ENV NODE_OPTIONS="--require .pnp.cjs"
+
+# 4️⃣ 프로젝트 코드 복사 후 의존성 설치
 COPY . . 
 RUN yarn install --immutable
 
-# TypeScript 패키지 확인
-RUN yarn why typescript || echo "⚠️ TypeScript 패키지 없음!"
+# 5️⃣ TypeScript 패키지 확인 (없으면 설치)
+RUN yarn why typescript || yarn add --dev typescript
 
-# 코드 복사 및 빌드 실행
-COPY . .
+# 6️⃣ TypeScript 오류 무시하면서 빌드 진행
 RUN yarn build --skipLibCheck --noEmitOnError false || true
+
+# 7️⃣ Nginx가 사용할 빌드 디렉토리 설정 (Nginx 설정과 일치!)
+RUN mkdir -p /home/ubuntu/frontend_build
+RUN cp -r /app/dist/* /home/ubuntu/frontend_build
+
+# 8️⃣ Nginx 컨테이너에서 사용할 빌드 폴더 지정
+VOLUME /home/ubuntu/frontend_build
