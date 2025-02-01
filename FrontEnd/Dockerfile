@@ -19,7 +19,7 @@ RUN yarn install --immutable
 RUN yarn why typescript || yarn add --dev typescript
 
 # 🔥 `.pnp.cjs` 강제 실행 (필수)
-RUN node -r ./.pnp.cjs -e "console.log('PnP 로드됨')"
+# RUN node -r ./.pnp.cjs -e "console.log('PnP 로드됨')"
 
 # 5️⃣ `vite.config.ts` 수정 (빌드 폴더 확인)
 RUN echo 'export default { build: { outDir: "dist", emptyOutDir: true } }' > vite.config.ts
