@@ -2,9 +2,6 @@
 FROM node:20.10.0 AS build
 WORKDIR /app
 
-# 2️⃣ 필수 패키지 설치 (Yarn 설치)
-RUN npm install -g yarn  # 🔥 Node.js에 yarn 설치 (중요)
-
 # Corepack 활성화 및 Yarn 최신 버전 적용
 RUN corepack enable
 RUN yarn set version berry  # 🔥 Yarn Berry(PnP) 방식 유지
@@ -26,7 +23,6 @@ RUN node -r ./.pnp.cjs -e "console.log('PnP 로드됨')"
 
 # 5️⃣ `vite.config.ts` 수정 (빌드 폴더 확인)
 RUN echo 'export default { build: { outDir: "dist", emptyOutDir: true } }' > vite.config.ts
-
 
 # 6️⃣ TypeScript 오류 무시하면서 빌드 진행
 RUN yarn build --skipLibCheck --noEmitOnError false || true
