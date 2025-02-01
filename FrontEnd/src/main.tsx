@@ -8,20 +8,15 @@ import { worker } from "./mocks/browser";
 ==========================*/
 
 if (process.env.NODE_ENV === "development") {
-  createRoot(document.getElementById("root")!).render(
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  );
-  // worker.start().then(() => {
-  //   createRoot(document.getElementById("root")!).render(
-  //     <StrictMode>
-  //       <BrowserRouter>
-  //         <App />
-  //       </BrowserRouter>
-  //     </StrictMode>
-  //   );
-  // });
+  //worker.start().then(() => {
+    createRoot(document.getElementById("root")!).render(
+      <StrictMode>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </StrictMode>
+    );
+  //});
 } else {
   createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
