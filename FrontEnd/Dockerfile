@@ -5,16 +5,16 @@ WORKDIR /app
 # 2. 패키지 설치 및 빌드
 COPY package.json yarn.lock ./
 
-# Corepack 활성화
+# Corepack 활성화 및 Yarn 버전 고정
 RUN corepack enable
+RUN yarn set version 4.6.0  
 
-# Yarn 설치
-RUN yarn set version 4.6.0  # package.json에 맞춘 버전으로 설정
-
+# 패키지 설치
 RUN yarn install --frozen-lockfile
+
+# TypeScript 패키지 확인
+RUN yarn why typescript || echo "⚠️ TypeScript 패키지 없음!"
+
+# 코드 복사 및 빌드 실행
 COPY . .
 RUN yarn build
-
-# 3. 빌드된 파일을 /home/ubuntu/frontend_build로 복사
-RUN mkdir -p /home/ubuntu/frontend_build
-RUN cp -r /app/dist/* /home/ubuntu/frontend_build
