@@ -3,7 +3,6 @@ import { UserModelType, VideoRoomState } from "@/utils/openviduTypes";
 import axios from "axios";
 import { OpenVidu, Publisher } from "openvidu-browser";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Room from "./Room";
 import OpenViduLayout from "@/components/Openvidu-call/layout/openvidu-layout";
 
@@ -15,7 +14,7 @@ import OpenViduLayout from "@/components/Openvidu-call/layout/openvidu-layout";
 - 참여하기 버튼으로 화상 화면으로 이동
 */
 
-const APPLICATION_SERVER_URL = process.env.NODE_ENV === "production" ? "" : `http://localhost:5000/`;
+const APPLICATION_SERVER_URL = import.meta.env.NODE_ENV === "production" ? "" : `http://localhost:5000/`;
 // const APPLICATION_SERVER_URL = process.env.NODE_ENV === "production" ? "" : `https://demos.openvidu.io/`;
 
 let USER_NAME = "user1"; //추후 유저 값으로 변경
@@ -25,7 +24,6 @@ const GROUP_NAME = "소아암 아이를 키우는 부모 모임"; //임시, 추�
 const localUser = new UserModel();
 
 function PreJoin() {
-  const navigate = useNavigate();
   const [state, setState] = useState<VideoRoomState>({
     mySessionId: SESSION_ID, //meetingID
     myUserName: USER_NAME,
@@ -398,8 +396,8 @@ function PreJoin() {
   }, []);
 
   return (
-    <section className="container m-auto h-screen bg-offWhite flex flex-col justify-center items-center">
-      <div className="w-full font-jamsilMedium text-28px text-center">{GROUP_NAME}</div>
+    <section className="h-full flex flex-col justify-center items-center">
+      <div className="w-full h-[10%] font-jamsilMedium text-28px text-center">{GROUP_NAME}</div>
       {state.session && (
         <Room
           mySessionId={state.mySessionId}
@@ -415,7 +413,7 @@ function PreJoin() {
         />
       )}
       {!state.session && (
-        <div className="w-full h-[80%] flex flex-col justify-around items-center">
+        <div className="h-[70%] flex flex-col justify-around items-center">
           <div className="">
             <input
               type="text"

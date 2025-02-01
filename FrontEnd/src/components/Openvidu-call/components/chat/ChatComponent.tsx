@@ -112,14 +112,14 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ user, chatDisplay, close,
   }, []);
 
   const closeChat = useCallback(() => {
-    close(undefined);
+    close("");
   }, [close]);
 
   return (
     <div id="chatContainer">
       <div id="chatComponent" style={{ display: chatDisplay }}>
         <div id="chatToolbar">
-          <span>{user.getStreamManager().stream.session.sessionId} - CHAT</span>
+          {/* <span>{user.getStreamManager().stream.session.sessionId} - CHAT</span> */}
           <IconButton id="closeButton" onClick={closeChat}>
             <HighlightOff color="secondary" />
           </IconButton>

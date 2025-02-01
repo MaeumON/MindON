@@ -8,7 +8,7 @@ import FindId from "@pages/auth/FindId";
 import FindPwd from "@pages/auth/FindPwd";
 import ModifyPwd from "@pages/auth/ModifyPwd";
 import FindIdFinish from "@pages/auth/FindIdFinish";
-import Main from "./pages/Main";
+import Main from "@pages/Main";
 
 function App() {
   return (
