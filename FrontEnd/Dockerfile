@@ -12,7 +12,6 @@ RUN yarn set version 4.6.0
 # 3. 패키지 설치 및 빌드
 COPY . . 
 RUN yarn install --immutable
-RUN yarn build
 
 # TypeScript 패키지 확인
 RUN yarn why typescript || echo "⚠️ TypeScript 패키지 없음!"
