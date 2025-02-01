@@ -1,5 +1,5 @@
 # 1️⃣ Node.js 20 버전 기반으로 빌드
-FROM node:20 AS build
+FROM node:20.10.0 AS build
 WORKDIR /app
 
 # 2️⃣ 패키지 관련 파일 복사 및 설정
