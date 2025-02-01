@@ -11,8 +11,9 @@ const handlers = [
 
   // 질문 받아오기
   http.get(VITE_API_BASE + "/api/meetings/:meetingId/questions", (req) => {
+   /* 도커파일 테스트---------------
     const { meetingId } = req.params; // meetingId 파라미터 접근
-
+==========================*/
     return HttpResponse.json(QUESTIONS);
   }),
 ];

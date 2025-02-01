@@ -31,7 +31,7 @@ interface RowInfo {
 class OpenViduLayout {
   private layoutContainer: HTMLElement | null = null;
   private opts!: LayoutOptions;
-
+/* 도커파일 엔진엑스 위해 잠시 주석------------------------------
   //추후 width 사용 시 위 처럼 사용
   // private fixAspectRatio(elem: HTMLElement, width: number): void {
   private fixAspectRatio(elem: HTMLElement): void {
@@ -46,7 +46,7 @@ class OpenViduLayout {
     //   sub.style.width = oldWidth || "";
     // }
   }
-
+여기까지----------------------------*/
   private positionElement() // elem: HTMLElement,
   // x: number,
   // y: number,
