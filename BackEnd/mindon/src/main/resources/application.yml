@@ -25,3 +25,6 @@ spring:
 jwt:
   issuer: jsjs3489@gmail.com
   secret_key: qlalfdldi
+
+openai:
+  api-key: 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
