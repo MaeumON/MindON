@@ -31,7 +31,8 @@ RUN echo 'import { defineConfig } from "vite"; import react from "@vitejs/plugin
 
 
 # TypeScript 오류 무시하면서 빌드 진행 (실패 시 중단)
-RUN yarn build --skipLibCheck --noEmitOnError false
+RUN yarn build
+# --skipLibCheck --noEmitOnError false
 
 # 🔍 빌드 결과 확인 (디버깅)
 RUN ls -al /app/ && ls -al /app/dist/ || echo "⚠️ 빌드된 dist 폴더가 없습니다!"
