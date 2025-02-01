@@ -1,18 +1,19 @@
 import axios from "axios";
-import { useState } from "react";
 
-const APPLICATION_SERVER_URL = process.env.NODE_ENV === "production" ? "" : `http://localhost:5000/`;
+const APPLICATION_SERVER_URL = import.meta.env.NODE_ENV === "production" ? "" : `http://localhost:5000/`;
 // const APPLICATION_SERVER_URL = process.env.NODE_ENV === "production" ? "" : `http://localhost:5000/`;
 // const APPLICATION_SERVER_URL = process.env.NODE_ENV === "production" ? "" : `https://demos.openvidu.io/`;
 
 const SESSION_ID = "GroupID"; //전역에 설정되어야하는 값
-const GROUP_NAME = "소아암 아이를 키우는 부모 모임";
+// const GROUP_NAME = "소아암 아이를 키우는 부모 모임";
 const OUTPUT_MODE = "COMPOSED";
 const FORCE_RECORDING_ID = "";
 
 const Recording = () => {
-  const [hasAudio, setHasAudio] = useState(true);
-  const [hasVideo, setHasVideo] = useState(true);
+  // const [hasAudio, setHasAudio] = useState(true);
+  // const [hasVideo, setHasVideo] = useState(true);
+  const hasAudio = true;
+  const hasVideo = true;
 
   async function startRecording() {
     const response = await axios.post(

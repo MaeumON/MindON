@@ -8,15 +8,13 @@ import FindId from "@pages/auth/FindId";
 import FindPwd from "@pages/auth/FindPwd";
 import ModifyPwd from "@pages/auth/ModifyPwd";
 import FindIdFinish from "@pages/auth/FindIdFinish";
-import Main from "./pages/Main";
-import RecordingPrejoin from "./pages/OpenVidu/RecordingPrejoin";
+import Main from "@pages/Main";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/prejoin" element={<PreJoin />} />
-      <Route path="/record-prejoin" element={<RecordingPrejoin />} />
       <Route path="/welcome" element={<Welcome />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
