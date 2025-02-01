@@ -4,6 +4,13 @@ WORKDIR /app
 
 # 2. 패키지 설치 및 빌드
 COPY package.json yarn.lock ./
+
+# Corepack 활성화
+RUN corepack enable
+
+# Yarn 설치
+RUN yarn set version 4.6.0  # package.json에 맞춘 버전으로 설정
+
 RUN yarn install --frozen-lockfile
 COPY . .
 RUN yarn build
