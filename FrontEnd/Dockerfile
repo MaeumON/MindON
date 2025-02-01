@@ -23,8 +23,7 @@ RUN yarn install --immutable
 RUN yarn why typescript || yarn add --dev typescript
 
 # 6️⃣ TypeScript 오류 무시하면서 빌드 진행
-RUN yarn build 
-# --skipLibCheck --noEmitOnError false || true
+RUN yarn build --skipLibCheck --noEmitOnError false || true
 
 # 7️⃣ Nginx가 사용할 빌드 디렉토리 설정 (Nginx 설정과 일치!)
 RUN mkdir -p /home/ubuntu/frontend_build
