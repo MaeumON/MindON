@@ -24,6 +24,9 @@ RUN yarn why typescript || yarn add --dev typescript
 
 # 6️⃣ TypeScript 오류 무시하면서 빌드 진행
 RUN yarn build --skipLibCheck --noEmitOnError false || true
+# 🔍 빌드 결과 확인 (디버깅)
+RUN ls -al /app/ && ls -al /app/dist/ || echo "⚠️ 빌드된 dist 폴더가 없습니다!"
+RUN ls -al /app/ && ls -al /app/build/ || echo "⚠️ 빌드된 build 폴더가 없습니다!"
 
 # 7️⃣ Nginx가 사용할 빌드 디렉토리 설정 (Nginx 설정과 일치!)
 RUN mkdir -p /home/ubuntu/frontend_build
