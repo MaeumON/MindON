@@ -19,21 +19,22 @@ COPY . .
 # `.pnp.cjs`가 정상 생성되도록 `yarn install`
 RUN yarn install --immutable
 
-# `.pnp.cjs` 파일이 정상적으로 생성되었는지 확인
-RUN ls -al /app/.pnp.cjs || echo "⚠️ .pnp.cjs 파일이 없습니다!"
+# `.pnp.cjs` 파일이 정상적으로 생성되었는지 확인 (없으면 빌드 중단)
+RUN test -f /app/.pnp.cjs || { echo "❌ .pnp.cjs 파일이 없습니다! 빌드를 중단합니다."; exit 1; }
+
 
 # TypeScript 패키지 확인 (없으면 설치)
 RUN yarn why typescript || yarn add --dev typescript
 
-# `vite.config.ts` 수정 (빌드 폴더 확인)
-RUN echo 'export default { build: { outDir: "dist", emptyOutDir: true } }' > vite.config.ts
+# 기존 Vite 설정 유지하면서 `outDir: "dist"` 추가
+RUN echo 'import { defineConfig } from "vite"; import react from "@vitejs/plugin-react"; export default defineConfig({ plugins: [react()], build: { outDir: "dist", emptyOutDir: true } });' > vite.config.ts
 
-# TypeScript 오류 무시하면서 빌드 진행
-RUN yarn build --skipLibCheck --noEmitOnError false || true
+
+# TypeScript 오류 무시하면서 빌드 진행 (실패 시 중단)
+RUN yarn build --skipLibCheck --noEmitOnError false
 
 # 🔍 빌드 결과 확인 (디버깅)
 RUN ls -al /app/ && ls -al /app/dist/ || echo "⚠️ 빌드된 dist 폴더가 없습니다!"
-RUN ls -al /app/ && ls -al /app/build/ || echo "⚠️ 빌드된 build 폴더가 없습니다!"
 
 # 7️⃣ Nginx가 사용할 빌드 디렉토리 설정 (Nginx 설정과 일치!)
 RUN mkdir -p /home/ubuntu/frontend_build
