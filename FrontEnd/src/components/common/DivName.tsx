@@ -10,7 +10,11 @@ interface FrameProps {
 
 // 전체 코드 감싸기(가운데정렬, 폰트, 높이 자동, 너비 full)
 export const Wrapper = ({ children, className = "" }: FrameProps) => {
-  return <div className={`flex flex-col items-center justify-center w-full font-suite ${className}`}>{children}</div>;
+  return (
+    <div className={`flex flex-col items-center justify-center w-full font-suite min-h-screen ${className}`}>
+      {children}
+    </div>
+  );
 };
 
 // 입력을 받는 부분
