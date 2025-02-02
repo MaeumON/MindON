@@ -23,9 +23,6 @@ COPY . .
 # .pnp.cjs 파일이 생성되었는지 확인 (PnP 모드 정상 작동 여부 점검)
 ##RUN test -f /app/.pnp.cjs || { echo "❌ .pnp.cjs 파일이 없습니다! 빌드를 중단합니다."; exit 1; }
 
-# Vite 설정 파일 생성 (빌드시 사용할 임시 vite.config.ts)
-RUN echo 'import { defineConfig } from "vite"; import react from "@vitejs/plugin-react"; export default defineConfig({ plugins: [react()], build: { outDir: "dist", emptyOutDir: true } });' > vite.config.ts
-
 # 빌드 실행 (yarn build 스크립트가 package.json에 등록되어 있어야 함)
 RUN yarn build
 
