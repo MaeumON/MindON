@@ -4,24 +4,24 @@ WORKDIR /app
 
 # Corepack 활성화 및 Yarn Berry 설정
 RUN corepack enable 
-RUN yarn set version berry  
+##RUN yarn set version berry  
 
 # Yarn 캐시 폴더를 Linux 환경에 맞게 재설정
-RUN yarn config set cacheFolder /app/.yarn/cache
+##RUN yarn config set cacheFolder /app/.yarn/cache
 
 # package.json 및 yarn.lock 복사 (프로젝트 의존성 파일)
 COPY package.json yarn.lock ./
 
 # 의존성 설치 및 타입스크립트 설치
 RUN yarn install
-RUN yarn add -D typescript
-RUN yarn install --check-cache
+##RUN yarn add -D typescript
+##RUN yarn install --check-cache
 
 # 나머지 소스 파일 복사
 COPY . . 
 
 # .pnp.cjs 파일이 생성되었는지 확인 (PnP 모드 정상 작동 여부 점검)
-RUN test -f /app/.pnp.cjs || { echo "❌ .pnp.cjs 파일이 없습니다! 빌드를 중단합니다."; exit 1; }
+##RUN test -f /app/.pnp.cjs || { echo "❌ .pnp.cjs 파일이 없습니다! 빌드를 중단합니다."; exit 1; }
 
 # Vite 설정 파일 생성 (빌드시 사용할 임시 vite.config.ts)
 RUN echo 'import { defineConfig } from "vite"; import react from "@vitejs/plugin-react"; export default defineConfig({ plugins: [react()], build: { outDir: "dist", emptyOutDir: true } });' > vite.config.ts
