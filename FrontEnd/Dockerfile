@@ -18,6 +18,9 @@ COPY . .
 # `.pnp.cjs` 파일이 정상적으로 생성되었는지 확인 (없으면 빌드 중단)
 # RUN test -f /app/.pnp.cjs || { echo "❌ .pnp.cjs 파일이 없습니다! 빌드를 중단합니다."; exit 1; }
 
+# `.pnp.cjs` 파일이 정상적으로 생성되었는지 확인 (없으면 빌드 중단)
+RUN test -f /app/.pnp.cjs || { echo "❌ .pnp.cjs 파일이 없습니다! 빌드를 중단합니다."; exit 1; }
+
 # TypeScript 패키지 확인 (없으면 설치)
 # RUN yarn why typescript || yarn add --dev typescript
 
