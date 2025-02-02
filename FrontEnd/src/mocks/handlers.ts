@@ -11,7 +11,7 @@ const handlers = [
 
   // 질문 받아오기
   http.get(VITE_API_BASE + "/api/meetings/:meetingId/questions", (req) => {
-    const { meetingId } = req.params; // meetingId 파라미터 접근
+    //const { meetingId } = req.params; // meetingId 파라미터 접근
 
     return HttpResponse.json(QUESTIONS);
   }),
