@@ -5,12 +5,12 @@ WORKDIR /app
 # 패키지 관련 파일 복사 및 설정
 COPY package.json yarn.lock ./
 RUN corepack enable 
+# `.pnp.cjs`가 정상 생성되도록 `yarn install`
+RUN yarn install
 RUN yarn set version berry  
-RUN yarn config set nodeLinker pnp
+# RUN yarn config set nodeLinker pnp
 COPY . . 
 
-# `.pnp.cjs`가 정상 생성되도록 `yarn install`
-RUN yarn install --immutable
 
 # `.pnp.cjs` 파일이 정상적으로 생성되었는지 확인 (없으면 빌드 중단)
 # RUN test -f /app/.pnp.cjs || { echo "❌ .pnp.cjs 파일이 없습니다! 빌드를 중단합니다."; exit 1; }
