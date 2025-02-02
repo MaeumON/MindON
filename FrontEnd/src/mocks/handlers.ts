@@ -2,6 +2,7 @@ import { http, HttpResponse } from "msw";
 import { GROUPS } from "../data/GROUPS";
 import { QUESTIONS } from "../data/QUESTIONS";
 import { LOGINUSER } from "../data/LOGINUSER";
+import { FINDID } from "../data/FINDID";
 const { VITE_API_BASE } = import.meta.env;
 
 const handlers = [
@@ -20,9 +21,14 @@ const handlers = [
     return HttpResponse.json(QUESTIONS);
   }),
 
-  // User 정보
+  // User Login 정보
   http.post(VITE_API_BASE + "/api/auth/login", () => {
     return HttpResponse.json(LOGINUSER);
+  }),
+
+  // FindId 정보
+  http.post(VITE_API_BASE + "/api/auth/userid", () => {
+    return HttpResponse.json(FINDID);
   }),
 ];
 
