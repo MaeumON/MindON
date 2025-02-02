@@ -1,6 +1,7 @@
 import { http, HttpResponse } from "msw";
 import { GROUPS } from "../data/GROUPS";
 import { QUESTIONS } from "../data/QUESTIONS";
+import { LOGINUSER } from "../data/LOGINUSER";
 const { VITE_API_BASE } = import.meta.env;
 
 const handlers = [
@@ -14,6 +15,11 @@ const handlers = [
     const { meetingId } = req.params; // meetingId 파라미터 접근
 
     return HttpResponse.json(QUESTIONS);
+  }),
+
+  // User 정보
+  http.post(VITE_API_BASE + "/api/auth/login", () => {
+    return HttpResponse.json(LOGINUSER);
   }),
 ];
 
