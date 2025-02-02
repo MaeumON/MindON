@@ -196,7 +196,7 @@ function Room({
         )}
       </div>
       <div>
-        <Recording />
+        <Recording sessionID={mySessionId} />
       </div>
       <div className="h-[10%]">
         <ToolbarComponent

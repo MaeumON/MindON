@@ -1,10 +1,10 @@
 import UserModel from "@/components/Openvidu-call/models/user-model";
 import { UserModelType, VideoRoomState } from "@/utils/openviduTypes";
-import axios from "axios";
 import { OpenVidu, Publisher } from "openvidu-browser";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Room from "./Room";
 import OpenViduLayout from "@/components/Openvidu-call/layout/openvidu-layout";
+import openviduInstance from "@/apis/openviduInstance";
 
 /*
 실제 화상채팅으로 진입하기 전에,
@@ -14,16 +14,13 @@ import OpenViduLayout from "@/components/Openvidu-call/layout/openvidu-layout";
 - 참여하기 버튼으로 화상 화면으로 이동
 */
 
-const APPLICATION_SERVER_URL = import.meta.env.NODE_ENV === "production" ? "" : `http://localhost:5000/`;
-// const APPLICATION_SERVER_URL = process.env.NODE_ENV === "production" ? "" : `https://demos.openvidu.io/`;
-
 let USER_NAME = "user1"; //추후 유저 값으로 변경
-const SESSION_ID = "GroupID"; //전역에 설정되어야하는 값
+const SESSION_ID = "Session2"; //전역에 설정되어야하는 값
 const GROUP_NAME = "소아암 아이를 키우는 부모 모임"; //임시, 추후 참가하기 버튼에 있던 그룹 정보에서 가져오기
 
 const localUser = new UserModel();
 
-function PreJoin() {
+function RecordingPrejoin() {
   const [state, setState] = useState<VideoRoomState>({
     mySessionId: SESSION_ID, //meetingID
     myUserName: USER_NAME,
@@ -44,8 +41,8 @@ function PreJoin() {
 
   // 세션아이디 (그룹아이디)로 새로우 세션 생성
   const createSession = async (sessionId: string): Promise<string> => {
-    const response = await axios.post(
-      `${APPLICATION_SERVER_URL}api/sessions`,
+    const response = await openviduInstance.post(
+      "api/sessions",
       { customSessionId: sessionId },
       { headers: { "Content-Type": "application/json" } }
     );
@@ -54,13 +51,16 @@ function PreJoin() {
 
   // 새로 생성된 세션 아이디로 토큰 생성
   const createToken = async (sessionId: string): Promise<string> => {
-    const response = await axios.post(
-      APPLICATION_SERVER_URL + "api/sessions/" + sessionId + "/connections",
-      {},
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    // const response = await axios.post(
+    //   "https://localhost:5000/recording-java/api/get-token",
+    //   { sessionName: sessionId },
+    //   {
+    //     headers: { "Content-Type": "application/json" },
+    //   }
+    // );
+
+    const response = await openviduInstance.post("api/sessions/" + sessionId + "/connections", {});
+
     return response.data;
   };
 
@@ -430,4 +430,4 @@ function PreJoin() {
   );
 }
 
-export default PreJoin;
+export default RecordingPrejoin;
