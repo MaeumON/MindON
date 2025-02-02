@@ -2,21 +2,24 @@
 FROM node:20.10.0 AS build
 WORKDIR /app
 
-# 패키지 관련 파일 복사 및 설정
-COPY package.json yarn.lock ./
 RUN corepack enable 
+RUN yarn set version berry  
+
+# package.json 및 yarn.lock 복사
+COPY package.json yarn.lock ./
+
 # `.pnp.cjs`가 정상 생성되도록 `yarn install`
 RUN yarn install
-RUN yarn set version berry  
+RUN yarn add -D typescript
+RUN yarn install --check-cache
 # RUN yarn config set nodeLinker pnp
 COPY . . 
-
 
 # `.pnp.cjs` 파일이 정상적으로 생성되었는지 확인 (없으면 빌드 중단)
 # RUN test -f /app/.pnp.cjs || { echo "❌ .pnp.cjs 파일이 없습니다! 빌드를 중단합니다."; exit 1; }
 
 # TypeScript 패키지 확인 (없으면 설치)
-RUN yarn why typescript || yarn add --dev typescript
+# RUN yarn why typescript || yarn add --dev typescript
 
 # 기존 Vite 설정 유지하면서 `outDir: "dist"` 추가
 RUN echo 'import { defineConfig } from "vite"; import react from "@vitejs/plugin-react"; export default defineConfig({ plugins: [react()], build: { outDir: "dist", emptyOutDir: true } });' > vite.config.ts
