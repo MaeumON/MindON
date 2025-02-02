@@ -34,18 +34,18 @@ class OpenViduLayout {
 
   //추후 width 사용 시 위 처럼 사용
   // private fixAspectRatio(elem: HTMLElement, width: number): void {
-  private fixAspectRatio(elem: HTMLElement): void {
-    const sub = elem.querySelector(".OT_root");
-    console.log(sub);
-    // if (sub) {
-    //   // If this is the parent of a subscriber or publisher then we need
-    //   // to force the mutation observer on the publisher or subscriber to
-    //   // trigger to get it to fix it's layout
-    //   const oldWidth = sub.style.width;
-    //   sub.style.width = width + "px";
-    //   sub.style.width = oldWidth || "";
-    // }
-  }
+  // private fixAspectRatio(elem: HTMLElement): void {
+  //   const sub = elem.querySelector(".OT_root");
+  //   console.log(sub);
+  //   // if (sub) {
+  //   //   // If this is the parent of a subscriber or publisher then we need
+  //   //   // to force the mutation observer on the publisher or subscriber to
+  //   //   // trigger to get it to fix it's layout
+  //   //   const oldWidth = sub.style.width;
+  //   //   sub.style.width = width + "px";
+  //   //   sub.style.width = oldWidth || "";
+  //   // }
+  // }
 
   private positionElement() // elem: HTMLElement,
   // x: number,

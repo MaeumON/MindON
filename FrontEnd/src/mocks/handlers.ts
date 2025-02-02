@@ -14,6 +14,9 @@ const handlers = [
   http.get(VITE_API_BASE + "/api/meetings/:meetingId/questions", (req) => {
     const { meetingId } = req.params; // meetingId 파라미터 접근
 
+    //쓰지 않는 변수 처리용
+    console.log(meetingId);
+
     return HttpResponse.json(QUESTIONS);
   }),
 
