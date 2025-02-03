@@ -13,7 +13,7 @@ interface Data {
   };
 }
 
-const login = async (userId: string, password: string): Promise<Data> => {
+const loginApi = async (userId: string, password: string): Promise<Data> => {
   try {
     const result = await instance.post<Data>("/api/auth/login", { userId, password });
     console.log("apis/auth:", result.data);
@@ -27,4 +27,4 @@ const login = async (userId: string, password: string): Promise<Data> => {
   }
 };
 
-export default login;
+export default loginApi;

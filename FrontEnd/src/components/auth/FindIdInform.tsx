@@ -4,7 +4,7 @@ import { Wrapper, TextSection } from "@/components/common/DivName";
 interface InformProps {
   userId: string;
 }
-// ✅ 아이디 마스킹 함수
+// 아이디 마스킹 함수
 function maskUserId(userId: string): string {
   const visiblePart = userId.slice(0, 3); // 앞 3글자
   const maskedPart = "*".repeat(Math.max(userId.length - 3, 0)); // 나머지 부분을 '*'

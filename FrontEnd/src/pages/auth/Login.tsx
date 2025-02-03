@@ -5,7 +5,7 @@ import InputForm from "@components/common/InputForm";
 import Button from "@components/common/Button";
 import { Wrapper, Form, TextSection } from "@components/common/DivName";
 import useAuthStore from "@stores/authStore";
-import login from "@apis/auth/login";
+import loginApi from "@/apis/auth/loginApi";
 
 function Login() {
   const [userId, setUserId] = useState("");
@@ -24,7 +24,7 @@ function Login() {
 
   async function onClickLogin() {
     try {
-      const result = await login(userId, password);
+      const result = await loginApi(userId, password);
       const { accessToken, data } = result;
 
       // Zustand에 로그인 정보 저장

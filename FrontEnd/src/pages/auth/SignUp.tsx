@@ -4,7 +4,7 @@ import InputForm from "@components/common/InputForm";
 import { Wrapper, Form } from "@components/common/DivName";
 import Button from "@components/common/Button";
 import DiseaseDrop from "@components/common/DiseaseDrop";
-import signup from "@apis/auth/signUp";
+import signUpApi from "@/apis/auth/signUpApi";
 
 function SignUp() {
   const [userName, setUserName] = useState<string>("");
@@ -32,9 +32,8 @@ function SignUp() {
     };
 
     try {
-      await signup(requestData);
-      alert("회원가입이 완료되었습니다!");
-      console.log(diseaseId);
+      await signUpApi(requestData);
+      alert("회원가입이 완료되었습니다");
       router("/login");
     } catch (error) {
       console.error("회원가입 오류:", error);

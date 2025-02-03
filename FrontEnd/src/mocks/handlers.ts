@@ -3,6 +3,8 @@ import { GROUPS } from "../data/GROUPS";
 import { QUESTIONS } from "../data/QUESTIONS";
 import { LOGINUSER } from "../data/LOGINUSER";
 import { FINDID } from "../data/FINDID";
+import { FINDPWD } from "../data/FINDPWD";
+
 const { VITE_API_BASE } = import.meta.env;
 
 const handlers = [
@@ -29,6 +31,11 @@ const handlers = [
   // FindId 정보
   http.post(VITE_API_BASE + "/api/auth/userid", () => {
     return HttpResponse.json(FINDID);
+  }),
+
+  // FindPwd 정보
+  http.post(VITE_API_BASE + "/api/auth/password", () => {
+    return HttpResponse.json(FINDPWD);
   }),
 
   //SignUp 정보

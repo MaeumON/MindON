@@ -1,23 +1,50 @@
-import InputForm from "@components/common/InputForm";
-import Button from "@components/common/Button";
-import { Wrapper, Form, TextSection } from "@/components/common/DivName";
+import findPwdApi from "@apis/auth/findPwdApi";
+import FindPwdCheck from "@components/auth/FindPwdCheck";
+import FindPwdInform from "@components/auth/FindPwdInform";
+
+import React, { useState } from "react";
 
 function FindPwd() {
-  return (
-    <Wrapper className="px-[20px] gap-[30px]">
-      <div className="flex flex-col font-bold gap-[60px] w-full">
-        <TextSection className="text-2xl ">
-          <div>기존에 가입한 계정의</div>
-          <div>이름과 이메일을 입력해 주세요.</div>
-        </TextSection>
-        <Form className="flex flex-col gap-[30px]">
-          <InputForm title={"이름"} titleClassName="text-xl" holder={"이름"} />
-          <InputForm title={"이메일"} titleClassName="text-xl" holder={"mindion@mindon.com"} />
-        </Form>
-        <Button text={"비밀번호 찾기"} type={"GREEN"} />
-      </div>
-    </Wrapper>
-  );
+  const [userId, setUserId] = useState("");
+  const [email, setEmail] = useState("");
+  const [state, setState] = useState(false);
+
+  function onChangeId(e: React.ChangeEvent<HTMLInputElement>) {
+    setUserId(e.target.value);
+  }
+
+  function onChangeEmail(e: React.ChangeEvent<HTMLInputElement>) {
+    setEmail(e.target.value);
+  }
+
+  async function onClickFindPwd() {
+    try {
+      const result = await findPwdApi(userId, email);
+
+      // setState가 비동기적으로 작동하므로 동기적으로 처리
+      const newState = result[0].data.state;
+      setState(newState);
+
+      // 유저 정보 state가 false로 반환되면 실패 알림
+      if (!newState) {
+        alert("회원 정보를 찾을 수 없습니다.");
+        return;
+      }
+    } catch (error) {
+      console.log("비밀번호 찾기 실패:", error);
+      alert("회원 정보를 찾을 수 없습니다.");
+    }
+  }
+
+  const checkProps = {
+    userId,
+    email,
+    onChangeId,
+    onChangeEmail,
+    onClickFindPwd,
+  };
+
+  return <div>{!state ? <FindPwdCheck {...checkProps} /> : <FindPwdInform userId={userId as string} />}</div>;
 }
 
 export default FindPwd;
