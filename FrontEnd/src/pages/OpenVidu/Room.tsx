@@ -7,6 +7,7 @@ import StreamComponent from "@components/Openvidu-call/components/stream/StreamC
 import ToolbarComponent from "@components/Openvidu-call/components/toolbar/ToolbarComponent";
 import UserModel from "@components/Openvidu-call/models/user-model";
 import Recording from "./Recording";
+import EmotionModal from "@/components/Openvidu-call/components/emotionModal/EmotionModal";
 
 /*
 - 미팅 시작하기 전, 시작하겠습니다 멘트
@@ -51,6 +52,7 @@ function Room({
 }: RoomProps) {
   const [isMeetingStart, setIsMeetingStart] = useState<number>(0); //0: 미팅 시작 전, 1: 미팅 시작 후
   const [isQuestionStart, setIsQuestionStart] = useState<number>(0); //0: 질문 시작 전, 1: 질문 시작 후
+  const [isEmotionModalOpen, setIsEmotionModalOpen] = useState<boolean>(false);
 
   const [questions, setQuestions] = useState<questionType[]>([]); //질문 목록
   const [currentQuestionNumber, setCurrentQuestionNumber] = useState<number>(0); //현재 질문 번호
@@ -147,8 +149,10 @@ function Room({
 
   return (
     <section className="w-full h-full flex flex-col justify-center items-center bg-offWhite font-suite">
+      {isEmotionModalOpen && <EmotionModal setIsEmotionModalOpen={setIsEmotionModalOpen} leaveSession={leaveSession} />}
       <div className="p-2 w-full flex flex-col justify-center bg-white rounded-[12px]">
         <div className="m-2 p-4 rounded-[12px] font-bold text-24px bg-offWhite">{currentQuestion}</div>
+
         <div className="m-2 p-2 text-center">
           <button
             disabled={isQuestionStart === 2}
@@ -204,8 +208,8 @@ function Room({
           showNotification={showNotification}
           camStatusChanged={camStatusChanged}
           micStatusChanged={micStatusChanged}
-          leaveSession={leaveSession}
           toggleChat={toggleChat}
+          setIsEmotionModalOpen={setIsEmotionModalOpen}
         />
       </div>
     </section>
