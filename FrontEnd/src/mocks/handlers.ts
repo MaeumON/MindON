@@ -30,6 +30,16 @@ const handlers = [
   http.post(VITE_API_BASE + "/api/auth/userid", () => {
     return HttpResponse.json(FINDID);
   }),
+
+  //SignUp 정보
+  http.post(VITE_API_BASE + "/api/auth/signup", () => {
+    new HttpResponse("Create", {
+      status: 201,
+      headers: {
+        "Content-Type": "text/plain",
+      },
+    });
+  }),
 ];
 
 export default handlers;
