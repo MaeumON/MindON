@@ -1,8 +1,8 @@
 spring:
 # 인프라 설정===============
   #port: 8080
-  servlet:
-    context-path: /api
+  # servlet:
+  #   context-path: /api
   ssl:
     enabled: false  # nginx가 SSL을 처리하므로 false
 # 인프라 설정===============
