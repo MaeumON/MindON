@@ -9,7 +9,7 @@ function Welcome() {
 
   return (
     <Wrapper className="bg-yellow100 px-5 gap-3 inline-flex">
-      {/* 세로 정렬 */}
+      {/* 전체 div 세로 정렬 */}
       <div className="flex flex-col w-full ">
         {/* 로고+곰 가로배치*/}
         <div className="flex">
