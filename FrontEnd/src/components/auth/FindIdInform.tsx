@@ -1,14 +1,23 @@
 import Button from "@components/common/Button";
 import { Wrapper, TextSection } from "@/components/common/DivName";
 
-function FindIdFinish() {
-  const userId: string = "ssafy103";
+interface InformProps {
+  userId: string;
+}
+// ✅ 아이디 마스킹 함수
+function maskUserId(userId: string): string {
+  const visiblePart = userId.slice(0, 3); // 앞 3글자
+  const maskedPart = "*".repeat(Math.max(userId.length - 3, 0)); // 나머지 부분을 '*'
+  return visiblePart + maskedPart;
+}
+
+function FindIdInform({ userId }: InformProps) {
   return (
     <Wrapper className="px-[20px] gap-3">
       <div className="flex flex-col font-bold gap-[60px] w-full ">
         <TextSection className="text-2xl text-center">
           <div>가입한 계정의 아이디는</div>
-          <div>{userId}</div>
+          <div>{maskUserId(userId)}</div>
           <div>입니다.</div>
         </TextSection>
         <Button text={"로그인하기"} type={"GREEN"} />
@@ -20,4 +29,4 @@ function FindIdFinish() {
   );
 }
 
-export default FindIdFinish;
+export default FindIdInform;

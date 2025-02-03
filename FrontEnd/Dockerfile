@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Corepack 활성화 및 Yarn Berry 설정
 RUN corepack enable 
-#RUN yarn set version berry  
+##RUN yarn set version berry  
 
 # Yarn 캐시 폴더를 Linux 환경에 맞게 재설정
 ##RUN yarn config set cacheFolder /app/.yarn/cache
@@ -13,7 +13,7 @@ RUN corepack enable
 COPY package.json yarn.lock ./
 
 # 의존성 설치 및 타입스크립트 설치
-#RUN yarn install
+# RUN yarn install
 ##RUN yarn add -D typescript
 ##RUN yarn install --check-cache
 
