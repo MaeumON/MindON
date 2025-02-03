@@ -13,7 +13,7 @@ RUN corepack enable
 COPY package.json yarn.lock ./
 
 # 의존성 설치 및 타입스크립트 설치
-# RUN yarn install
+RUN yarn install
 ##RUN yarn add -D typescript
 ##RUN yarn install --check-cache
 
