@@ -1,4 +1,4 @@
-// login axios
+// signup axios
 
 // import axios from "axios";
 import instance from "../instance";
@@ -13,7 +13,7 @@ interface SignupData {
 }
 
 // signup 함수에서 Data를 매개변수로 전달받도록 수정
-const signup = async (data: SignupData): Promise<void> => {
+const signUpApi = async (data: SignupData): Promise<void> => {
   try {
     await instance.post("/api/auth/signup", data);
     console.log("회원가입 요청 성공");
@@ -23,4 +23,4 @@ const signup = async (data: SignupData): Promise<void> => {
   }
 };
 
-export default signup;
+export default signUpApi;

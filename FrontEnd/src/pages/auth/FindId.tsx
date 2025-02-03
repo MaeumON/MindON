@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import findId from "@apis/auth/findId";
+import findIdApi from "@/apis/auth/findIdApi";
 import FindIdCheck from "@components/auth/FindIdCheck";
 import FindIdInform from "@/components/auth/FindIdInform";
 
@@ -20,7 +20,7 @@ function FindId() {
 
   async function onClickFindId() {
     try {
-      const result = await findId(userName, email);
+      const result = await findIdApi(userName, email);
       console.log("result:", result);
 
       // userId가 null 값이면 알림
