@@ -49,9 +49,9 @@ function Main() {
       {/* 노란박스 */}
       <section className="relative flex flex-col bg-yellow100 card-title h-[245px] px-[40px] py-[40px]">
         <section className="flex flex-col gap-[10px] justify-center flex-start items-stretch">
-          <div className="font-jamsilMedium text-[28px] text-cardTitle">안녕하세요, {userName}님</div>
-          <div className="font-jamsilRegular text-[24px] text-cardTitle">오늘도 온이와 함께</div>
-          <div className="font-jamsilRegular text-[24px]">마음을 ON 해볼까요?</div>
+          <div className="font-jamsilMedium text-28px text-cardTitle">안녕하세요, {userName}님</div>
+          <div className="font-jamsilRegular text-24px text-cardTitle">오늘도 온이와 함께</div>
+          <div className="font-jamsilRegular text-24px">마음을 ON 해볼까요?</div>
         </section>
       </section>
 
@@ -132,7 +132,7 @@ function Main() {
                 {groups.length > 0 ? (
                   groups.map((group) => <FavGroupCard key={group.groupId} group={group} />)
                 ) : (
-                  <p className="text-[24px] text-cardLongContent font-jamsilRegular font-medium">
+                  <p className="text-18x text-cardLongContent font-jamsilRegular font-medium">
                     관심 그룹이 없습니다. <br /> 새로운 모임을 만들어볼까요?
                   </p>
                 )}

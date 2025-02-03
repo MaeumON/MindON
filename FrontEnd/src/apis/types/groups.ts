@@ -1,7 +1,7 @@
 export interface groupType {
   groupId: number;
   title: string;
-  diseaseName: Record<string, string>;
+  diseaseName: string;
   isPrivate: boolean;
   privatePassword: string | null;
   inviteCode: string;
