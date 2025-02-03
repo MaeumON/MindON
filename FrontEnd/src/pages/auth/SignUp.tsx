@@ -10,10 +10,26 @@ function SignUp() {
   const [userName, setUserName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [userId, setUserId] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [passwordCheck, setPasswordCheck] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [diseaseId, setDiseaseId] = useState<number | null>(null); // 질병 선택 전 null 값
+
+  // 비밀번호, 확인
+  const [password, setPassword] = useState<string>("");
+  const [passwordCheck, setPasswordCheck] = useState<string>("");
+
+  // 비밀번호 오류 메시지
+  const [msg, setMsg] = useState("");
+  const [checkMsg, setCheckMsg] = useState("");
+
+  //비밀번호 유효성 검사
+  const [isPwd, setIsPwd] = useState(false);
+  const [isPwdCheck, setIsPwdCheck] = useState(false);
+
+  // 전화번호 오류 메시지
+  const [phoneMsg, setPhoneMsg] = useState("");
+
+  // 전화번호 유효성 검사
+  const [isPhone, setIsPhone] = useState(false);
 
   const router = useNavigate();
   async function handleSignUp() {
@@ -41,28 +57,66 @@ function SignUp() {
     }
   }
 
+  // 이름
   const onChangeUserName = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setUserName(e.target.value);
   }, []);
 
+  // 이메일
   const onChangeEmail = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   }, []);
 
+  // 아이디
   const onChangeUserId = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setUserId(e.target.value);
   }, []);
 
+  // 비밀번호
   const onChangePassword = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
+    const pwdRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,25}$/;
+    const pwdCurrent = e.target.value;
+    setPassword(pwdCurrent);
+
+    if (!pwdRegex.test(pwdCurrent)) {
+      setMsg("영어, 숫자 필수 / 8자리 이상 입력해주세요");
+      setIsPwd(false);
+    } else {
+      setMsg("안전한 비밀번호입니다");
+      setIsPwd(true);
+    }
   }, []);
 
-  const onChangePasswordCheck = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setPasswordCheck(e.target.value);
-  }, []);
+  // 비밀번호 확인
+  const onChangePasswordCheck = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const pwdCheckCurrent = e.target.value;
+      setPasswordCheck(pwdCheckCurrent);
 
+      if (password !== pwdCheckCurrent) {
+        setCheckMsg("비밀번호가 일치하지 않습니다.");
+        setIsPwdCheck(false);
+      } else {
+        setCheckMsg("비밀번호가 일치합니다");
+        setIsPwdCheck(true);
+      }
+    },
+    [password]
+  );
+
+  // 전화번호
   const onChangePhone = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhone(e.target.value);
+    const phoneRegex = /^[0-9]{8,15}$/; // 숫자만 허용
+    const phoneCurrent = e.target.value;
+    setPhone(phoneCurrent);
+
+    if (!phoneRegex.test(phoneCurrent)) {
+      setPhoneMsg("숫자만 입력해주세요");
+      setIsPhone(false);
+    } else {
+      setPhoneMsg("올바른 입력입니다");
+      setIsPhone(true);
+    }
   }, []);
 
   return (
@@ -97,6 +151,7 @@ function SignUp() {
           value={password}
           onChange={onChangePassword}
         />
+        <span className={`text-sm pl-2 ${isPwd ? "text-green100" : "text-red-500"}`}>{msg}</span>
         <InputForm
           title={"비밀번호 확인"}
           type="password"
@@ -105,13 +160,15 @@ function SignUp() {
           value={passwordCheck}
           onChange={onChangePasswordCheck}
         />
+        <span className={`text-sm pl-2 ${isPwdCheck ? "text-green100" : "text-red-500"}`}>{checkMsg}</span>
         <InputForm
           title={"전화번호"}
           titleClassName="text-xl"
-          holder={"전화번호"}
+          holder={"01012341234"}
           value={phone}
           onChange={onChangePhone}
         />
+        <span className={`text-sm pl-2 ${isPhone ? "text-green100" : "text-red-500"}`}>{phoneMsg}</span>
 
         <DiseaseDrop title="관심 질병" value={diseaseId} onSelect={setDiseaseId} />
       </Form>
