@@ -37,8 +37,8 @@ liquibase:
 
 # 오픈비두 설정 아직 dev 합치기 전이라 일단 dev에서 작업 후 머지 때 합칠 예정
 openvidu:
- url: http://i12b103.p.ssafy.io:5443 # OpenVidu 서버 URL
- secret: qlalfzldi         # OpenVidu 비밀 키(docker-compose.yml 과 동일)
- session:
-   inactive-timeout: 31536000
-  secret: ${OPENVIDU_SECRET} .env 파일 참고
+  url: http://i12b103.p.ssafy.io:5443 # OpenVidu 서버 URL
+  secret: qlalfzldi         # OpenVidu 비밀 키(docker-compose.yml 과 동일)
+  session:
+    inactive-timeout: 31536000
+  #secret: ${OPENVIDU_SECRET} .env 파일 참고
