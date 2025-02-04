@@ -14,7 +14,7 @@ const Recording = ({ sessionID }: RecordingProps) => {
   const hasVideo = false;
 
   async function startRecording() {
-    const response = await openviduInstance.post("/api/recording/start", {
+    const response = await openviduInstance.post("/recording/start", {
       session: sessionID,
       outputMode: OUTPUT_MODE,
       hasAudio: hasAudio,
@@ -25,7 +25,7 @@ const Recording = ({ sessionID }: RecordingProps) => {
   }
 
   async function stopRecording() {
-    const response = await openviduInstance.post("/api/recording/stop", {
+    const response = await openviduInstance.post("/recording/stop", {
       recording: sessionID,
     });
 
@@ -33,7 +33,7 @@ const Recording = ({ sessionID }: RecordingProps) => {
   }
 
   async function deleteRecording() {
-    const response = await openviduInstance.delete("/api/recording/delete", {
+    const response = await openviduInstance.delete("/recording/delete", {
       data: {
         recording: sessionID,
       },
@@ -43,13 +43,13 @@ const Recording = ({ sessionID }: RecordingProps) => {
   }
 
   async function getRecording() {
-    const response = await openviduInstance.get("/api/recording/get/" + sessionID);
+    const response = await openviduInstance.get("/recording/get/" + sessionID);
 
     console.log("get recording response", response);
   }
 
   async function listRecordings() {
-    const response = await openviduInstance.get("/api/recording/list");
+    const response = await openviduInstance.get("/recording/list");
 
     console.log("list recording response", response);
   }
