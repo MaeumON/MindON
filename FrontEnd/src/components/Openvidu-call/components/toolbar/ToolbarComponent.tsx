@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-
+import React from "react";
 interface ToolbarComponentProps {
   user?: UserModel;
   showNotification: boolean;
   camStatusChanged: () => void;
   micStatusChanged: () => void;
-  leaveSession: () => void;
   toggleChat: () => void;
+  setIsEmotionModalOpen: (isOpen: boolean) => void;
 }
 
 interface UserModel {
@@ -21,9 +20,12 @@ const ToolbarComponent: React.FC<ToolbarComponentProps> = ({
   showNotification,
   camStatusChanged,
   micStatusChanged,
-  leaveSession,
   toggleChat,
+  setIsEmotionModalOpen,
 }) => {
+  function handleLeaveSession() {
+    setIsEmotionModalOpen(true);
+  }
   return (
     <div className="bg-red" id="header">
       <div className="flex justify-between items-center bg-gray-600">
@@ -36,7 +38,7 @@ const ToolbarComponent: React.FC<ToolbarComponentProps> = ({
             {user && user.isVideoActive() ? <p>CAM ON</p> : <p>CAM OFF</p>}
           </button>
 
-          <button className="m-1 bg-green-500" onClick={leaveSession} id="navLeaveButton">
+          <button className="m-1 bg-green-500" onClick={handleLeaveSession} id="navLeaveButton">
             <p>LEAVE</p>
           </button>
 

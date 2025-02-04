@@ -32,47 +32,47 @@ class OpenViduLayout {
   private layoutContainer: HTMLElement | null = null;
   private opts!: LayoutOptions;
 
-  private fixAspectRatio(elem: HTMLElement, width: number): void {
-    const sub = elem.querySelector(".OT_root");
-    if (sub) {
-      // If this is the parent of a subscriber or publisher then we need
-      // to force the mutation observer on the publisher or subscriber to
-      // trigger to get it to fix it's layout
-      const oldWidth = sub.style.width;
-      sub.style.width = width + "px";
-      sub.style.width = oldWidth || "";
-    }
-  }
+  //추후 width 사용 시 위 처럼 사용
+  // private fixAspectRatio(elem: HTMLElement, width: number): void {
+  // private fixAspectRatio(elem: HTMLElement): void {
+  //   const sub = elem.querySelector(".OT_root");
+  //   console.log(sub);
+  //   // if (sub) {
+  //   //   // If this is the parent of a subscriber or publisher then we need
+  //   //   // to force the mutation observer on the publisher or subscriber to
+  //   //   // trigger to get it to fix it's layout
+  //   //   const oldWidth = sub.style.width;
+  //   //   sub.style.width = width + "px";
+  //   //   sub.style.width = oldWidth || "";
+  //   // }
+  // }
 
-  private positionElement(
-    elem: HTMLElement,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    animate: boolean | { duration?: number; easing?: string; complete?: () => void }
-  ): void {
-    const targetPosition = {
-      left: x + "px",
-      top: y + "px",
-      width: width + "px",
-      height: height + "px",
-    };
-
-    this.fixAspectRatio(elem, width);
-
-    if (animate && $) {
-      $(elem).stop();
-      $(elem).animate(targetPosition, animate.duration || 200, animate.easing || "swing", () => {
-        this.fixAspectRatio(elem, width);
-        if (animate && typeof animate !== "boolean" && animate.complete) {
-          animate.complete.call(this);
-        }
-      });
-    } else {
-      $(elem).css(targetPosition);
-    }
-    this.fixAspectRatio(elem, width);
+  private positionElement() // elem: HTMLElement,
+  // x: number,
+  // y: number,
+  // width: number,
+  // height: number
+  // animate: boolean | { duration?: number; easing?: string; complete?: () => void }
+  : void {
+    // const targetPosition = {
+    //   left: x + "px",
+    //   top: y + "px",
+    //   width: width + "px",
+    //   height: height + "px",
+    // };
+    // this.fixAspectRatio(elem, width);
+    // if (animate && $) {
+    //   $(elem).stop();
+    //   $(elem).animate(targetPosition, animate.duration || 200, animate.easing || "swing", () => {
+    //     this.fixAspectRatio(elem, width);
+    //     if (animate && typeof animate !== "boolean" && animate.complete) {
+    //       animate.complete.call(this);
+    //     }
+    //   });
+    // } else {
+    //   $(elem).css(targetPosition);
+    // }
+    // this.fixAspectRatio(elem, width);
   }
 
   private getVideoRatio(elem: HTMLElement | null): number {
@@ -177,6 +177,9 @@ class OpenViduLayout {
     maxRatio: number,
     animate: boolean | { duration?: number; easing?: string; complete?: () => void }
   ): void {
+    //미사용 변수 없애기 위한 console.log
+    console.log(children, WIDTH, HEIGHT, offsetLeft, offsetTop, fixedRatio, minRatio, maxRatio, animate);
+
     let targetHeight: number = 0;
     const count = children.length;
     let dimensions: DimensionCalculation;
@@ -296,7 +299,10 @@ class OpenViduLayout {
           this.getCSSNumber(elem, "borderTop") -
           this.getCSSNumber(elem, "borderBottom");
 
-        this.positionElement(elem, x + offsetLeft, y + offsetTop, actualWidth, actualHeight, animate);
+        // this.positionElement(elem, x + offsetLeft, y + offsetTop, actualWidth, actualHeight, animate);
+        this.positionElement();
+        //미사용 변수 없애기 위한 console.log
+        console.log(x, y, actualWidth, actualHeight);
         x += targetWidth;
       }
       y += targetHeight;
