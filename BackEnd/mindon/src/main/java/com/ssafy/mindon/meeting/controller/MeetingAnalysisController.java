@@ -17,7 +17,7 @@ import java.util.Map;
 public class MeetingAnalysisController {
 
     private final MeetingAnalysisService meetingAnalysisService;
-    private final JwtUtil jwtUtil;  // accessToken에서 userId 추출할 때 사용
+    private final JwtUtil jwtUtil; // accessToken에서 userId 추출할 때 사용
 
     @PostMapping("/{meetingId}/analysis")
     public ResponseEntity<?> analyzeMeeting(
@@ -33,24 +33,26 @@ public class MeetingAnalysisController {
                         .body(Map.of("error", "Invalid Token", "message", "유효하지 않은 accessToken입니다."));
             }
 
-            // 요청 데이터 추출
-            // emotion 값을 안전하게 변환 - byte로
+            // 요청 데이터에서 추출
+            String transcribedText = (String) requestBody.get("transcribedText");
             Number emotionNumber = (Number) requestBody.get("emotion");
-            byte emotion = (emotionNumber != null) ? emotionNumber.byteValue() : 0;
-            Integer speechAmount = (Integer) requestBody.get("speechAmount"); // 프론트에서 전달
-            String voiceFile = (String) requestBody.get("voiceFile"); // 텍스트 파일 내용
+            Integer speechAmount = (Integer) requestBody.get("speechAmount");
 
-            if (voiceFile == null || voiceFile.isBlank()) {
+            // 데이터 검증
+            if (transcribedText == null || transcribedText.isBlank()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Map.of("error", "Bad Request", "message", "voiceFile이 비어 있습니다."));
+                        .body(Map.of("error", "Bad Request", "message", "텍스트 데이터가 비어 있습니다."));
             }
 
-            // AI 분석 및 DB 저장 실행
+            // emotion 값을 안전하게 변환 - byte로
+            byte emotion = (emotionNumber != null) ? emotionNumber.byteValue() : 0;
+
+            // AI 분석 결과 및 DB 저장 실행
             UserReview userReview = meetingAnalysisService.analyzeAndSaveReview(
-                    userId, meetingId, emotion, speechAmount, voiceFile
+                    userId, meetingId, emotion, speechAmount, transcribedText
             );
 
-            // 응답 반환
+            // 응답 반환`
             Map<String, Object> response = Map.of(
                     "data", Map.of(
                             "date", java.time.LocalDate.now().toString(),

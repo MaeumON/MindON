@@ -39,6 +39,10 @@ public class JwtUtil {
 
     // JWT에서 Claims 추출
     public Claims extractClaims(String token) {
+        // "Bearer " 접두어가 있다면 제거
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
@@ -68,7 +72,7 @@ public class JwtUtil {
     //postman에서 테스트할 때 사용할 토큰 생성
     public static void main(String[] args) {
         JwtUtil jwtUtil = new JwtUtil();
-        String token = jwtUtil.generateAccessToken("testUser");
+        String token = jwtUtil.generateAccessToken("user");
         System.out.println("Generated Token: " + token);
     }
 

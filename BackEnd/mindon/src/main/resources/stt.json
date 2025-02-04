@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "mindon-project",
+  "private_key_id": "02fdfa1cef61148a23677b0bd8f85a11b9894a37",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCu629LhahuDWYm\nCjzeNTaaeN+8CdSKhIZX/gqLQxeG9mIFY+2bMe/XT5cCmqHZfZHqYcFIBFb0AqXU\np7YAI9cUPaoI4jqp5a7h3vsF60WXnVFWw6PelglZqoKVAM6YXotm+j/aNMK9+on9\na+xXmRDz2+6wmI5LEiEASDFsgEtVsV1E85Qn47AcVDmA2b5sgbUajCz/bTF0siCD\n52A+CMOCkTL24pRmgaAFfrtINh5NVbZqYebjw/OZtopFBx2Ug6jDnKnfmJEbkaL2\nDGgF74vVn3sAnMNl9DlC7GizHH2oFZ9aJsM/0nrG4abj//VFKAsASLLkr5rca3Tx\njz9tKrmlAgMBAAECggEAAVJeyNCITBEKE1dKBObx0JKPsrBjcDVoYLKBvFWpV0ug\np/2Mifrm9EiOdTvNOth/SXABOKsXugD4AdMIYkM4ZvP5qtbZ50xPyv3QBcg0kIeB\ndmWaD7sUEJCc8m/15s0SwiaPDvYNjABnbzLpPbpvmD9Ape2i9oNequn9L2W0yHhr\nFK7NaPMC3W5b9T8vWGrzkYZmRR8f242Pkrl1hMsfTUkfPNP/ET41oXBFQn65GWFs\n4uI2IfbJnJUbooVOMOYseSCjS3YNxGAZMaJ/a2/ImfeRH3m1sRt0GFtPIeQRwCfV\nPJU2ONW8B1SMHUzPv6vLLvN/Ehwyj5SNisHwopk6DQKBgQDt5DxBnbIE9f1PCVHH\n7iqStR0J2rKW5rF1pS2DXjn7G1k7YVMVrKoOBvuEkNZNUa79iJZA3bpMsVc5oxfQ\nnyihDtYNgKAGWpUA4MBmqnjyIB880wJeOOELMkBZO6w61trSTs6w1YGlPQo6DYx0\npDcebEVgd3F8P1TxiLYbp3ldSwKBgQC8PBLjPS6bAsjX8iTr19jksQnsTuoAKBBl\nzBl8XPpUKwjT04efZi86aUhwRnXo8Dy5/GVmovEANFXIaO4SNXCbR8JQgIGzQV9N\n2FexyFFNu54BrKCDFLQheDIY1yPwcz9AKhI2sRn+g/jpRPE1XZLNLUAFuJPBy1Lu\nmaafCtyezwKBgQCFOkAgw08yhg1CGUcKwDBpjzLfFPLVngceis4tdzTjk5JqtfvQ\n9K0cQ/7SZEcQcEGfTcJQO50dXGgsKFGrDae0Y1mvoCx+wnYWUsiN9sTbXPABoW7/\nE729BnyRPOEc5r0P8QDCeiAsST4T+wiBPoJ78Ej+WIZe/hz1VAog/K70dwKBgQCO\n2G/k7psdm2FbLzEBoQ3BjvBe2gwODllTRy3YCJ8XnIjYZ2A2gM86XodQXMhB+326\nDmXNG74UT6MBsU9plhBcZnp5qOvEYsm2Q4VZLxE0Ejr4Pk6Y6u8/rv0liK6HXI4V\nXVfxFTkKwo/0RhNeUiKDfeFl9gp7OJc45nVhoFaIVQKBgQCi+YsCGdN8UYGpF5Ru\nnea+iJ4gPjceKx5/TWeSXb7ujlCFjlJUDdwCqCL2d9htaiJ4IORlgxViS2iIAZ+R\nMaHk7LSnWZECpxQDPKc61MATx2EMtLCgirVNtyQUnHR9FirH+dFzFNHN35EH+SFS\nEoSjWw2fOMsblJJ00iOirIjR/Q==\n-----END PRIVATE KEY-----\n",
+  "client_email": "mindon@mindon-project.iam.gserviceaccount.com",
+  "client_id": "106181336404548650589",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/mindon%40mindon-project.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
