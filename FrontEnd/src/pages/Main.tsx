@@ -50,7 +50,7 @@ function Main() {
     <div className="relative w-full max-w-[412px] mx-auto">
       {/* 노란박스 */}
       <section className="relative flex flex-col bg-yellow100 card-title h-[245px] px-[40px] py-[40px]">
-        <section className="flex flex-col gap-[10px] justify-center flex-start items-stretch">
+        <section className="flex flex-col gap-[10px] items-stretch">
           <div className="font-jamsilMedium text-28px text-cardTitle">안녕하세요, {userName}님</div>
           <div className="font-jamsilRegular text-24px text-cardTitle">오늘도 온이와 함께</div>
           <div className="font-jamsilRegular text-24px">마음을 ON 해볼까요?</div>
@@ -130,7 +130,7 @@ function Main() {
               <div className="flex justify-start text-24px text-cardLongContent font-jamsilRegular font-medium">
                 {userName}님을 위한 맞춤 모임
               </div>
-              <div className="flex gap-[20px] mt-[20px] whitespace-nowrap overflow-x-auto scrollbar-hide">
+              <div className="flex gap-[20px] mt-[20px] whitespace-nowrap overflow-x-auto scrollbar-hide pb-[30px]">
                 {groups.length > 0 ? (
                   groups.map((group) => <FavGroupCard key={group.groupId} group={group} />)
                 ) : (

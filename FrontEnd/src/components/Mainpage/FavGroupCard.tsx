@@ -8,7 +8,7 @@ const daysOfWeek = ["일요일", "월요일", "화요일", "수요일", "목요�
 const FavGroupCard = ({ group }: { group: groupType }) => {
   const nav = useNavigate();
   function handleClick() {
-    nav(`/group/${group.groupId}`);
+    nav(`/groups/${group.groupId}`);
   }
   if (!group) return null; // group이 없는 경우 렌더링 방지
 
