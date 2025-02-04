@@ -14,7 +14,6 @@ spring:
     defer-datasource-initialization: true
 
   datasource:
-<<<<<<< HEAD
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
@@ -29,24 +28,11 @@ spring:
       max-file-size: 10MB # 최대 업로드 가능한 파일 크기
       max-request-size: 10MB # 최대 요청 크기
 
-=======
-    # url: jdbc:mysql://localhost:3306/on_board?useSSL=false&serverTimezone=UTC  # MySQL 서버 URL 및 데이터베이스 이름 / useSSL=false : SSL연결 사용 안함
-    url: jdbc:mysql://mysql:3306/on_board?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: root
-    password: root
-    driver-class-name: com.mysql.cj.jdbc.Driver  # MySQL JDBC 드라이버
-  data:
-    redis:
-      # host: localhost
-      host: redis # 백엔드 서버 설정정
-      port: 6379
->>>>>>> a1cfc208e8eb7ad8483d0125abdec3151039055a
 jwt:
   issuer: ${JWT_ISSUER}
   secret_key: ${JWT_SECRET_KEY}
 
 liquibase:
-<<<<<<< HEAD
   change-log: ${LIQUIBASE_CHANGE_LOG}
 
 session:
@@ -65,15 +51,3 @@ google:
 
 file:
   upload-dir: /tmp # 파일 업로드 디렉토리 설정
-=======
-  change-log: classpath:/db/changelog/changelog-master.yaml
-
-
-# 오픈비두 설정 아직 dev 합치기 전이라 일단 dev에서 작업 후 머지 때 합칠 예정
-#openvidu:
-#  url: http://i12b103.p.ssafy.io:5443 # OpenVidu 서버 URL
-#  secret: qlalfzldi         # OpenVidu 비밀 키(docker-compose.yml 과 동일)
-#  session:
-#    inactive-timeout: 31536000
-  # secret: ${OPENVIDU_SECRET} .env 파일 참고
->>>>>>> a1cfc208e8eb7ad8483d0125abdec3151039055a
