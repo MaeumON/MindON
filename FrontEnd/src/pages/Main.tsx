@@ -47,7 +47,7 @@ function Main() {
   }, []);
 
   return (
-    <div className="relative w-full max-w-[412px] mx-auto">
+    <div className="relative w-full max-w-[412px] mx-auto whitespace-nowrap">
       {/* 노란박스 */}
       <section className="relative flex flex-col bg-yellow100 card-title h-[245px] px-[40px] py-[40px]">
         <section className="flex flex-col gap-[10px] items-stretch">
@@ -93,7 +93,7 @@ function Main() {
                 <img
                   src={OkBear}
                   alt="온 Talk"
-                  className="sm:w-[145px] sm:h-[145px] w-[120px] h-[120px]"
+                  className="sm:w-[145px] sm:h-[155px] w-[120px] h-[130px]"
                   onClick={navToList}
                 />
                 <section
