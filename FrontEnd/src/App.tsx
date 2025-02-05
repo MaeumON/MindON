@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import HomePage from "@pages/HomePage";
-import PreJoin from "@pages/OpenVidu/PreJoin";
+import PreJoin from "@pages/openvidu/PreJoin";
 import Welcome from "@pages/Welcome";
 import Login from "@pages/auth/Login";
 import SignUp from "@pages/auth/SignUp";

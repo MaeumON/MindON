@@ -6,7 +6,7 @@ import { UserModelType } from "@/utils/openviduTypes";
 import StreamComponent from "@components/Openvidu-call/components/stream/StreamComponent";
 import ToolbarComponent from "@components/Openvidu-call/components/toolbar/ToolbarComponent";
 import UserModel from "@components/Openvidu-call/models/user-model";
-import Recording from "./Recording";
+import Recording from "@pages/openvidu/Recording";
 import EmotionModal from "@/components/Openvidu-call/components/emotionModal/EmotionModal";
 
 /*
@@ -148,9 +148,9 @@ function Room({
   }, []);
 
   return (
-    <section className="w-full h-full flex flex-col justify-center items-center bg-offWhite font-suite">
+    <section className="w-full h-[calc(100vh-80px)] px-[20px] flex flex-col justify-center items-center bg-offWhite font-suite">
       {isEmotionModalOpen && <EmotionModal setIsEmotionModalOpen={setIsEmotionModalOpen} leaveSession={leaveSession} />}
-      <div className="p-2 w-full flex flex-col justify-center bg-white rounded-[12px]">
+      <div className="p-2 w-full h-[180px] flex flex-col justify-center bg-white rounded-[12px]">
         <div className="m-2 p-4 rounded-[12px] font-bold text-24px bg-offWhite">{currentQuestion}</div>
 
         <div className="m-2 p-2 text-center">
