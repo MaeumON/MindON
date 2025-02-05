@@ -5,12 +5,13 @@ import { useNavigate } from "react-router-dom";
 interface HeaderProps {
   title: string;
   isicon: boolean;
+  className?: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ title, isicon }) => {
+const Header: React.FC<HeaderProps> = ({ title, isicon, className }) => {
   const nav = useNavigate();
   return (
-    <header className="p-4 bg-white">
+    <header className={`p-4 bg-white ${className}`}>
       {/* isicon이 true일 때만 IconBack을 표시 */}
       {isicon ? (
         <div>
