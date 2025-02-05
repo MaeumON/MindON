@@ -10,9 +10,12 @@ import FavGroupCard from "@/components/Mainpage/FavGroupCard";
 import { fetchGroups } from "@/apis/groupApi";
 import { groupType } from "@/apis/types/groups";
 import Footer from "@/components/Layout/Footer";
+import useAuthStore from "@/stores/authStore";
 
 function Main() {
-  let userName = "이하영";
+  // store 유저정보 불러오기
+  const { data } = useAuthStore();
+  const userName = data.userName || "사용자";
 
   const nav = useNavigate();
   function navToList() {
@@ -58,7 +61,7 @@ function Main() {
       </section>
 
       {/* 흰색 박스 */}
-      <ShadowCard className="absolute top-[200px] left-1/2 transform -translate-x-1/2">
+      <ShadowCard className="absolute top-[200px] left-1/2 transform -translate-x-1/2 sm:w-[330px] w-[300px] ">
         <IllCaption diseaseName={UpCommingEvent?.diseaseName ?? "미정"} />
         <div className="flex flex-col items-start gap-[5px]">
           {UpCommingEvent ? (
