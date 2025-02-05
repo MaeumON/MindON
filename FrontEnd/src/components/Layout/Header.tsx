@@ -19,7 +19,7 @@ const Header: React.FC<HeaderProps> = ({ title, isicon, className }) => {
             <div onClick={() => nav(-1)}>
               <IconBack width={30} height={31} />
             </div>
-            <div className="text-20px font-bold col-span-3 text-center">{title}</div>
+            <div className="text-20px font-suite font-bold col-span-3 text-center">{title}</div>
           </div>
         </div>
       ) : (
