@@ -90,16 +90,23 @@ function Main() {
             <section id="talkbutton" className="flex justify-around px-[20px] h-[300px] gap-[10px]">
               {/* 온 Talk 버튼 & OkBear */}
               <div className="relative cursor-pointer">
-                <img src={OkBear} alt="온 Talk" className="w-[145px] h-[145px]" onClick={navToList} />
+                <img
+                  src={OkBear}
+                  alt="온 Talk"
+                  className="sm:w-[145px] sm:h-[145px] w-[120px] h-[120px]"
+                  onClick={navToList}
+                />
                 <section
                   onClick={navToList}
                   className="flex flex-col justify-between items-center absolute top-[60%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 bg-white py-[15px] rounded-[12px] shadow-md"
                 >
-                  <div className="flex justify-center items-center gap-[10px]">
-                    <p className="text-cardLongContent font-jamsilMedium text-24px whitespace-nowrap">온 Talk</p>
-                    <IconSearch />
+                  <div className="flex justify-center items-center gap-[5px]">
+                    <p className="text-cardLongContent font-jamsilMedium sm:text-24px text-20px whitespace-nowrap">
+                      온 Talk
+                    </p>
+                    <IconSearch width={15} height={10} />
                   </div>
-                  <div className="text-cardContent font-suite font-[600] text-18px text-center min-w-[165px]">
+                  <div className="text-cardContent font-suite font-[600] sm:text-18px text-16px text-center sm:min-w-[165px] min-w-[140px]">
                     진행자 온이가 <br />
                     <span className="whitespace-nowrap">모임을 이끌어줘요</span>
                   </div>
@@ -108,16 +115,23 @@ function Main() {
 
               {/* 자유 Talk 버튼 & HeartBear */}
               <div className="relative cursor-pointer">
-                <img src={HeartBear} alt="자유 Talk" className="w-[145px] h-[145px]" onClick={navToList} />
+                <img
+                  src={HeartBear}
+                  alt="자유 Talk"
+                  className="sm:w-[145px] sm:h-[145px] w-[120px] h-[120px]"
+                  onClick={navToList}
+                />
                 <section
                   onClick={navToList}
                   className="flex flex-col justify-between items-center absolute top-[60%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 bg-white py-[15px] rounded-[12px] shadow-md"
                 >
                   <div className="flex justify-center items-center gap-[5px]">
-                    <p className="text-cardLongContent font-jamsilMedium text-24px whitespace-nowrap">자유 Talk</p>
+                    <p className="text-cardLongContent font-jamsilMedium sm:text-24px text-20px whitespace-nowrap">
+                      자유 Talk
+                    </p>
                     <IconSearch />
                   </div>
-                  <div className="text-cardContent font-suite font-[600] text-18px text-center min-w-[165px]">
+                  <div className="text-cardContent font-suite font-[600] sm:text-18px text-16px  text-center sm:min-w-[165px] min-w-[140px]">
                     진행자 온이 없이 <br />
                     <span className="whitespace-nowrap">자유롭게 대화해요</span>
                   </div>
