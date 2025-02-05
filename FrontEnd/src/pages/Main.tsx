@@ -87,7 +87,7 @@ function Main() {
       <div className="maincontents mb-[100px]">
         <div className="mt-[220px]">
           <section>
-            <section id="talkbutton" className="flex justify-around px-[20px] h-[300px]">
+            <section id="talkbutton" className="flex justify-around px-[20px] h-[300px] gap-[10px]">
               {/* 온 Talk 버튼 & OkBear */}
               <div className="relative cursor-pointer">
                 <img src={OkBear} alt="온 Talk" className="w-[145px] h-[145px]" onClick={navToList} />

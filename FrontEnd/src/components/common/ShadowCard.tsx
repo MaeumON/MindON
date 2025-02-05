@@ -9,17 +9,18 @@ interface CardProps {
 
 const Card = ({ children, className = "", style = {}, onClick }: CardProps) => {
   return (
-    <section
+    <div
       className={`flex flex-col justify-center ${className} ${onClick ? "cursor-pointer" : ""}`}
       style={style}
       onClick={onClick}
       role={onClick ? "button" : undefined} // ✅ 접근성 추가
       tabIndex={onClick ? 0 : undefined}
     >
-      <section className="bg-white rounded-[12px] shadow-md p-5 w-[330px]">
-        <div className="flex flex-col gap-[10px]">{children}</div>
-      </section>
-    </section>
+      <div className="flex flex-col gap-[10px] bg-white rounded-[12px] shadow-md p-5 sm:w-[330px] w-[300px] ">
+        {children}
+      </div>
+      {/* </section> */}
+    </div>
   );
 };
 
