@@ -13,7 +13,7 @@ import Footer from "@/components/Layout/Footer";
 import useAuthStore from "@/stores/authStore";
 
 function Main() {
-  // store 유저정보 불러오기
+  // store 유저데이터 불러오기
   const { data } = useAuthStore();
   const userName = data.userName || "사용자";
 
