@@ -16,9 +16,7 @@ const Card = ({ children, className = "", style = {}, onClick }: CardProps) => {
       role={onClick ? "button" : undefined} // ✅ 접근성 추가
       tabIndex={onClick ? 0 : undefined}
     >
-      <div className="flex flex-col gap-[10px] bg-white rounded-[12px] shadow-md p-5 sm:w-[330px] w-[300px] ">
-        {children}
-      </div>
+      <div className="flex flex-col gap-[10px] bg-white rounded-[12px] shadow-md p-5 ">{children}</div>
       {/* </section> */}
     </div>
   );
