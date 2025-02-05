@@ -51,7 +51,7 @@ function RecordingPrejoin() {
 
   // 새로 생성된 세션 아이디로 토큰 생성
   const createToken = async (sessionId: string): Promise<string> => {
-s    const response = await openviduInstance.post("sessions/" + sessionId + "/connections", {});
+    const response = await openviduInstance.post("sessions/" + sessionId + "/connections", {});
 
     return response.data;
   };
