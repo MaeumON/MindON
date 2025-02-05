@@ -1,4 +1,4 @@
-import openviduInstance from "@/apis/openviduInstance";
+import openviduInstance from "@apis/openviduInstance";
 
 // const GROUP_NAME = "소아암 아이를 키우는 부모 모임";
 const OUTPUT_MODE = "COMPOSED";

@@ -1,10 +1,10 @@
-import UserModel from "@/components/Openvidu-call/models/user-model";
-import { UserModelType, VideoRoomState } from "@/utils/openviduTypes";
+import UserModel from "@components/Openvidu-call/models/user-model";
+import { UserModelType, VideoRoomState } from "@utils/openviduTypes";
 import { OpenVidu, Publisher } from "openvidu-browser";
 import { useCallback, useEffect, useRef, useState } from "react";
-import Room from "./Room";
-import OpenViduLayout from "@/components/Openvidu-call/layout/openvidu-layout";
-import openviduInstance from "@/apis/openviduInstance";
+import OpenViduLayout from "@components/Openvidu-call/layout/openvidu-layout";
+import openviduInstance from "@apis/openviduInstance";
+import Room from "@pages/openvidu/Room";
 
 /*
 실제 화상채팅으로 진입하기 전에,
@@ -388,8 +388,8 @@ function RecordingPrejoin() {
   }, []);
 
   return (
-    <section className="h-full flex flex-col justify-center items-center">
-      <div className="w-full h-[10%] font-jamsilMedium text-28px text-center">{GROUP_NAME}</div>
+    <section className="h-full min-h-screen flex flex-col items-center">
+      <div className="w-full h-[80px] font-jamsilMedium text-28px text-center leading-[80px]">{GROUP_NAME}</div>
       {state.session && (
         <Room
           mySessionId={state.mySessionId}

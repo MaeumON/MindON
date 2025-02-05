@@ -23,9 +23,11 @@ const ToolbarComponent: React.FC<ToolbarComponentProps> = ({
   toggleChat,
   setIsEmotionModalOpen,
 }) => {
+  //감정 기록 모달 띄우기
   function handleLeaveSession() {
     setIsEmotionModalOpen(true);
   }
+
   return (
     <div className="bg-red" id="header">
       <div className="flex justify-between items-center bg-gray-600">

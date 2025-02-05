@@ -22,16 +22,16 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    "baseUrl": ".",
+    "baseUrl": "src",
     "paths": {
-      "@/*": ["src/*"],
-      "@components/*": ["src/components/*"],
-      "@pages/*": ["src/pages/*"],
-      "@assets/*": ["src/assets/*"],
-      "@apis/*": ["src/apis/*"],
-      "@stores/*": ["src/stores/*"],
-      "@hooks/*": ["src/hooks/*"],
-      "@utils/*": ["src/utils/*"]
+      "@/*": ["*"],
+      "@components/*": ["components/*"],
+      "@pages/*": ["pages/*"],
+      "@assets/*": ["assets/*"],
+      "@apis/*": ["apis/*"],
+      "@stores/*": ["stores/*"],
+      "@hooks/*": ["hooks/*"],
+      "@utils/*": ["utils/*"]
     }
   },
   "include": ["src"]
