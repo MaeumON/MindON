@@ -1,6 +1,6 @@
-package com.ssafy.mindon.openvidu.controller;
+package com.ssafy.mindon.analysis.controller;
 
-import com.ssafy.mindon.openvidu.service.SpeechToTextService;
+import com.ssafy.mindon.analysis.service.SpeechToTextService;
 import com.ssafy.mindon.common.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -13,14 +13,14 @@ import java.io.InputStream;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/stt")
+@RequestMapping("/api/meetings")
 @RequiredArgsConstructor
 public class SpeechToTextController {
 
     private final SpeechToTextService speechToTextService;
     private final JwtUtil jwtUtil; // accessToken에서 userId 추출할 때 사용
 
-    @PostMapping("/convert")
+    @PostMapping("/{meetingId}/stt")
     public ResponseEntity<?> convertSpeechToText(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken,
             @RequestParam("file") MultipartFile file) {

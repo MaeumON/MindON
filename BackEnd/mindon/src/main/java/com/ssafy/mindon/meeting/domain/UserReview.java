@@ -24,7 +24,7 @@ public class UserReview {
     private Integer meetingId;
 
     @Column(name = "meeting_week", nullable = false)
-    private Integer meetingWeek;
+    private Byte meetingWeek;
 
     @Column(name = "summation", columnDefinition = "TEXT", nullable = false)
     private String summation;
