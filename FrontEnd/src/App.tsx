@@ -23,6 +23,7 @@ function App() {
       <Route path="/findpwd" element={<FindPwd />} />
       <Route path="/main" element={<Main />} />
       <Route path="/mydata" element={<MyData />} />
+      <Route path="/mydata/:id" element={<MyDataDetail />} />
       <Route path="/groupslist" element={<GroupsList />} />
       <Route path="/groupdetail" element={<GroupDetail />} />
     </Routes>
