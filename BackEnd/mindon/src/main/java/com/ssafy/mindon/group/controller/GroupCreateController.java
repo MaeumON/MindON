@@ -16,6 +16,7 @@ public class GroupCreateController {
     public GroupCreateController(GroupCreateService groupCreateService) {
         this.groupCreateService = groupCreateService;
     }
+    
 
     @PostMapping
     public ResponseEntity<?> createGroup(
