@@ -8,8 +8,9 @@ import FindId from "@pages/auth/FindId";
 import FindPwd from "@pages/auth/FindPwd";
 import Main from "@pages/Main";
 import MyData from "@/pages/MyData";
-import GroupsList from "@pages/groups/GroupsList";
-import GroupDetail from "@pages/groups/GroupDetail";
+import MyDataDetail from "./pages/MyDataDetail";
+import GroupsList from "@pages/group/GroupsList";
+import GroupDetail from "@pages/group/GroupDetail";
 
 function App() {
   return (
