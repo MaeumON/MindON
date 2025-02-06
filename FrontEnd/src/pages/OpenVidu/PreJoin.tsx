@@ -15,7 +15,7 @@ import openviduInstance from "@/apis/openviduInstance";
 */
 
 let USER_NAME = "user1"; //추후 유저 값으로 변경
-const SESSION_ID = "Session3"; //전역에 설정되어야하는 값
+const SESSION_ID = "1"; //전역에 설정되어야하는 값
 const GROUP_NAME = "소아암 아이를 키우는 부모 모임"; //임시, 추후 참가하기 버튼에 있던 그룹 정보에서 가져오기
 
 const localUser = new UserModel();
