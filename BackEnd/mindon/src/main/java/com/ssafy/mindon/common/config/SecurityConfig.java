@@ -14,9 +14,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
-                .authorizeRequests()
-                .requestMatchers("/**").permitAll()  // 모든 URL 요청에 대해 접근을 허용, 후에 수정 필요
-                .and();
+                .cors(cors -> cors.configurationSource(new CorsConfig().corsConfigurationSource())) // CorsConfig 적용
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/**").permitAll());
+
         return http.build();
     }
 }

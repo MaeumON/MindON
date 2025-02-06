@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "groups")
+@Table(name = "`groups`")
 public class Group {
 
     @Id
