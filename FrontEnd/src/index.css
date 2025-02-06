@@ -22,7 +22,7 @@
 
 @font-face {
   font-family: Suite;
-  font-weight: 300;
+  font-weight: 300 900;
   src: url("./assets/fonts/SUITE-Variable.ttf") format("truetype");
 }
 

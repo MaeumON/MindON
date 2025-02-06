@@ -4,6 +4,7 @@ import JypBear from "@/assets/images/jypbear.png";
 import useAuthStore from "@/stores/authStore";
 import { useNavigate } from "react-router-dom";
 import Card from "@/components/common/ShadowCard";
+import IconInfo from "@/assets/icons/IconInfo";
 
 function MyData() {
   const { data } = useAuthStore();
@@ -40,10 +41,19 @@ function MyData() {
           <img src={JypBear} alt="JypBear" className="sm:w-[100px] sm:h-[100px] w-[80px] h-[80px]" />{" "}
         </div>
         <div className="flex flex-col gap-[20px] items-center bg-white p-[20px]">
-          <div className="f">{userData.name}님의 마음온도</div>
+          <div className="flex gap-1 w-full p-1">
+            <div className="text-cardLongContent font-suite font-bold text-16px">
+              {userData.name}님의 <span className="underline underline-offset-4 decoration-1">마음온도</span>
+            </div>
+            <div className="flex flex-col justify-center">
+              <IconInfo className="text-cardLongContent" />
+            </div>
+          </div>
           <div>이부분 차트 들어가고</div>
-          <div>{userData.name}님의 마음은</div>
-          <div>{warmtitle}</div>
+          <div className="flex flex-col items-center">
+            <div className="font-suite font-regular text-22px">{userData.name}님의 마음은</div>
+            <div className="font-suite font-extrabold text-22px">{warmtitle}</div>
+          </div>
         </div>
 
         <div className="flex flex-col gap-[20px] p-[20px]">
@@ -63,7 +73,7 @@ function MyData() {
           <Card onClick={() => nav("/endgroups")} className="items-center">
             <div className="px-[10px] py-[5px]">
               <div className="flex justify-between">
-                <div className="text-24px font-suite font-extrabold text-cardLongContent ">종료된 모임</div>
+                <div className="text-24px font-suite font-[700]  text-cardLongContent ">종료된 모임</div>
                 <div>👉</div>
               </div>
               <div className="text-16px font-suite font-bold text-cardContent">
