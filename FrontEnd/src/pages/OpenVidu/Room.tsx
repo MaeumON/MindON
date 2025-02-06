@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchQuestions } from "@apis/questionApi";
+import { fetchQuestions } from "@apis/openvidu/questionApi";
 import { questionType } from "@/apis/types/questions";
 import { UserModelType } from "@/utils/openviduTypes";
 import ChatComponent from "@components/Openvidu-call/components/chat/ChatComponent";
