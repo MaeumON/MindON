@@ -30,6 +30,7 @@ export default [
       ...pluginJs.configs.recommended.rules, // 기본 JS 규칙
       ...tseslint.configs.recommended.rules, // TypeScript 규칙
       ...pluginReact.configs.flat.recommended.rules, // React 규칙
+      "@typescript-eslint/no-explicit-any": "warn", // any 타입을 warning으로 변경
       "prettier/prettier": [
         "error",
         {

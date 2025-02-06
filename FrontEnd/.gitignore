@@ -35,6 +35,3 @@ dist-ssr
 
 # env
 .env
-
-#pnp
-.pnp.cjs
