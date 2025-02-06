@@ -4,7 +4,7 @@ export default {
   theme: {
     center: true,
     screens: {
-      sm: "344px", // sm(344px) 이상
+      sm: "360px", // sm(344px) 이상
       md: "412px", // md(412px) 이상
     },
     fontFamily: {
