@@ -31,7 +31,6 @@ export interface VideoRoomState {
   session?: Session;
   localUser?: UserModelType;
   subscribers: UserModelType[];
-  chatDisplay: string;
   currentVideoDevice?: Device;
   showExtensionDialog: boolean;
   messageReceived: boolean;
