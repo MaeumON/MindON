@@ -90,13 +90,13 @@ function Main() {
       <div className="maincontents mb-[100px]">
         <div className="mt-[220px]">
           <section>
-            <section id="talkbutton" className="flex justify-around px-[20px] h-[300px] gap-[10px]">
+            <section id="talkbutton" className="flex justify-around px-[20px] h-[250px] sm:h-[300px] gap-[10px]">
               {/* 온 Talk 버튼 & OkBear */}
               <div className="relative cursor-pointer">
                 <img
                   src={OkBear}
                   alt="온 Talk"
-                  className="sm:w-[145px] sm:h-[155px] w-[120px] h-[130px]"
+                  className="sm:w-[145px] sm:h-[145px] w-[120px] h-[120px]"
                   onClick={navToList}
                 />
                 <section
@@ -107,7 +107,7 @@ function Main() {
                     <p className="text-cardLongContent font-jamsilMedium sm:text-24px text-20px whitespace-nowrap">
                       온 Talk
                     </p>
-                    <IconSearch width={15} height={10} />
+                    <IconSearch />
                   </div>
                   <div className="text-cardContent font-suite font-[600] sm:text-18px text-16px text-center sm:min-w-[165px] min-w-[140px]">
                     진행자 온이가 <br />
