@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchQuestions } from "@apis/questionApi";
 import { questionType } from "@/apis/types/questions";
 import { UserModelType } from "@/utils/openviduTypes";
-// import ChatComponent from "@components/Openvidu-call/components/chat/ChatComponent";
+import ChatComponent from "@components/Openvidu-call/components/chat/ChatComponent";
 import StreamComponent from "@components/Openvidu-call/components/stream/StreamComponent";
 import ToolbarComponent from "@components/Openvidu-call/components/toolbar/ToolbarComponent";
 import UserModel from "@components/Openvidu-call/models/user-model";
@@ -19,7 +19,9 @@ import EmotionModal from "@/components/Openvidu-call/components/emotionModal/Emo
     - 질문 띄우기: question.detail
     - 답변시작하기 버튼
 
-  - 하나의 질문이 끝나면 (모든 차례까 다 돌아가고 나면), 다음 질문으로
+  - 하나의 질문이 끝나면 (모든 차례까 다 돌아가고 나면), 다음 질문으로'
+
+  전체 모임 시간이 10분 미만으로 남을 경우, 강제로 마지막 질문을 띄우기
 
 */
 
@@ -27,32 +29,20 @@ interface RoomProps {
   mySessionId: string;
   localUser: UserModel;
   subscribers: UserModelType[];
-  showNotification: boolean;
-  checkNotification: () => void;
+  showNotification?: boolean;
+  checkNotification?: () => void;
   camStatusChanged: () => void;
   micStatusChanged: () => void;
   leaveSession: () => void;
-  toggleChat: () => void;
-  stateChatDisplay: string;
 }
 
 const userId = 1;
 
-function Room({
-  mySessionId,
-  localUser,
-  subscribers,
-  showNotification,
-  // checkNotification,
-  camStatusChanged,
-  micStatusChanged,
-  leaveSession,
-  toggleChat,
-  stateChatDisplay,
-}: RoomProps) {
+function Room({ mySessionId, localUser, subscribers, camStatusChanged, micStatusChanged, leaveSession }: RoomProps) {
   const [isMeetingStart, setIsMeetingStart] = useState<number>(0); //0: 미팅 시작 전, 1: 미팅 시작 후
   const [isQuestionStart, setIsQuestionStart] = useState<number>(0); //0: 질문 시작 전, 1: 질문 시작 후
   const [isEmotionModalOpen, setIsEmotionModalOpen] = useState<boolean>(false);
+  const [isChatModalOpen, setIsChatModalOpen] = useState<boolean>(false);
 
   const [questions, setQuestions] = useState<questionType[]>([]); //질문 목록
   const [currentQuestionNumber, setCurrentQuestionNumber] = useState<number>(0); //현재 질문 번호
@@ -149,7 +139,6 @@ function Room({
 
   return (
     <section className="w-full h-[calc(100vh-80px)] px-[20px] flex flex-col justify-center items-center bg-offWhite font-suite">
-      {isEmotionModalOpen && <EmotionModal setIsEmotionModalOpen={setIsEmotionModalOpen} leaveSession={leaveSession} />}
       <div className="p-2 w-full h-[180px] flex flex-col justify-center bg-white rounded-[12px]">
         <div className="m-2 p-4 rounded-[12px] font-bold text-24px bg-offWhite">{currentQuestion}</div>
 
@@ -185,19 +174,6 @@ function Room({
             <StreamComponent user={sub} streamId={sub.getStreamManager().stream.streamId} />
           </div>
         ))}
-
-        {localUser && localUser.getStreamManager() && (
-          <div className="" style={{ display: stateChatDisplay }}>
-            {/*
-            채팅 기능 구현 시 주석 삭제 
-            <ChatComponent
-              user={localUser && localUser.getStreamManager() ? localUser : undefined}
-              chatDisplay={stateChatDisplay}
-              close={toggleChat}
-              messageReceived={checkNotification}
-            /> */}
-          </div>
-        )}
       </div>
       <div>
         <Recording sessionID={mySessionId} />
@@ -205,13 +181,20 @@ function Room({
       <div className="h-[10%] mb-[20px]">
         <ToolbarComponent
           user={localUser}
-          showNotification={showNotification}
           camStatusChanged={camStatusChanged}
           micStatusChanged={micStatusChanged}
-          toggleChat={toggleChat}
+          toggleChat={setIsChatModalOpen}
           setIsEmotionModalOpen={setIsEmotionModalOpen}
         />
       </div>
+
+      {isEmotionModalOpen && <EmotionModal setIsEmotionModalOpen={setIsEmotionModalOpen} leaveSession={leaveSession} />}
+      {isChatModalOpen && (
+        <ChatComponent
+          user={localUser && localUser.getStreamManager() ? localUser : new UserModel()}
+          close={setIsChatModalOpen}
+        />
+      )}
     </section>
   );
 }

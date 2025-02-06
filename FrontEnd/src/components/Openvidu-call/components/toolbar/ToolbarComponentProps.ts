@@ -10,6 +10,6 @@ export interface ToolbarComponentProps {
   showNotification?: boolean;
   camStatusChanged: () => void;
   micStatusChanged: () => void;
-  toggleChat: () => void;
+  toggleChat: (isOpen: boolean) => void;
   setIsEmotionModalOpen: (isOpen: boolean) => void;
 }

@@ -27,7 +27,7 @@ function GroupsList() {
           <div className="ms-3 text-cardLongContent text-base font-bold font-suite">검색 필터</div>
         </div>
       </div>
-      {/* 그룹 목록 */}
+      {/* 그룹 목록 - 그룹 없을때 대비 컴포넌트로 변환해야함*/}
       <div className="flex flex-col gap-5 pb-20">
         <GroupCard />
         <GroupCard />

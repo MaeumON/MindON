@@ -1,11 +1,11 @@
-import Happy from "@assets/images/feelingHappy.png";
-import Mad from "@assets/images/feelingMad.png";
-import Nervous from "@assets/images/feelingNervous.png";
-import Piece from "@assets/images/feelingPiece.png";
-import Proud from "@assets/images/feelingProud.png";
-import Sad from "@assets/images/feelingSad.png";
-import Tired from "@assets/images/feelingTired.png";
-import Delight from "@assets/images/feelingDelight.png";
+import Happy from "@assets/images/feeling/feelingHappy.png";
+import Mad from "@assets/images/feeling/feelingMad.png";
+import Nervous from "@assets/images/feeling/feelingNervous.png";
+import Piece from "@assets/images/feeling/feelingPiece.png";
+import Proud from "@assets/images/feeling/feelingProud.png";
+import Sad from "@assets/images/feeling/feelingSad.png";
+import Tired from "@assets/images/feeling/feelingTired.png";
+import Delight from "@assets/images/feeling/feelingDelight.png";
 
 type Emotion = {
   id: number;
