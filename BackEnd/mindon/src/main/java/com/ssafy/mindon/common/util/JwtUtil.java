@@ -72,7 +72,7 @@ public class JwtUtil {
     //postman에서 테스트할 때 사용할 토큰 생성
     public static void main(String[] args) {
         JwtUtil jwtUtil = new JwtUtil();
-        String token = jwtUtil.generateAccessToken("user");
+        String token = jwtUtil.generateAccessToken("user1");
         System.out.println("Generated Token: " + token);
     }
 

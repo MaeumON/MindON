@@ -6,13 +6,15 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import java.util.UUID;
+
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "groups")
+@Table(name = "`groups`")
 public class Group {
 
     @Id
@@ -83,14 +85,24 @@ public class Group {
     @PrePersist
     @PreUpdate
     public void setDefaultValues() {
+        if (this.inviteCode == null) {
+            this.inviteCode = generateInviteCode();
+        }
         if (this.progressWeeks == null) {
-            this.progressWeeks = 0; // 기본값 0
+            this.progressWeeks = 0;
         }
         if (this.totalMember == null) {
-            this.totalMember = 0; // 기본값 0
+            this.totalMember = 1;
         }
         if (this.groupStatus == null) {
-            this.groupStatus = 0; // 기본값 '진행예정'
+            this.groupStatus = 0;
         }
+        if (this.startDate != null && this.period != null && this.endDate == null) {
+            this.endDate = this.startDate.plusWeeks(this.period - 1);
+        }
+    }
+
+    private String generateInviteCode() {
+        return UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 }
