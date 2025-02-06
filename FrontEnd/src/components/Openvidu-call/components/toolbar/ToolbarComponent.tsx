@@ -35,8 +35,8 @@ const ToolbarComponent: React.FC<ToolbarComponentProps> = ({
         </button>
 
         <button
-          className="m-1 w-[50px] h-[50px] flex justify-center items-center bg-white shadow-md rounded-[100px]"
-          onClick={toggleChat}
+          className="m-1 w-[50px] h-[50px] flex justify-center items-center bg-white shadow-md rounded-[100px] cursor-pointer"
+          onClick={() => toggleChat(true)}
         >
           {<IconChat width={20} height={20} fillColor={"#000"} />}
         </button>

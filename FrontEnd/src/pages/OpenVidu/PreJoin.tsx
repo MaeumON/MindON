@@ -15,19 +15,18 @@ import Room from "@pages/openvidu/Room";
 */
 
 let USER_NAME = "user1"; //추후 유저 값으로 변경
-const SESSION_ID = "Session3"; //전역에 설정되어야하는 값
+const SESSION_ID = 1; //전역에 설정되어야하는 값
 const GROUP_NAME = "소아암 아이를 키우는 부모 모임"; //임시, 추후 참가하기 버튼에 있던 그룹 정보에서 가져오기
 
 const localUser = new UserModel();
 
 function RecordingPrejoin() {
   const [state, setState] = useState<VideoRoomState>({
-    mySessionId: SESSION_ID, //meetingID
+    mySessionId: String(SESSION_ID), //meetingID
     myUserName: USER_NAME,
     session: undefined,
     localUser: undefined, //publisher
     subscribers: [],
-    chatDisplay: "none",
     currentVideoDevice: undefined,
     showExtensionDialog: false,
     messageReceived: false,
@@ -37,7 +36,6 @@ function RecordingPrejoin() {
   const [token, setToken] = useState<string>("");
   const remotes = useRef<UserModelType[]>([]); //실제 참여자 목록은 state.subscribers로 관리되기 때문에 useRef로 설정
   const layout = useRef(new OpenViduLayout());
-  const hasBeenUpdated = useRef<boolean>(false);
 
   // 세션아이디 (그룹아이디)로 새로우 세션 생성
   const createSession = async (sessionId: string): Promise<string> => {
@@ -46,6 +44,8 @@ function RecordingPrejoin() {
       { customSessionId: sessionId },
       { headers: { "Content-Type": "application/json" } }
     );
+
+    console.log("createSession");
     return response.data;
   };
 
@@ -53,11 +53,12 @@ function RecordingPrejoin() {
   const createToken = async (sessionId: string): Promise<string> => {
     const response = await openviduInstance.post("sessions/" + sessionId + "/connections", {});
 
+    console.log("createToken");
     return response.data;
   };
 
   const getToken = async (): Promise<string> => {
-    const createdSessionId = await createSession(SESSION_ID);
+    const createdSessionId = await createSession(state.mySessionId);
     const generatedToken = await createToken(createdSessionId);
 
     setToken(generatedToken);
@@ -276,55 +277,18 @@ function RecordingPrejoin() {
     }
   }, []);
 
-  const toggleChat = useCallback(
-    (property?: string) => {
-      let display = property;
-
-      if (display === undefined) {
-        display = state.chatDisplay === "none" ? "block" : "none";
-      }
-
-      if (display === "block") {
-        setState((prev) => ({
-          ...prev,
-          chatDisplay: display,
-          messageReceived: false,
-        }));
-      } else {
-        setState((prev) => ({
-          ...prev,
-          chatDisplay: display,
-        }));
-      }
-
-      updateLayout();
-    },
-    [state.chatDisplay]
-  );
-
-  const checkNotification = useCallback(() => {
-    setState((prev) => ({
-      ...prev,
-      messageReceived: prev.chatDisplay === "none",
-    }));
-  }, []);
+  // const checkNotification = useCallback(() => {
+  //   setState((prev) => ({
+  //     ...prev,
+  //     messageReceived: prev.chatDisplay === "none",
+  //   }));
+  // }, []);
 
   const updateLayout = useCallback(() => {
     setTimeout(() => {
       layout.current.updateLayout();
     }, 20);
   }, []);
-
-  const checkSize = useCallback(() => {
-    const layoutElement = document.getElementById("layout");
-    if (layoutElement && layoutElement.offsetWidth <= 700 && !hasBeenUpdated.current) {
-      toggleChat("none");
-      hasBeenUpdated.current = true;
-    }
-    if (layoutElement && layoutElement.offsetWidth > 700 && hasBeenUpdated.current) {
-      hasBeenUpdated.current = false;
-    }
-  }, [toggleChat]);
 
   const leaveSession = () => {
     if (state.session) state.session.disconnect();
@@ -333,7 +297,7 @@ function RecordingPrejoin() {
     setState({
       ...state,
       session: undefined,
-      mySessionId: SESSION_ID,
+      mySessionId: state.mySessionId,
       myUserName: USER_NAME,
       subscribers: [],
       localUser: undefined,
@@ -377,12 +341,10 @@ function RecordingPrejoin() {
     }
 
     window.addEventListener("resize", updateLayout);
-    window.addEventListener("resize", checkSize);
 
     return () => {
       //언마운트될 때, 세션 종료
       window.removeEventListener("resize", updateLayout);
-      window.removeEventListener("resize", checkSize);
       leaveSession();
     };
   }, []);
@@ -395,13 +357,9 @@ function RecordingPrejoin() {
           mySessionId={state.mySessionId}
           localUser={localUser}
           subscribers={state.subscribers}
-          showNotification={state.messageReceived}
-          checkNotification={checkNotification}
           camStatusChanged={camStatusChanged}
           micStatusChanged={micStatusChanged}
           leaveSession={leaveSession}
-          toggleChat={toggleChat}
-          stateChatDisplay={state.chatDisplay}
         />
       )}
       {!state.session && (
