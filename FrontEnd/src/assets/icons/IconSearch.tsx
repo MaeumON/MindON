@@ -1,10 +1,4 @@
-interface IconProps {
-  width?: number;
-  height?: number;
-  fillColor?: string;
-  strokeColor?: string;
-  className?: string;
-}
+import { IconProps } from "@utils/iconProps";
 
 const IconSearch = ({
   width = 21,

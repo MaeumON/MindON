@@ -1,9 +1,4 @@
-interface IconProps {
-  width?: number;
-  height?: number;
-  fillColor?: string;
-  className?: string;
-}
+import { IconProps } from "@utils/iconProps";
 
 const IconProfile = ({ width = 24, height = 24, fillColor = "cardContent", className = "" }: IconProps) => {
   return (
