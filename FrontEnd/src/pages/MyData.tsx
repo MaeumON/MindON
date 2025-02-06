@@ -32,7 +32,7 @@ function MyData() {
 
   return (
     <div>
-      <Header title={"마음 리포트"} isicon={true} />
+      <Header title={"마음 리포트"} isicon={false} />
       <div className="maincontent p-[10px]">
         <div className="HeadMsg flex justify-center gap-2">
           <div className="Msg flex flex-col justify-center whitespace-nowrap">
