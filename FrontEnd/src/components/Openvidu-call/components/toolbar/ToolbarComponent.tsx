@@ -1,4 +1,5 @@
 import React from "react";
+
 interface ToolbarComponentProps {
   user?: UserModel;
   showNotification: boolean;

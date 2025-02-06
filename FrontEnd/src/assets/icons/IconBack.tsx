@@ -1,9 +1,4 @@
-interface IconProps {
-  width?: number;
-  height?: number;
-  fillColor?: string;
-  className?: string;
-}
+import { IconProps } from "@utils/iconProps";
 
 const IconBack = ({ width = 30, height = 31, fillColor = "none", className = "" }: IconProps) => {
   return (
