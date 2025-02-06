@@ -202,7 +202,7 @@ function Room({
       <div>
         <Recording sessionID={mySessionId} />
       </div>
-      <div className="h-[10%]">
+      <div className="h-[10%] mb-[20px]">
         <ToolbarComponent
           user={localUser}
           showNotification={showNotification}
