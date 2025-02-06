@@ -8,7 +8,8 @@ import FindId from "@pages/auth/FindId";
 import FindPwd from "@pages/auth/FindPwd";
 import Main from "@pages/Main";
 import MyData from "@/pages/MyData";
-import GroupsList from "@pages/Groups/GroupsList";
+import GroupsList from "@pages/groups/GroupsList";
+import GroupDetail from "@pages/groups/GroupDetail";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       <Route path="/main" element={<Main />} />
       <Route path="/mydata" element={<MyData />} />
       <Route path="/groupslist" element={<GroupsList />} />
+      <Route path="/groupdetail" element={<GroupDetail />} />
     </Routes>
   );
 }
