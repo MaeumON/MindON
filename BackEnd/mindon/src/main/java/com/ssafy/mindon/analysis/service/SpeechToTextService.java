@@ -1,4 +1,4 @@
-package com.ssafy.mindon.openvidu.service;
+package com.ssafy.mindon.analysis.service;
 
 import com.google.cloud.speech.v1.*;
 import com.google.protobuf.ByteString;
