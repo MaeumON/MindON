@@ -11,7 +11,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ title, isicon, className }) => {
   const nav = useNavigate();
   return (
-    <header className={`p-4 bg-white ${className}`}>
+    <header className={`p-4 ${className}`}>
       {/* isicon이 true일 때만 IconBack을 표시 */}
       {isicon ? (
         <div>
