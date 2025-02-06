@@ -9,6 +9,7 @@ import FindPwd from "@pages/auth/FindPwd";
 import Main from "@pages/Main";
 import MyData from "@/pages/MyData";
 import GroupsList from "@pages/Groups/GroupsList";
+import MyDataDetail from "./pages/MyDataDetail";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
       <Route path="/findpwd" element={<FindPwd />} />
       <Route path="/main" element={<Main />} />
       <Route path="/mydata" element={<MyData />} />
+      <Route path="/mydata/:id" element={<MyDataDetail />} />
       <Route path="/groupslist" element={<GroupsList />} />
     </Routes>
   );
