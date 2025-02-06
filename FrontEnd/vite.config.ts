@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import path from "path";  // path 모듈 import
+import path from "path"; // path 모듈 import
 
 // https://vite.dev/config/
 export default defineConfig({

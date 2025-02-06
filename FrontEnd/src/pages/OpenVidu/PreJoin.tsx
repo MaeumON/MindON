@@ -42,7 +42,7 @@ function RecordingPrejoin() {
   // 세션아이디 (그룹아이디)로 새로우 세션 생성
   const createSession = async (sessionId: string): Promise<string> => {
     const response = await openviduInstance.post(
-      "api/sessions",
+      "sessions",
       { customSessionId: sessionId },
       { headers: { "Content-Type": "application/json" } }
     );
@@ -51,15 +51,7 @@ function RecordingPrejoin() {
 
   // 새로 생성된 세션 아이디로 토큰 생성
   const createToken = async (sessionId: string): Promise<string> => {
-    // const response = await axios.post(
-    //   "https://localhost:5000/recording-java/api/get-token",
-    //   { sessionName: sessionId },
-    //   {
-    //     headers: { "Content-Type": "application/json" },
-    //   }
-    // );
-
-    const response = await openviduInstance.post("api/sessions/" + sessionId + "/connections", {});
+    const response = await openviduInstance.post("sessions/" + sessionId + "/connections", {});
 
     return response.data;
   };
