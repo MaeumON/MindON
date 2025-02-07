@@ -3,8 +3,8 @@ import { UserModelType, VideoRoomState } from "@utils/openviduTypes";
 import { OpenVidu, Publisher } from "openvidu-browser";
 import { useCallback, useEffect, useRef, useState } from "react";
 import OpenViduLayout from "@components/Openvidu-call/layout/openvidu-layout";
-import openviduInstance from "@apis/openviduInstance";
 import Room from "@pages/openvidu/Room";
+import { getToken } from "@apis/openvidu/openviduApi";
 
 /*
 실제 화상채팅으로 진입하기 전에,
@@ -15,7 +15,7 @@ import Room from "@pages/openvidu/Room";
 */
 
 let USER_NAME = "user1"; //추후 유저 값으로 변경
-const SESSION_ID = 1; //전역에 설정되어야하는 값
+const SESSION_ID = 4; //전역에 설정되어야하는 값
 const GROUP_NAME = "소아암 아이를 키우는 부모 모임"; //임시, 추후 참가하기 버튼에 있던 그룹 정보에서 가져오기
 
 const localUser = new UserModel();
@@ -36,34 +36,6 @@ function RecordingPrejoin() {
   const [token, setToken] = useState<string>("");
   const remotes = useRef<UserModelType[]>([]); //실제 참여자 목록은 state.subscribers로 관리되기 때문에 useRef로 설정
   const layout = useRef(new OpenViduLayout());
-
-  // 세션아이디 (그룹아이디)로 새로우 세션 생성
-  const createSession = async (sessionId: string): Promise<string> => {
-    const response = await openviduInstance.post(
-      "sessions",
-      { customSessionId: sessionId },
-      { headers: { "Content-Type": "application/json" } }
-    );
-
-    console.log("createSession");
-    return response.data;
-  };
-
-  // 새로 생성된 세션 아이디로 토큰 생성
-  const createToken = async (sessionId: string): Promise<string> => {
-    const response = await openviduInstance.post("sessions/" + sessionId + "/connections", {});
-
-    console.log("createToken");
-    return response.data;
-  };
-
-  const getToken = async (): Promise<string> => {
-    const createdSessionId = await createSession(state.mySessionId);
-    const generatedToken = await createToken(createdSessionId);
-
-    setToken(generatedToken);
-    return generatedToken;
-  };
 
   //세션 생성 함수
   const joinSession = () => {
@@ -319,7 +291,7 @@ function RecordingPrejoin() {
 
   useEffect(() => {
     //마운트될 때, 바로 토큰 생성
-    getToken().then((token) => setToken(token));
+    getToken(state.mySessionId).then((token) => setToken(token));
 
     //레이아웃 초기화
     const openViduLayoutOptions = {
