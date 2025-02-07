@@ -19,25 +19,21 @@ function GroupsList() {
   const [hasMore, setHasMore] = useState(true);
   const { ref, inView } = useInView();
 
-  const { accessToken } = useAuthStore();
-  console.log(accessToken);
+  const authStore = useAuthStore();
 
   const fetchGroups = useCallback(async () => {
     if (!hasMore) return;
 
     const requestData = {
-        keyword, // 검색어
-        diseaseId,
-        isHost,
-        startDate,
-        period,
-        startTime,
-        endTime,
-        dayOfWeek,
-      },
-      {
-        headers: { accessToken },
-      };
+      keyword,
+      diseaseId,
+      isHost,
+      startDate,
+      period,
+      startTime,
+      endTime,
+      dayOfWeek,
+    };
 
     try {
       const result = await groupListApi(requestData);

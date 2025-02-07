@@ -1,25 +1,19 @@
 // groupList axios
 
-// import axios from "axios";
 import instance from "../instance";
 
 interface requestData {
-    headers { 
-        accessToken:String
-       }
-      requestbody{
-        keyword : String
-        diseaseId : [1,2,3]
-        isHost : Boolean
-        startDate : Date
-        period : Integer
-        startTime : Date
-        endTime : Date
-        dayOfWeek : [1,2,3]
-      }
+  keyword: string;
+  diseaseId: [1, 2, 3];
+  isHost: boolean;
+  startDate: Date;
+  period: number;
+  startTime: Date;
+  endTime: Date;
+  dayOfWeek: [1, 2, 3];
 }
 
-interface Data {
+interface responseData {
   data: [
     {
       groupId: number;
@@ -42,9 +36,9 @@ interface Data {
   ];
 }
 
-const groupListApi = async (userId: string, password: string): Promise<Data> => {
+const groupListApi = async (requsetdata: requestData): Promise<responseData> => {
   try {
-    const result = await instance.post<Data>("/api/groups/list", { userId, password });
+    const result = await instance.post<responseData>("/api/groups/list", requsetdata);
     console.log("apis/auth:", result.data);
     return {
       accessToken: result.data.accessToken,
