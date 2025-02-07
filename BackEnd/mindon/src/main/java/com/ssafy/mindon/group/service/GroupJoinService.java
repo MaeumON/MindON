@@ -11,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 public class GroupJoinService {
 
@@ -29,38 +27,42 @@ public class GroupJoinService {
     }
 
     @Transactional
-    public ResponseEntity<?> joinGroup(String accessToken, Integer groupId) {
+    public ResponseEntity<String> joinGroup(String accessToken, Integer groupId) {
         String userId = jwtUtil.extractUserId(accessToken);
 
-        // 사용자 조회
-        Optional<User> userOpt = userRepository.findById(userId);
-        if (userOpt.isEmpty()) {
-            return ResponseEntity.status(404).body("User not found");
-        }
-        User user = userOpt.get();
+        // 사용자와 그룹 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("{\"message\": \"User not found\"}"));
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new IllegalArgumentException("{\"message\": \"Group not found\"}"));
 
-        // 그룹 조회
-        Optional<Group> groupOpt = groupRepository.findById(groupId);
-        if (groupOpt.isEmpty()) {
-            return ResponseEntity.status(404).body("Group not found");
-        }
-        Group group = groupOpt.get();
-
-        // 해당 시간에 다른 모임이 있는지 확인
-        boolean hasSameTimeGroup = userGroupRepository.existsByUser_UserIdAndGroup_MeetingTimeAndGroup_DayOfWeek(
-                userId, group.getMeetingTime(), group.getDayOfWeek()
-        );
-
-        if (hasSameTimeGroup) {
+        // 조건 검사
+        if (isGroupAtSameTime(userId, group)) {
             return ResponseEntity.badRequest().body("{\"message\": \"GroupJoinSameTime\"}");
         }
 
-        // 그룹 정원이 초과되었는지 확인
-        if (group.getTotalMember() >= group.getMaxMember()) {
+        if (isGroupFull(group)) {
             return ResponseEntity.badRequest().body("{\"message\": \"GroupFull\"}");
         }
 
         // 그룹 가입 로직
+        addUserToGroup(user, group);
+
+        return ResponseEntity.ok("{\"message\": \"success\"}");
+    }
+
+    private boolean isGroupAtSameTime(String userId, Group group) {
+        return userGroupRepository.existsByUser_UserIdAndGroup_MeetingTimeAndGroup_DayOfWeek(
+                userId, group.getMeetingTime(), group.getDayOfWeek()
+        );
+    }
+
+    private boolean isGroupFull(Group group) {
+        return group.getTotalMember() >= group.getMaxMember();
+    }
+
+    private void addUserToGroup(User user, Group group) {
+        // 그룹 총원 증가
         group.setTotalMember((byte) (group.getTotalMember() + 1));
         groupRepository.save(group);
 
@@ -72,7 +74,5 @@ public class GroupJoinService {
         userGroup.setBanned(false);
         userGroup.setBannedDate(null);
         userGroupRepository.save(userGroup);
-
-        return ResponseEntity.ok("{\"message\": \"success\"}");
     }
 }

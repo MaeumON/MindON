@@ -16,7 +16,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/meetings")
 @RequiredArgsConstructor
-public class MeetingAnalysisController {
+public class MeetingController {
 
     private final MeetingAnalysisService meetingAnalysisService;
     private final JwtUtil jwtUtil;
