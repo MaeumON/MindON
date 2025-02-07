@@ -32,10 +32,19 @@ interface RoomProps {
   checkNotification?: () => void;
   camStatusChanged: () => void;
   micStatusChanged: () => void;
-  leaveSession: () => void;
+  handleCloseSession: () => void;
+  handleRemoveUser: () => void;
 }
 
-function Room({ mySessionId, localUser, subscribers, camStatusChanged, micStatusChanged, leaveSession }: RoomProps) {
+function Room({
+  mySessionId,
+  localUser,
+  subscribers,
+  camStatusChanged,
+  micStatusChanged,
+  handleCloseSession,
+  handleRemoveUser,
+}: RoomProps) {
   const [isEmotionModalOpen, setIsEmotionModalOpen] = useState<boolean>(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState<boolean>(false);
 
@@ -71,7 +80,13 @@ function Room({ mySessionId, localUser, subscribers, camStatusChanged, micStatus
         />
       </div>
 
-      {isEmotionModalOpen && <EmotionModal setIsEmotionModalOpen={setIsEmotionModalOpen} leaveSession={leaveSession} />}
+      {isEmotionModalOpen && (
+        <EmotionModal
+          setIsEmotionModalOpen={setIsEmotionModalOpen}
+          handleCloseSession={handleCloseSession}
+          handleRemoveUser={handleRemoveUser}
+        />
+      )}
       {isChatModalOpen && (
         <ChatComponent
           user={localUser && localUser.getStreamManager() ? localUser : new UserModel()}
