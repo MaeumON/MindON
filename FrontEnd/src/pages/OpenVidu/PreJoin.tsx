@@ -5,6 +5,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import OpenViduLayout from "@components/Openvidu-call/layout/openvidu-layout";
 import Room from "@pages/openvidu/Room";
 import { getToken } from "@apis/openvidu/openviduApi";
+import useAuthStore from "@/stores/authStore";
+import Button from "@/components/common/Button";
+import IconCheck from "@/assets/icons/IconCheck";
 
 /*
 실제 화상채팅으로 진입하기 전에,
@@ -14,16 +17,17 @@ import { getToken } from "@apis/openvidu/openviduApi";
 - 참여하기 버튼으로 화상 화면으로 이동
 */
 
-let USER_NAME = "user1"; //추후 유저 값으로 변경
 const SESSION_ID = 4; //전역에 설정되어야하는 값
 const GROUP_NAME = "소아암 아이를 키우는 부모 모임"; //임시, 추후 참가하기 버튼에 있던 그룹 정보에서 가져오기
 
 const localUser = new UserModel();
 
 function RecordingPrejoin() {
+  const { data } = useAuthStore();
+
   const [state, setState] = useState<VideoRoomState>({
     mySessionId: String(SESSION_ID), //meetingID
-    myUserName: USER_NAME,
+    myUserName: data.userName,
     session: undefined,
     localUser: undefined, //publisher
     subscribers: [],
@@ -122,6 +126,7 @@ function RecordingPrejoin() {
         isScreenShareActive: state.localUser.isScreenShareActive(),
       });
     }
+
     updateLayout();
   }, [state.localUser]);
 
@@ -177,6 +182,17 @@ function RecordingPrejoin() {
     });
   }, [state.session, deleteSubscriber]);
 
+  const sendSignalUserChanged = useCallback(
+    (data: any) => {
+      const signalOptions = {
+        data: JSON.stringify(data),
+        type: "userChanged",
+      };
+      state.session?.signal(signalOptions);
+    },
+    [state.session]
+  );
+
   const subscribeToUserChanged = useCallback(() => {
     // OpenVidu 세션에서 'signal:userChanged' 이벤트를 구독
     // 다른 참가자가 자신의 상태를 변경할 때마다 이 이벤트가 발생
@@ -215,19 +231,10 @@ function RecordingPrejoin() {
         ...prev,
         subscribers: remoteUsers,
       }));
+
+      console.log("userChanged", remoteUsers);
     });
   }, [state.session, state.subscribers]);
-
-  const sendSignalUserChanged = useCallback(
-    (data: any) => {
-      const signalOptions = {
-        data: JSON.stringify(data),
-        type: "userChanged",
-      };
-      state.session?.signal(signalOptions);
-    },
-    [state.session]
-  );
 
   const camStatusChanged = useCallback(() => {
     localUser.setVideoActive(!localUser.isVideoActive());
@@ -270,7 +277,7 @@ function RecordingPrejoin() {
       ...state,
       session: undefined,
       mySessionId: state.mySessionId,
-      myUserName: USER_NAME,
+      myUserName: data.userName,
       subscribers: [],
       localUser: undefined,
     });
@@ -322,7 +329,7 @@ function RecordingPrejoin() {
   }, []);
 
   return (
-    <section className="h-full min-h-screen flex flex-col items-center">
+    <section className="w-full h-full min-h-screen flex flex-col items-center">
       <div className="w-full h-[80px] font-jamsilMedium text-28px text-center leading-[80px]">{GROUP_NAME}</div>
       {state.session && (
         <Room
@@ -335,16 +342,32 @@ function RecordingPrejoin() {
         />
       )}
       {!state.session && (
-        <div className="h-[70%] flex flex-col justify-around items-center">
-          <div className="">
-            <input
-              type="text"
-              value={state.myUserName}
-              onChange={(e) => setState({ ...state, myUserName: e.target.value })}
-            />
-            <button onClick={joinSession} className="p-2 bg-green100 color-white">
-              참여하기
-            </button>
+        <div className="w-[95%] h-[70%] mt-[20px] flex flex-col justify-around items-center font-suite">
+          <div className="w-full flex flex-col items-center justify-center  rounded-[12px] shadow-md bg-white">
+            <div className="w-[90%] h-[100px] mt-[43px] p-[17px] font-bold text-24px text-cardLongContent text-center rounded-[12px] shadow-[0px_0px_4px_0px_rgba(0,0,0,0.25)] leading-[70px] bg-offWhite">
+              모임 중 지켜야 할 규칙
+            </div>
+            <div className="w-[90%] h-[171px] my-[30px] flex flex-col justify-center gap-[10px] font-medium text-18px">
+              <div className="h-[30px] px-[10px] flex items-center gap-[15px]">
+                <IconCheck width={26} height={26} fillColor="#6BB07C" />
+                <p>발언 기회를 존중해 주세요</p>
+              </div>
+              <div className="h-[30px] px-[10px] flex items-center gap-[15px]">
+                <IconCheck width={26} height={26} fillColor="#6BB07C" />
+                <p>적극적으로 경청해 주세요요</p>
+              </div>
+              <div className="h-[30px] px-[10px] flex items-center gap-[15px]">
+                <IconCheck width={26} height={26} fillColor="#6BB07C" />
+                <p>정중하고 예의 바르게 대화해 주세요요</p>
+              </div>
+              <div className="h-[30px] px-[10px] flex items-center gap-[15px]">
+                <IconCheck width={26} height={26} fillColor="#6BB07C" />
+                <p>부정적인 표현이나 비난은 삼가해 주세요</p>
+              </div>
+            </div>
+          </div>
+          <div className="w-full mt-[50px]">
+            <Button text="참여하기" type="GREEN" onClick={joinSession} />
           </div>
         </div>
       )}

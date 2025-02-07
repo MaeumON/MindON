@@ -22,9 +22,6 @@ function EmotionModal({ setIsEmotionModalOpen, leaveSession }: EmotionModalProps
   return (
     <section className="absolute inset-0 flex items-center justify-center bg-black/50">
       <div className="w-[85%] h-[400px] flex flex-col items-center justify-center bg-offWhite rounded-[12px]">
-        <div onClick={handleCloseModal} className="absolute inset-0  mt-[10px] mr-[10px] flex items-start justify-end">
-          <IconExit width={25} height={25} fillColor="" />
-        </div>
         <div className="w-[90%] flex flex-col items-center justify-center font-jamsilRegular text-24px">
           <p>모임은 어떠셨나요?</p>
           <p>지금 기분을 말해주세요</p>
@@ -51,11 +48,19 @@ function EmotionModal({ setIsEmotionModalOpen, leaveSession }: EmotionModalProps
         <div className="w-[85%] mt-[25px] flex justify-center gap-[10px]">
           <button
             onClick={handleCloseMeeting}
-            className="w-[130px] p-2 rounded-[12px] text-white font-bold bg-cardContent"
+            className="w-[130px] p-2 rounded-[12px] text-white font-bold bg-cardContent cursor-pointer z-100"
           >
             모임 종료
           </button>
-          <button className="w-[130px] p-2 rounded-[12px] text-white font-bold bg-green100">저장하기</button>
+          <button className="w-[130px] p-2 rounded-[12px] text-white font-bold bg-green100 cursor-pointer">
+            저장하기
+          </button>
+        </div>
+        <div onClick={handleCloseModal}>닫기</div>
+        <div className="absolute inset-0  mt-[10px] mr-[10px] flex items-start justify-end -z-10">
+          <div onClick={handleCloseModal}>
+            <IconExit width={25} height={25} fillColor="" />
+          </div>
         </div>
       </div>
     </section>

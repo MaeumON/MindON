@@ -1,6 +1,18 @@
 import openviduInstance from "@apis/openviduInstance";
 
 // 세션아이디 (그룹아이디)로 새로우 세션 생성
+// const createSession = async (sessionId: string): Promise<{ createdSessionId: string; isHost: boolean }> => {
+//   const response = await openviduInstance.post(
+//     "sessions",
+//     { customSessionId: sessionId },
+//     { headers: { "Content-Type": "application/json" } }
+//   );
+
+//   console.log("createSession", response.data);
+
+//   return response.data;
+// };
+
 const createSession = async (sessionId: string): Promise<string> => {
   const response = await openviduInstance.post(
     "sessions",

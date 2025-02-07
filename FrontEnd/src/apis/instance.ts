@@ -11,6 +11,4 @@ const instance = axios.create({
   },
 });
 
-//이후 인터셉터 설정
-
 export default instance;
