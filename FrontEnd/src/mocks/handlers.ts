@@ -48,6 +48,10 @@ const handlers = [
   //     },
   //   });
   // }),
+
+  // http.post(VITE_APP_API_URL + "/api/video/sessions", () => {
+  //   return HttpResponse.json(OPENVIDU_SESSION);
+  // }),
 ];
 
 export default handlers;
