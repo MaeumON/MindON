@@ -30,9 +30,6 @@ public class VideoController {
         try {
             String sessionId = videoService.initializeSession(params);
             boolean isHost = videoService.isHostGroup(sessionId);
-            Map<String, Object> response = new HashMap<>();
-            response.put("customSessionId", sessionId);
-            response.put("isHost", isHost);
 
             return new ResponseEntity<>(new SessionResponse(sessionId, isHost), HttpStatus.OK);
         } catch (Exception e) {
@@ -64,7 +61,14 @@ public class VideoController {
     @PostMapping("/recording/stop")
     public ResponseEntity<?> stopRecording(@RequestBody Map<String, Object> params) {
         try {
-            Recording recording = videoService.stopRecording((String) params.get("recording"));
+            String sessionId = (String) params.get("recording");
+            String userId = (String) params.get("userId");
+            int questionId = Integer.parseInt((String) params.get("questionId"));
+            Recording recording = videoService.stopRecording(sessionId);
+            String url = recording.getUrl();
+            videoService.saveRecording(url, sessionId, userId, questionId);
+            videoService.deleteRecording(sessionId);
+            // 여기에 stt 추가 (저장명은 C:\recordings\sessionId_userId_questionId.webm
             return new ResponseEntity<>(recording, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
