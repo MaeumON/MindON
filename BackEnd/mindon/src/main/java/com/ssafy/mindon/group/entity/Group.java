@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import java.util.UUID;
 
 
 import java.time.LocalDateTime;
@@ -85,14 +84,11 @@ public class Group {
     @PrePersist
     @PreUpdate
     public void setDefaultValues() {
-        if (this.inviteCode == null) {
-            this.inviteCode = generateInviteCode();
-        }
         if (this.progressWeeks == null) {
             this.progressWeeks = 0;
         }
         if (this.totalMember == null) {
-            this.totalMember = 1;
+            this.totalMember = 0; // 인원 추가 로직은 user_group 생성될 때 +1
         }
         if (this.groupStatus == null) {
             this.groupStatus = 0;
@@ -102,7 +98,4 @@ public class Group {
         }
     }
 
-    private String generateInviteCode() {
-        return UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-    }
 }
