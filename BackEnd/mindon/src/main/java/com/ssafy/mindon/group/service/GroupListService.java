@@ -18,17 +18,6 @@ public class GroupListService {
     public List<GroupListResponse> findGroupsByCriteria(String keyword, List<Byte> diseaseId, Boolean isHost,
                                                         LocalDateTime startDate, Byte period, Byte startTime,
                                                         Byte endTime, List<Byte> dayOfWeek) {
-        // 입력값을 로그로 출력
-        System.out.println("========== Service Input Parameters ==========");
-        System.out.println("Keyword: " + keyword);
-        System.out.println("DiseaseId: " + diseaseId);
-        System.out.println("IsHost: " + isHost);
-        System.out.println("StartDate: " + startDate);
-        System.out.println("Period: " + period);
-        System.out.println("StartTime: " + startTime);
-        System.out.println("EndTime: " + endTime);
-        System.out.println("DayOfWeek: " + dayOfWeek);
-        System.out.println("==============================================");
 
         // Repository에서 결과 조회
         List<Group> groups = groupRepository.findGroupsByCriteria(keyword, diseaseId, isHost, startDate, period, startTime, endTime, dayOfWeek);
