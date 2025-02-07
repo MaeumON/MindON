@@ -1,12 +1,13 @@
-import IconExit from "@/assets/icons/IconExit";
+import IconExit from "@assets/icons/IconExit";
 import { emotionList } from "@utils/emotionList";
 
 interface EmotionModalProps {
   setIsEmotionModalOpen: (isOpen: boolean) => void;
-  leaveSession: () => void;
+  handleCloseSession: () => void;
+  handleRemoveUser: () => void;
 }
 
-function EmotionModal({ setIsEmotionModalOpen, leaveSession }: EmotionModalProps) {
+function EmotionModal({ setIsEmotionModalOpen, handleCloseSession, handleRemoveUser }: EmotionModalProps) {
   function handleCloseModal() {
     setIsEmotionModalOpen(false);
   }
@@ -15,13 +16,18 @@ function EmotionModal({ setIsEmotionModalOpen, leaveSession }: EmotionModalProps
     console.log(id);
   }
 
+  function handleRemoveUserBtn() {
+    setIsEmotionModalOpen(false);
+    handleRemoveUser();
+  }
+
   function handleCloseMeeting() {
     setIsEmotionModalOpen(false);
-    leaveSession();
+    handleCloseSession();
   }
   return (
     <section className="absolute inset-0 flex items-center justify-center bg-black/50">
-      <div className="w-[85%] h-[400px] flex flex-col items-center justify-center bg-offWhite rounded-[12px]">
+      <div className="w-[85%] h-[450px] flex flex-col items-center justify-center bg-offWhite rounded-[12px]">
         <div className="w-[90%] flex flex-col items-center justify-center font-jamsilRegular text-24px">
           <p>모임은 어떠셨나요?</p>
           <p>지금 기분을 말해주세요</p>
@@ -56,7 +62,19 @@ function EmotionModal({ setIsEmotionModalOpen, leaveSession }: EmotionModalProps
             저장하기
           </button>
         </div>
-        <div onClick={handleCloseModal}>닫기</div>
+
+        <div className="flex ">
+          <div className="bg-white p-2 cursor-pointer" onClick={handleCloseModal}>
+            모달만 닫기
+          </div>
+          <div className="bg-white p-2 cursor-pointer" onClick={handleRemoveUserBtn}>
+            한 명만 나가기
+          </div>
+          <div className="bg-white p-2 cursor-pointer" onClick={handleCloseMeeting}>
+            세션 종료
+          </div>
+        </div>
+
         <div className="absolute inset-0  mt-[10px] mr-[10px] flex items-start justify-end -z-10">
           <div onClick={handleCloseModal}>
             <IconExit width={25} height={25} fillColor="" />

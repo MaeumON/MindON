@@ -4,10 +4,10 @@ import { OpenVidu, Publisher } from "openvidu-browser";
 import { useCallback, useEffect, useRef, useState } from "react";
 import OpenViduLayout from "@components/Openvidu-call/layout/openvidu-layout";
 import Room from "@pages/openvidu/Room";
-import { getToken } from "@apis/openvidu/openviduApi";
-import useAuthStore from "@/stores/authStore";
-import Button from "@/components/common/Button";
-import IconCheck from "@/assets/icons/IconCheck";
+import { closeSession, getToken, removeUser } from "@apis/openvidu/openviduApi";
+import useAuthStore from "@stores/authStore";
+import Button from "@components/common/Button";
+import IconCheck from "@assets/icons/IconCheck";
 
 /*
 실제 화상채팅으로 진입하기 전에,
@@ -26,13 +26,12 @@ function RecordingPrejoin() {
   const { data } = useAuthStore();
 
   const [state, setState] = useState<VideoRoomState>({
-    mySessionId: String(SESSION_ID), //meetingID
-    myUserName: data.userName,
+    sessionId: String(SESSION_ID), //meetingID
+    userName: data.userName,
     session: undefined,
     localUser: undefined, //publisher
     subscribers: [],
     currentVideoDevice: undefined,
-    showExtensionDialog: false,
     messageReceived: false,
   });
 
@@ -57,7 +56,7 @@ function RecordingPrejoin() {
 
     try {
       //세션 연결
-      state.session?.connect(token, { clientData: state.myUserName }).then(() => {
+      state.session?.connect(token, { clientData: state.userName }).then(() => {
         //카메라 연결
         connectWebCam();
       });
@@ -93,7 +92,7 @@ function RecordingPrejoin() {
       .catch(() => {});
 
     // 로컬 사용자 설정
-    localUser.setNickname(state.myUserName);
+    localUser.setNickname(state.userName);
     localUser.setConnectionId(state.session?.connection.connectionId || "");
     localUser.setScreenShareActive(false);
     localUser.setStreamManager(publisher);
@@ -123,7 +122,6 @@ function RecordingPrejoin() {
         isAudioActive: state.localUser.isAudioActive(),
         isVideoActive: state.localUser.isVideoActive(),
         nickname: state.localUser.getNickname(),
-        isScreenShareActive: state.localUser.isScreenShareActive(),
       });
     }
 
@@ -216,14 +214,6 @@ function RecordingPrejoin() {
           if (data.isVideoActive !== undefined) {
             user.setVideoActive(data.isVideoActive);
           }
-          // 사용자 닉네임 변경
-          if (data.nickname !== undefined) {
-            user.setNickname(data.nickname);
-          }
-          // 화면 공유 상태 변경
-          if (data.isScreenShareActive !== undefined) {
-            user.setScreenShareActive(data.isScreenShareActive);
-          }
         }
       });
       // 변경된 사용자 정보로 상태 업데이트
@@ -269,15 +259,15 @@ function RecordingPrejoin() {
     }, 20);
   }, []);
 
-  const leaveSession = () => {
-    if (state.session) state.session.disconnect();
+  const handleCloseSession = () => {
+    if (state.session) closeSession(state.sessionId);
 
     setOV(null);
     setState({
       ...state,
       session: undefined,
-      mySessionId: state.mySessionId,
-      myUserName: data.userName,
+      sessionId: state.sessionId,
+      userName: data.userName,
       subscribers: [],
       localUser: undefined,
     });
@@ -286,6 +276,10 @@ function RecordingPrejoin() {
     console.log("leaveSession", state);
     console.log("remotes ", remotes.current);
   };
+
+  function handleRemoveUser() {
+    removeUser({ sessionName: state.sessionId, token: token });
+  }
 
   // 유저가 '참여하기' 버튼 누르면, joinSession 함수가 호출되면서
   // session과 OV 값이 바뀌면서 아래 useEffect 실행됨
@@ -298,7 +292,7 @@ function RecordingPrejoin() {
 
   useEffect(() => {
     //마운트될 때, 바로 토큰 생성
-    getToken(state.mySessionId).then((token) => setToken(token));
+    getToken(state.sessionId).then((token) => setToken(token));
 
     //레이아웃 초기화
     const openViduLayoutOptions = {
@@ -322,9 +316,9 @@ function RecordingPrejoin() {
     window.addEventListener("resize", updateLayout);
 
     return () => {
-      //언마운트될 때, 세션 종료
+      //언마운트될 때, 사용자 세션 나가기 함수 호출출
       window.removeEventListener("resize", updateLayout);
-      leaveSession();
+      removeUser({ sessionName: state.sessionId, token: token });
     };
   }, []);
 
@@ -333,12 +327,13 @@ function RecordingPrejoin() {
       <div className="w-full h-[80px] font-jamsilMedium text-28px text-center leading-[80px]">{GROUP_NAME}</div>
       {state.session && (
         <Room
-          mySessionId={state.mySessionId}
+          mySessionId={state.sessionId}
           localUser={localUser}
           subscribers={state.subscribers}
           camStatusChanged={camStatusChanged}
           micStatusChanged={micStatusChanged}
-          leaveSession={leaveSession}
+          handleCloseSession={handleCloseSession}
+          handleRemoveUser={handleRemoveUser}
         />
       )}
       {!state.session && (

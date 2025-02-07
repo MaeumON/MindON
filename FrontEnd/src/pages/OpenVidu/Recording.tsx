@@ -1,4 +1,4 @@
-import openviduInstance from "@apis/openviduInstance";
+import instance from "@apis/instance";
 
 // const GROUP_NAME = "소아암 아이를 키우는 부모 모임";
 const OUTPUT_MODE = "COMPOSED";
@@ -14,7 +14,7 @@ const Recording = ({ sessionID }: RecordingProps) => {
   const hasVideo = false;
 
   async function startRecording() {
-    const response = await openviduInstance.post("/recording/start", {
+    const response = await instance.post("/recording/start", {
       session: sessionID,
       outputMode: OUTPUT_MODE,
       hasAudio: hasAudio,
@@ -25,7 +25,7 @@ const Recording = ({ sessionID }: RecordingProps) => {
   }
 
   async function stopRecording() {
-    const response = await openviduInstance.post("/recording/stop", {
+    const response = await instance.post("/recording/stop", {
       recording: sessionID,
     });
 
@@ -33,7 +33,7 @@ const Recording = ({ sessionID }: RecordingProps) => {
   }
 
   async function deleteRecording() {
-    const response = await openviduInstance.delete("/recording/delete", {
+    const response = await instance.delete("/recording/delete", {
       data: {
         recording: sessionID,
       },
@@ -43,13 +43,13 @@ const Recording = ({ sessionID }: RecordingProps) => {
   }
 
   async function getRecording() {
-    const response = await openviduInstance.get("/recording/get/" + sessionID);
+    const response = await instance.get("/recording/get/" + sessionID);
 
     console.log("get recording response", response);
   }
 
   async function listRecordings() {
-    const response = await openviduInstance.get("/recording/list");
+    const response = await instance.get("/recording/list");
 
     console.log("list recording response", response);
   }
