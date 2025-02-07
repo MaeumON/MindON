@@ -25,10 +25,10 @@ function Login() {
   async function onClickLogin() {
     try {
       const result = await loginApi(userId, password);
-      const { accessToken, data } = result;
+      const { accessToken, refreshToken, data } = result;
 
       // Zustand에 로그인 정보 저장
-      setAuth(accessToken, data);
+      setAuth(accessToken, refreshToken, data);
       router("/main");
     } catch (error) {
       console.error("로그인 실패:", error);
