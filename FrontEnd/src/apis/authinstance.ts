@@ -1,5 +1,5 @@
 import axios from "axios";
-import useAuthStore from "@stores/authStore";
+import useAuthStore from "@/stores/authStore";
 
 const { VITE_APP_API_URL } = import.meta.env;
 
@@ -14,8 +14,7 @@ const authInstance = axios.create({
 // 요청 인터셉터 (Request Interceptor)
 authInstance.interceptors.request.use(
   (config) => {
-    const authStore = useAuthStore();
-    const accessToken = authStore.accessToken;
+    const accessToken = useAuthStore.getState().accessToken;
 
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`; // Authorization 헤더 추가
@@ -41,9 +40,7 @@ authInstance.interceptors.response.use(
 
       try {
         // refresh 요청할 토큰 가져오기
-        const authStore = useAuthStore();
-        const accessToken = authStore.accessToken;
-        const refreshToken = authStore.refreshToken;
+        const { accessToken, refreshToken } = useAuthStore.getState();
 
         // 백엔드에 refresh 요청
         const res = await axios.post(`${VITE_APP_API_URL}/api/auth/refresh`, {
@@ -56,15 +53,14 @@ authInstance.interceptors.response.use(
           const newRefreshToken = res.data.refreshToken;
 
           // 새 토큰 저장
-          authStore.setAuth(newAccessToken, newRefreshToken, authStore.data);
+          useAuthStore.getState().setAuth(newAccessToken, newRefreshToken, useAuthStore.getState().data);
           // 원래 요청에 새 accessToken 추가 후 재시도
           originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
           return authInstance(originalRequest);
         }
       } catch (refreshError) {
         console.error("토큰 갱신 실패:", refreshError);
-        const authStore = useAuthStore();
-        authStore.logout(); // 상태 초기화 메서드
+        useAuthStore.getState().logout(); // 상태 초기화 메서드
         window.location.href = "/login"; // 로그인 페이지로 이동
       }
     }

@@ -40,6 +40,11 @@ const handlers = [
     return HttpResponse.json(FINDPWD);
   }),
 
+  // GroupsList 정보
+  http.post(VITE_APP_API_URL + "/api/groups/list", () => {
+    return HttpResponse.json(GROUPS);
+  }),
+
   // 마음온도 정보
   http.get(VITE_APP_API_URL + "/api/users/temparature", () => {
     return HttpResponse.json({ temperture: TEMPERATURE.temperture });
