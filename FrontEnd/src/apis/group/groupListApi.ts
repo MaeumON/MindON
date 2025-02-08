@@ -36,9 +36,10 @@ export interface Group {
 //   data: Group[]; // 그룹 목록이므로 배열 형태
 // }
 
-const groupListApi = async (requestData: Partial<RequestData> = {}): Promise<Group[]> => {
+const groupListApi = async (requestData: Partial<RequestData> = {}, page: number = 1): Promise<Group[]> => {
   try {
-    const result = await authInstance.post<Group[]>("/api/groups/list", requestData);
+    const payload = { ...requestData, page };
+    const result = await authInstance.post<Group[]>("/api/groups/list", payload);
     console.log("📌 전체 API 응답:", result); // ✅ 전체 응답 확인
     console.log("📌 Apis 응답 데이터(result.data):", result.data); // ✅ result.data만 확인
     return result.data;

@@ -17,13 +17,13 @@ function GroupsList() {
 
   // 무한스크롤 상태관리
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const elementRef = useRef<HTMLDivElement | null>(null);
 
   const onIntersection = (entries: IntersectionObserverEntry[]) => {
     const firstEntry = entries[0];
 
-    // 첫화면이 렌더링 된 후 더 많은 데이터를 불러올 수 있는 상태(hasMore)인 경우 api 함수 호출
+    // 화면에 마지막 요소가 보이고, hasMore가 true이면 새로운 데이터를 불러옴
     if (firstEntry.isIntersecting && hasMore) {
       fetchMoreItems();
     }
@@ -46,10 +46,29 @@ function GroupsList() {
     };
   }, [hasMore]);
 
+  // 첫 렌더링 시 accessToken만 보내서 그룹 목록 불러오기
+  useEffect(() => {
+    const fetchInitialGroups = async () => {
+      try {
+        const result = await groupListApi({}, 1);
+        console.log("📌 API 응답 데이터:", result);
+        setGroups(result);
+        setPage(2);
+      } catch (error) {
+        console.error("초기 그룹 목록 요청 실패:", error);
+        setGroups([]); // 에러 발생 시 빈 배열 설정
+      }
+    };
+
+    fetchInitialGroups();
+  }, []);
+
+  // 추가 데이터 로드
   const fetchMoreItems = async () => {
     try {
-      // 새로운 데이터를 불러올 API 엔드포인트에 요청을 보냅니다.
-      const result = await groupListApi({ page });
+      // 새로운 데이터를 불러올 API 엔드포인트에 요청
+      const result = await groupListApi({}, page);
+      console.log(`📌 페이지 ${page} 데이터 개수:`, result.length);
 
       // 만약 더 이상 불러올 상품이 없다면 hasMore 상태를 false로 설정합니다.
       if (result.length === 0) {
@@ -66,22 +85,6 @@ function GroupsList() {
   };
   //hyebeen2658.tistory.com/77 [HYEBEN's Dev:티스토리]
 
-  // 첫 렌더링 시 accessToken만 보내서 그룹 목록 불러오기
-  useEffect(() => {
-    const fetchInitialGroups = async () => {
-      try {
-        const result = await groupListApi({ page: 1 });
-        console.log("📌 API 응답 데이터:", result);
-        setGroups(result);
-      } catch (error) {
-        console.error("초기 그룹 목록 요청 실패:", error);
-        setGroups([]); // 에러 발생 시 빈 배열 설정
-      }
-    };
-
-    fetchInitialGroups();
-  }, []);
-
   useEffect(() => {
     console.log("📌 groups 상태 변경됨:", groups);
   }, [groups]);
@@ -89,10 +92,10 @@ function GroupsList() {
   // ✅ 필터가 적용된 API 요청을 받으면 실행됨
   const handleApplyFilter = async (selectedFilters: Partial<RequestData>) => {
     try {
-      const result = await groupListApi({ ...selectedFilters, page: 1 });
+      const result = await groupListApi({ ...selectedFilters }, 1);
       console.log("📌 필터 적용 API 응답:", result);
       setGroups(result); // 기존 그룹 목록을 새로운 목록으로 갱신
-      setPage(2);
+      setPage(1);
       setHasMore(true);
     } catch (error) {
       console.error("필터 적용 후 그룹 목록 요청 실패:", error);
@@ -126,8 +129,16 @@ function GroupsList() {
 
       {/* 그룹 목록 */}
       <div className="flex flex-col gap-5 pb-20">
-        {groups && groups.length > 0 ? ( // groups undefined 여부 확인
-          groups.map((group) => <GroupCard key={group.groupId} group={group} />)
+        {groups.length > 0 ? (
+          groups.map((group, index) =>
+            index === groups.length - 1 ? (
+              <div ref={elementRef} key={group.groupId}>
+                <GroupCard group={group} />
+              </div>
+            ) : (
+              <GroupCard key={group.groupId} group={group} />
+            )
+          )
         ) : (
           <div className="flex m-6 justify-center items-center h-80 text-lg font-bold text-gray-500 leading-8">
             아직 그룹이 없어요
