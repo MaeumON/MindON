@@ -1,19 +1,20 @@
 import { Dialog } from "@headlessui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 interface GroupsFilterProps {
   isOpen: boolean;
   onClose: () => void;
-  containerWidth?: number; // 목록 너비 전달받기
+  onApplyFilter: (selectedFilters: any) => Promise<void>; // 목록 너비 전달받기
 }
 
-function GroupsFilter({ isOpen, onClose, containerWidth }: GroupsFilterProps) {
+function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
   const [selectedDays, setSelectedDays] = useState<string[]>(["월"]);
   const [selectedHosts, setSelectedHosts] = useState<string[]>([]);
   const [selectedDiseases, setSelectedDiseases] = useState<string[]>([]); // 질병 선택 상태
   const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [maxWidth, setMaxWidth] = useState(412);
 
   const diseases = [
     "유전 및 희귀 질환",
@@ -40,6 +41,37 @@ function GroupsFilter({ isOpen, onClose, containerWidth }: GroupsFilterProps) {
     setSelectedDiseases((prev) => (prev.includes(disease) ? prev.filter((d) => d !== disease) : [...prev, disease]));
   };
 
+  useEffect(() => {
+    const updateMaxWidth = () => {
+      setMaxWidth(Math.min(412, window.innerWidth - 32)); // 화면 너비보다 커지지 않도록 제한
+    };
+
+    updateMaxWidth(); // 초기 실행
+    window.addEventListener("resize", updateMaxWidth); // 창 크기 변경 감지
+
+    return () => {
+      window.removeEventListener("resize", updateMaxWidth); // 클린업
+    };
+  }, []);
+
+  // 필터 적용하기 버튼 클릭시 실행
+  const applyFilter = () => {
+    const filterData = {
+      diseaseId: selectedDiseases,
+      isHost: selectedHosts.length > 0,
+      startDate,
+      dayOfWeek: selectedDays,
+    };
+
+    onApplyFilter(filterData); // 부모 컴포넌트로 전달
+    onClose(); // 필터 모달 닫기
+  };
+
+  // 필터 초기화하기 버튼 클릭시 실행
+  // const resetFilter = () => {
+  //   const filterData = {}
+  // }
+
   return (
     <Dialog open={isOpen} onClose={onClose} className="fixed inset-0 z-50">
       {/* 배경 블러 처리 */}
@@ -48,7 +80,7 @@ function GroupsFilter({ isOpen, onClose, containerWidth }: GroupsFilterProps) {
       {/* 모달창 (부모 목록과 크기 동기화) */}
       <div
         className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[calc(100vw-32px)] md:max-w-md bg-white rounded-t-xl shadow-lg p-5 max-h-[90vh] overflow-y-auto"
-        style={{ maxWidth: containerWidth ? `${containerWidth}px` : "412px" }} // 목록 너비 적용
+        style={{ maxWidth: `${maxWidth}px` }} // 동적으로 설정된 너비 적용
       >
         {/* 닫기 버튼 */}
         <div className="flex justify-between items-center">
@@ -160,7 +192,7 @@ function GroupsFilter({ isOpen, onClose, containerWidth }: GroupsFilterProps) {
           <button className="px-4 py-3 border border-cardSubcontent rounded-xl text-gray-600 font-bold">
             초기화하기
           </button>
-          <button onClick={onClose} className="px-4 py-3 bg-green100 text-white rounded-xl font-bold">
+          <button onClick={applyFilter} className="px-4 py-3 bg-green100 text-white rounded-xl font-bold">
             적용하기
           </button>
         </div>

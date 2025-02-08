@@ -1,51 +1,48 @@
 // groupList axios
 
-import instance from "../instance";
+import authInstance from "../authinstance";
 
-interface requestData {
+export interface RequestData {
   keyword: string;
-  diseaseId: [1, 2, 3];
+  diseaseId: number;
   isHost: boolean;
   startDate: Date;
   period: number;
   startTime: Date;
   endTime: Date;
-  dayOfWeek: [1, 2, 3];
+  dayOfWeek: number;
 }
 
-interface responseData {
-  data: [
-    {
-      groupId: number;
-      title: string;
-      diseaseId: number;
-      diseaseName: string;
-      isPrivate: boolean;
-      privatePassword: string;
-      inviteCode: string;
-      isHost: boolean;
-      startDate: Date;
-      period: number;
-      meetingTime: number;
-      dayOfWeek: number;
-      minMembers: number;
-      maxiMembers: number;
-      totalMembers: number;
-      groupStatus: number;
-    },
-  ];
+export interface Group {
+  groupId: number;
+  title: string;
+  diseaseId: number;
+  diseaseName: string;
+  isPrivate: boolean;
+  privatePassword?: string;
+  inviteCode: string;
+  isHost: boolean;
+  startDate: Date;
+  period: number;
+  meetingTime: number;
+  dayOfWeek: number;
+  minMembers: number;
+  maxiMembers: number;
+  totalMembers: number;
+  groupStatus: number;
 }
 
-const groupListApi = async (requsetdata: requestData): Promise<responseData> => {
+interface ResponseData {
+  data: Group[]; // 그룹 목록이므로 배열 형태
+}
+
+const groupListApi = async (requestData: Partial<RequestData> = {}): Promise<ResponseData> => {
   try {
-    const result = await instance.post<responseData>("/api/groups/list", requsetdata);
+    const result = await authInstance.post<ResponseData>("/api/groups/list", requestData);
     console.log("apis/auth:", result.data);
-    return {
-      accessToken: result.data.accessToken,
-      data: result.data.data,
-    };
+    return result.data;
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("groupList axios error:", error);
     throw error;
   }
 };

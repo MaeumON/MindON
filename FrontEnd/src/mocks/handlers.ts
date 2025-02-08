@@ -38,6 +38,11 @@ const handlers = [
     return HttpResponse.json(FINDPWD);
   }),
 
+  // GroupsList 정보
+  http.post(VITE_APP_API_URL + "/api/groups/list", () => {
+    return HttpResponse.json(GROUPS);
+  }),
+
   //SignUp 정보
   //성공함함
   // http.post(VITE_APP_API_URL + "/api/auth/signup", () => {

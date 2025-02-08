@@ -2,56 +2,45 @@ import Header from "@components/Layout/Header";
 import GroupCard from "@/components/group/GroupCard";
 import GroupsFilter from "@components/group/GroupsFilter";
 import Footer from "@components/Layout/Footer";
+import { Group, RequestData } from "@apis/group/groupListApi";
 
-import SearchReadingGlasses from "@assets/images/SearchReadingGlasses.png";
+import IconSearch from "@assets/icons/IconSearch";
 import SeachFilter from "@assets/images/SeachFilter.png";
 
 import groupListApi from "@apis/group/groupListApi";
-import useAuthStore from "@stores/authStore";
 
-import { useState, useEffect, useCallback } from "react";
-import { useInView } from "react-intersection-observer";
+import { useState, useEffect } from "react";
+// import { useInView } from "react-intersection-observer";
 
 function GroupsList() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [groups, setGroups] = useState([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const { ref, inView } = useInView();
+  const [groups, setGroups] = useState<Group[]>([]);
+  // const [hasMore, setHasMore] = useState(true);
+  // const { ref, inView } = useInView();
 
-  const authStore = useAuthStore();
-
-  const fetchGroups = useCallback(async () => {
-    if (!hasMore) return;
-
-    const requestData = {
-      keyword,
-      diseaseId,
-      isHost,
-      startDate,
-      period,
-      startTime,
-      endTime,
-      dayOfWeek,
+  // 첫 렌더링 시 accessToken만 보내서 그룹 목록 불러오기
+  useEffect(() => {
+    const fetchInitialGroups = async () => {
+      try {
+        const result = await groupListApi({});
+        setGroups(result.data);
+      } catch (error) {
+        console.error("초기 그룹 목록 요청 실패:", error);
+      }
     };
 
+    fetchInitialGroups();
+  }, []);
+
+  // ✅ 필터가 적용된 API 요청을 받으면 실행됨
+  const handleApplyFilter = async (selectedFilters: Partial<RequestData>) => {
     try {
-      const result = await groupListApi(requestData);
-
-      if (result.data.data.length === 0) {
-        setHasMore(false);
-      } else {
-        setGroups((prev) => [...prev, ...result.data.data]);
-        setPage((prev) => prev + 1);
-      }
+      const result = await groupListApi(selectedFilters);
+      setGroups(result.data); // 기존 그룹 목록을 새로운 목록으로 갱신
     } catch (error) {
-      console.error("Error fetching groups:", error);
+      console.error("필터 적용 후 그룹 목록 요청 실패:", error);
     }
-  }, [hasMore]);
-
-  useEffect(() => {
-    if (inView) fetchGroups();
-  }, [inView, fetchGroups]);
+  };
 
   return (
     <div>
@@ -66,7 +55,7 @@ function GroupsList() {
               placeholder="원하는 모임이나 초대코드를 검색해보세요"
             ></input>
           </div>
-          <img src={SearchReadingGlasses} className="w-[20px] h-[20px]" />
+          <IconSearch />
         </div>
       </div>
 
@@ -94,10 +83,12 @@ function GroupsList() {
       </div>
 
       {/* 무한 스크롤 트리거 */}
-      {hasMore && <div ref={ref} className="h-10"></div>}
+      {/* {hasMore && <div ref={ref} className="h-10"></div>} */}
 
       {/* 모달 */}
-      {isFilterOpen && <GroupsFilter isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} />}
+      {isFilterOpen && (
+        <GroupsFilter isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} onApplyFilter={handleApplyFilter} />
+      )}
 
       <Footer />
     </div>
