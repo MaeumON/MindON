@@ -4,7 +4,10 @@ import { OpenVidu, Publisher } from "openvidu-browser";
 import { useCallback, useEffect, useRef, useState } from "react";
 import OpenViduLayout from "@components/Openvidu-call/layout/openvidu-layout";
 import Room from "@pages/openvidu/Room";
-import { getToken } from "@apis/openvidu/openviduApi";
+import { closeSession, getToken, removeUser } from "@apis/openvidu/openviduApi";
+import useAuthStore from "@stores/authStore";
+import Button from "@components/common/Button";
+import IconCheck from "@assets/icons/IconCheck";
 
 /*
 실제 화상채팅으로 진입하기 전에,
@@ -14,21 +17,21 @@ import { getToken } from "@apis/openvidu/openviduApi";
 - 참여하기 버튼으로 화상 화면으로 이동
 */
 
-let USER_NAME = "user1"; //추후 유저 값으로 변경
 const SESSION_ID = 4; //전역에 설정되어야하는 값
 const GROUP_NAME = "소아암 아이를 키우는 부모 모임"; //임시, 추후 참가하기 버튼에 있던 그룹 정보에서 가져오기
 
 const localUser = new UserModel();
 
 function RecordingPrejoin() {
+  const { data } = useAuthStore();
+
   const [state, setState] = useState<VideoRoomState>({
-    mySessionId: String(SESSION_ID), //meetingID
-    myUserName: USER_NAME,
+    sessionId: String(SESSION_ID), //meetingID
+    userName: data.userName,
     session: undefined,
     localUser: undefined, //publisher
     subscribers: [],
     currentVideoDevice: undefined,
-    showExtensionDialog: false,
     messageReceived: false,
   });
 
@@ -53,7 +56,7 @@ function RecordingPrejoin() {
 
     try {
       //세션 연결
-      state.session?.connect(token, { clientData: state.myUserName }).then(() => {
+      state.session?.connect(token, { clientData: state.userName }).then(() => {
         //카메라 연결
         connectWebCam();
       });
@@ -89,7 +92,7 @@ function RecordingPrejoin() {
       .catch(() => {});
 
     // 로컬 사용자 설정
-    localUser.setNickname(state.myUserName);
+    localUser.setNickname(state.userName);
     localUser.setConnectionId(state.session?.connection.connectionId || "");
     localUser.setScreenShareActive(false);
     localUser.setStreamManager(publisher);
@@ -119,9 +122,9 @@ function RecordingPrejoin() {
         isAudioActive: state.localUser.isAudioActive(),
         isVideoActive: state.localUser.isVideoActive(),
         nickname: state.localUser.getNickname(),
-        isScreenShareActive: state.localUser.isScreenShareActive(),
       });
     }
+
     updateLayout();
   }, [state.localUser]);
 
@@ -177,6 +180,17 @@ function RecordingPrejoin() {
     });
   }, [state.session, deleteSubscriber]);
 
+  const sendSignalUserChanged = useCallback(
+    (data: any) => {
+      const signalOptions = {
+        data: JSON.stringify(data),
+        type: "userChanged",
+      };
+      state.session?.signal(signalOptions);
+    },
+    [state.session]
+  );
+
   const subscribeToUserChanged = useCallback(() => {
     // OpenVidu 세션에서 'signal:userChanged' 이벤트를 구독
     // 다른 참가자가 자신의 상태를 변경할 때마다 이 이벤트가 발생
@@ -200,14 +214,6 @@ function RecordingPrejoin() {
           if (data.isVideoActive !== undefined) {
             user.setVideoActive(data.isVideoActive);
           }
-          // 사용자 닉네임 변경
-          if (data.nickname !== undefined) {
-            user.setNickname(data.nickname);
-          }
-          // 화면 공유 상태 변경
-          if (data.isScreenShareActive !== undefined) {
-            user.setScreenShareActive(data.isScreenShareActive);
-          }
         }
       });
       // 변경된 사용자 정보로 상태 업데이트
@@ -215,19 +221,10 @@ function RecordingPrejoin() {
         ...prev,
         subscribers: remoteUsers,
       }));
+
+      console.log("userChanged", remoteUsers);
     });
   }, [state.session, state.subscribers]);
-
-  const sendSignalUserChanged = useCallback(
-    (data: any) => {
-      const signalOptions = {
-        data: JSON.stringify(data),
-        type: "userChanged",
-      };
-      state.session?.signal(signalOptions);
-    },
-    [state.session]
-  );
 
   const camStatusChanged = useCallback(() => {
     localUser.setVideoActive(!localUser.isVideoActive());
@@ -262,15 +259,15 @@ function RecordingPrejoin() {
     }, 20);
   }, []);
 
-  const leaveSession = () => {
-    if (state.session) state.session.disconnect();
+  const handleCloseSession = () => {
+    if (state.session) closeSession(state.sessionId);
 
     setOV(null);
     setState({
       ...state,
       session: undefined,
-      mySessionId: state.mySessionId,
-      myUserName: USER_NAME,
+      sessionId: state.sessionId,
+      userName: data.userName,
       subscribers: [],
       localUser: undefined,
     });
@@ -279,6 +276,10 @@ function RecordingPrejoin() {
     console.log("leaveSession", state);
     console.log("remotes ", remotes.current);
   };
+
+  function handleRemoveUser() {
+    removeUser({ sessionName: state.sessionId, token: token });
+  }
 
   // 유저가 '참여하기' 버튼 누르면, joinSession 함수가 호출되면서
   // session과 OV 값이 바뀌면서 아래 useEffect 실행됨
@@ -291,7 +292,7 @@ function RecordingPrejoin() {
 
   useEffect(() => {
     //마운트될 때, 바로 토큰 생성
-    getToken(state.mySessionId).then((token) => setToken(token));
+    getToken(state.sessionId).then((token) => setToken(token));
 
     //레이아웃 초기화
     const openViduLayoutOptions = {
@@ -315,36 +316,53 @@ function RecordingPrejoin() {
     window.addEventListener("resize", updateLayout);
 
     return () => {
-      //언마운트될 때, 세션 종료
+      //언마운트될 때, 사용자 세션 나가기 함수 호출출
       window.removeEventListener("resize", updateLayout);
-      leaveSession();
+      removeUser({ sessionName: state.sessionId, token: token });
     };
   }, []);
 
   return (
-    <section className="h-full min-h-screen flex flex-col items-center">
+    <section className="w-full h-full min-h-screen flex flex-col items-center">
       <div className="w-full h-[80px] font-jamsilMedium text-28px text-center leading-[80px]">{GROUP_NAME}</div>
       {state.session && (
         <Room
-          mySessionId={state.mySessionId}
+          mySessionId={state.sessionId}
           localUser={localUser}
           subscribers={state.subscribers}
           camStatusChanged={camStatusChanged}
           micStatusChanged={micStatusChanged}
-          leaveSession={leaveSession}
+          handleCloseSession={handleCloseSession}
+          handleRemoveUser={handleRemoveUser}
         />
       )}
       {!state.session && (
-        <div className="h-[70%] flex flex-col justify-around items-center">
-          <div className="">
-            <input
-              type="text"
-              value={state.myUserName}
-              onChange={(e) => setState({ ...state, myUserName: e.target.value })}
-            />
-            <button onClick={joinSession} className="p-2 bg-green100 color-white">
-              참여하기
-            </button>
+        <div className="w-[95%] h-[70%] mt-[20px] flex flex-col justify-around items-center font-suite">
+          <div className="w-full flex flex-col items-center justify-center  rounded-[12px] shadow-md bg-white">
+            <div className="w-[90%] h-[100px] mt-[43px] p-[17px] font-bold text-24px text-cardLongContent text-center rounded-[12px] shadow-[0px_0px_4px_0px_rgba(0,0,0,0.25)] leading-[70px] bg-offWhite">
+              모임 중 지켜야 할 규칙
+            </div>
+            <div className="w-[90%] h-[171px] my-[30px] flex flex-col justify-center gap-[10px] font-medium text-18px">
+              <div className="h-[30px] px-[10px] flex items-center gap-[15px]">
+                <IconCheck width={26} height={26} fillColor="#6BB07C" />
+                <p>발언 기회를 존중해 주세요</p>
+              </div>
+              <div className="h-[30px] px-[10px] flex items-center gap-[15px]">
+                <IconCheck width={26} height={26} fillColor="#6BB07C" />
+                <p>적극적으로 경청해 주세요요</p>
+              </div>
+              <div className="h-[30px] px-[10px] flex items-center gap-[15px]">
+                <IconCheck width={26} height={26} fillColor="#6BB07C" />
+                <p>정중하고 예의 바르게 대화해 주세요요</p>
+              </div>
+              <div className="h-[30px] px-[10px] flex items-center gap-[15px]">
+                <IconCheck width={26} height={26} fillColor="#6BB07C" />
+                <p>부정적인 표현이나 비난은 삼가해 주세요</p>
+              </div>
+            </div>
+          </div>
+          <div className="w-full mt-[50px]">
+            <Button text="참여하기" type="GREEN" onClick={joinSession} />
           </div>
         </div>
       )}

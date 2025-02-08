@@ -102,12 +102,6 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ user, close }) => {
   return (
     <div className="absolute inset-0 flex justify-center items-center w-[90%] h-[700px] bg-black/50">
       <div className="w-[90%] h-[600px] py-[10px] flex flex-col justify-between bg-white/80 rounded-[12px]">
-        <div className="absolute inset-0 mt-[60px] mr-[30px] flex items-start justify-end">
-          {/* <span>{user.getStreamManager().stream.session.sessionId} - CHAT</span> */}
-          <div onClick={closeChat}>
-            <IconExit width={25} height={25} fillColor="" />
-          </div>
-        </div>
         <div className="message-wrap" ref={chatScroll}>
           {messageList.map((data, i) => (
             <div
@@ -140,6 +134,12 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ user, close }) => {
           />
           <div className="w-[10%] px-[5px]">
             <IconSendMsg width={25} height={25} fillColor="#828282" />
+          </div>
+        </div>
+        <div className="absolute inset-0 mt-[60px] mr-[30px] flex items-start justify-end">
+          {/* <span>{user.getStreamManager().stream.session.sessionId} - CHAT</span> */}
+          <div onClick={closeChat}>
+            <IconExit width={25} height={25} fillColor="" />
           </div>
         </div>
       </div>
