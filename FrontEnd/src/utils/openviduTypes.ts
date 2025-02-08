@@ -14,14 +14,6 @@ export interface UserModelType {
   setType: (type: string) => void;
 }
 
-export interface VideoRoomProps {
-  sessionId?: string;
-  userName?: string;
-  token?: string;
-  joinSession?: () => void;
-  leaveSession?: () => void;
-}
-
 export interface VideoRoomState {
   sessionId: string;
   userName: string;
@@ -30,4 +22,21 @@ export interface VideoRoomState {
   subscribers: UserModelType[];
   currentVideoDevice?: Device;
   messageReceived: boolean;
+}
+
+export interface QuestionChangedData {
+  userId: string;
+  speakingOrder: QuestionSpeakingOrderType[];
+}
+
+export //참여자 목록
+interface ParticipantType {
+  userId: string;
+  userName: string;
+}
+
+export interface QuestionSpeakingOrderType {
+  no: number;
+  userId: string;
+  userName: string;
 }

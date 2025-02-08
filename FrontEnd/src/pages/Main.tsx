@@ -42,8 +42,13 @@ function Main() {
 
   useEffect(() => {
     const loadGroups = async () => {
-      const data = await fetchGroups();
-      setGroups(data);
+      try {
+        const data = await fetchGroups();
+        console.log("Fetched Groups: ", data);
+        setGroups(data);
+      } catch (error) {
+        console.error("Error Fetching groups : ", error);
+      }
     };
 
     loadGroups();

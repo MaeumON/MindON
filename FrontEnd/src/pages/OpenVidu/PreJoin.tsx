@@ -1,12 +1,12 @@
-import UserModel from "@components/Openvidu-call/models/user-model";
-import { UserModelType, VideoRoomState } from "@utils/openviduTypes";
-import { OpenVidu, Publisher } from "openvidu-browser";
 import { useCallback, useEffect, useRef, useState } from "react";
-import OpenViduLayout from "@components/Openvidu-call/layout/openvidu-layout";
+import { OpenVidu, Publisher } from "openvidu-browser";
 import Room from "@pages/openvidu/Room";
+import { UserModelType, VideoRoomState } from "@utils/openviduTypes";
+import UserModel from "@components/Openvidu-call/models/user-model";
+import OpenViduLayout from "@components/Openvidu-call/layout/openvidu-layout";
+import Button from "@components/common/Button";
 import { closeSession, getToken, removeUser } from "@apis/openvidu/openviduApi";
 import useAuthStore from "@stores/authStore";
-import Button from "@components/common/Button";
 import IconCheck from "@assets/icons/IconCheck";
 
 /*
@@ -78,7 +78,7 @@ function RecordingPrejoin() {
       videoSource: undefined, //비디오 소스
       publishAudio: localUser.isAudioActive(), //시작할 때 오디오 뮤트 여부
       publishVideo: localUser.isVideoActive(), //시작할 때 비디오 뮤트 여부
-      resolution: "640x480", //해상도
+      resolution: "320x360", //해상도
       frameRate: 30, //프레임 레이트
       insertMode: "APPEND", //비디오 삽입 모드
       mirror: false, //미러 여부
@@ -107,7 +107,6 @@ function RecordingPrejoin() {
 
     publisher.on("streamPlaying", () => {
       updateLayout();
-      publisher.videos[0].video.parentElement?.classList.remove("custom-class");
     });
   };
 
@@ -316,7 +315,7 @@ function RecordingPrejoin() {
     window.addEventListener("resize", updateLayout);
 
     return () => {
-      //언마운트될 때, 사용자 세션 나가기 함수 호출출
+      //언마운트될 때, 사용자 세션 나가기 함수 호출
       window.removeEventListener("resize", updateLayout);
       removeUser({ sessionName: state.sessionId, token: token });
     };
@@ -327,6 +326,7 @@ function RecordingPrejoin() {
       <div className="w-full h-[80px] font-jamsilMedium text-28px text-center leading-[80px]">{GROUP_NAME}</div>
       {state.session && (
         <Room
+          session={state.session}
           mySessionId={state.sessionId}
           localUser={localUser}
           subscribers={state.subscribers}
