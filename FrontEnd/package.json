@@ -16,6 +16,7 @@
     "@material-ui/icons": "^4.11.3",
     "@types/react-query": "^1.2.9",
     "axios": "^1.7.9",
+    "framer-motion": "^12.4.0",
     "date-fns": "^4.1.0",
     "jquery": "^3.7.1",
     "openvidu-browser": "^2.31.0",

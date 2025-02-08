@@ -1,7 +1,7 @@
 import Happy from "@assets/images/feeling/feelingHappy.png";
 import Mad from "@assets/images/feeling/feelingMad.png";
 import Nervous from "@assets/images/feeling/feelingNervous.png";
-import Piece from "@assets/images/feeling/feelingPiece.png";
+import Peace from "@assets/images/feeling/feelingPeace.png";
 import Proud from "@assets/images/feeling/feelingProud.png";
 import Sad from "@assets/images/feeling/feelingSad.png";
 import Tired from "@assets/images/feeling/feelingTired.png";
@@ -38,7 +38,7 @@ export const emotionList: EmotionList = [
 
   {
     id: 4,
-    src: Piece,
+    src: Peace,
     text: "평온해요",
     alt: "평온표정",
   },
