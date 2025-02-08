@@ -15,6 +15,7 @@ const authInstance = axios.create({
 authInstance.interceptors.request.use(
   (config) => {
     const accessToken = useAuthStore.getState().accessToken;
+    // instance 내부에 useAuthStore 훅 사용 금지이므로 getState()사용
 
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`; // Authorization 헤더 추가
