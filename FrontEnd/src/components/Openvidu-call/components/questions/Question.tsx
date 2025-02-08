@@ -1,85 +1,43 @@
+import { fetchQuestionSpeakingOrder } from "@/apis/openvidu/questionApi";
+import { PARTICIPANT_LIST } from "@/data/OPENVIDU";
+// import useAuthStore from "@/stores/authStore";
 import { useQuestionStore } from "@/stores/questionStore";
-import { UserModelType } from "@/utils/openviduTypes";
+import { sendSignalQuestionChanged, subscribeToQuestionChanged } from "@/utils/openvidu/signal";
+import { QuestionChangedData, QuestionSpeakingOrderType, UserModelType } from "@/utils/openviduTypes";
+import { Session } from "openvidu-browser";
 import { useEffect, useState } from "react";
 
 interface QuestionProps {
+  session: Session;
   mySessionId: string;
   subscribers: UserModelType[];
 }
 
-const userId = 1;
+const userId = "4";
 
-const Question = ({ mySessionId, subscribers }: QuestionProps) => {
+const Question = ({ session, mySessionId }: QuestionProps) => {
   const {
-    questions,
     isMeetingStart,
     isQuestionStart,
-    currentQuestionNumber,
     currentUser,
     currentQuestionText,
     currentBtnText,
+    isSpeaking,
+    currentUserId,
     fetchQuestionsData,
-    setIsMeetingStart,
-    setIsQuestionStart,
-    setCurrentQuestionNumber,
-    setCurrentUser,
     setCurrentQuestionText,
     setCurrentBtnText,
   } = useQuestionStore();
 
-  const [isSpeaking, setIsSpeaking] = useState<boolean>(false); //현재 발언 중인지 여부
+  //추후 로그인 기능과 연동 시, 사용
+  // const { data } = useAuthStore();
+  // const userId = data?.userId;
 
-  //setUsers를 사용하지 않아 일단 주석 처리
-  // 추후 받아오면, 저장 후 사용
-  // const [users, setUsers] = useState<number[]>([1, 2, 3, 4, 5]); //참여자 목록
-  const users = [1, 2, 3, 4, 5];
+  const [speakingOrder, setSpeakingOrder] = useState<QuestionSpeakingOrderType[]>([]);
 
   function stateChanger() {
-    //미팅 시작 전
-    if (isMeetingStart === 0) {
-      setIsMeetingStart(1);
-      setIsQuestionStart(0);
-      setCurrentQuestionText("잠시 후 질문이 시작됩니다.");
-
-      console.log("subscribers", subscribers);
-      return;
-    }
-
-    //질문 시작 전
-    if (isMeetingStart === 1 && isQuestionStart === 0) {
-      setIsQuestionStart(1);
-      setCurrentQuestionText(questions[0].detail);
-      return;
-    }
-
-    //질문 중
-    if (isMeetingStart === 1 && isQuestionStart === 1) {
-      //질문 완전 종료
-      if (currentQuestionNumber === questions.length - 1) {
-        setCurrentQuestionText("모임이 종료되었습니다.");
-        setIsQuestionStart(2);
-        return;
-      }
-
-      //답변 시작
-      if (currentUser === userId && !isSpeaking) {
-        setIsSpeaking(true);
-        return;
-      } else if (currentUser === userId && isSpeaking) {
-        setIsSpeaking(false);
-        setCurrentUser(currentUser + 1);
-        return;
-      }
-
-      //하나의 질문 종료
-      if (currentUser === users.length - 1) {
-        setCurrentQuestionNumber(currentQuestionNumber + 1);
-        setCurrentUser(0);
-        setCurrentQuestionText(questions[currentQuestionNumber + 1].detail);
-      } else {
-        setCurrentUser(currentUser + 1);
-      }
-    }
+    const signalData: QuestionChangedData = { userId: userId, speakingOrder: speakingOrder };
+    sendSignalQuestionChanged({ data: signalData, session });
   }
 
   const getButtonText = () => {
@@ -96,23 +54,38 @@ const Question = ({ mySessionId, subscribers }: QuestionProps) => {
     }
 
     if (isMeetingStart === 1 && isQuestionStart === 1) {
-      if (currentUser === userId && !isSpeaking) {
+      if (currentUserId === userId && !isSpeaking) {
         return "답변 시작하기";
-      } else if (currentUser === userId && isSpeaking) {
+      } else if (currentUserId === userId && isSpeaking) {
         return "답변 중단하기";
       }
 
-      return `${currentUser}님이 발언 중이에요`;
+      return `${speakingOrder[currentUser].userName}님이 발언 중이에요`;
     }
     return currentBtnText;
+  };
+
+  const fetchOrder = async () => {
+    const response = await fetchQuestionSpeakingOrder({ groupId: mySessionId, participants: PARTICIPANT_LIST });
+
+    const sortedResponse = response.sort((a, b) => a.no - b.no);
+    setSpeakingOrder(sortedResponse);
   };
 
   useEffect(() => {
     //질문 받아와서 전역에 설정
     fetchQuestionsData(mySessionId);
 
+    //질문 발언 순서 받아오기
+    fetchOrder();
+
     setCurrentQuestionText("잠시 후, 모임이 시작됩니다.");
     setCurrentBtnText("모임 바로 시작하기");
+
+    // questionStore를 인자로 전달
+    subscribeToQuestionChanged({
+      session,
+    });
   }, []);
 
   return (
@@ -127,7 +100,7 @@ const Question = ({ mySessionId, subscribers }: QuestionProps) => {
         ${
           isQuestionStart === 2
             ? "bg-cardContent2"
-            : isMeetingStart === 1 && isQuestionStart === 1 && currentUser !== userId
+            : isMeetingStart === 1 && isQuestionStart === 1 && currentUserId !== userId
               ? "bg-cardContent2"
               : isSpeaking
                 ? "bg-red100"

@@ -7,6 +7,7 @@ import UserModel from "@components/Openvidu-call/models/user-model";
 import Recording from "@pages/openvidu/Recording";
 import EmotionModal from "@/components/Openvidu-call/components/emotionModal/EmotionModal";
 import Question from "@components/Openvidu-call/components/questions/Question";
+import { Session } from "openvidu-browser";
 
 /*
 - 미팅 시작하기 전, 시작하겠습니다 멘트
@@ -25,6 +26,7 @@ import Question from "@components/Openvidu-call/components/questions/Question";
 */
 
 interface RoomProps {
+  session: Session;
   mySessionId: string;
   localUser: UserModel;
   subscribers: UserModelType[];
@@ -37,6 +39,7 @@ interface RoomProps {
 }
 
 function Room({
+  session,
   mySessionId,
   localUser,
   subscribers,
@@ -52,7 +55,7 @@ function Room({
 
   return (
     <section className="w-full h-[calc(100vh-80px)] px-[20px] flex flex-col justify-center items-center bg-offWhite font-suite">
-      <Question mySessionId={mySessionId} subscribers={subscribers} />
+      <Question session={session} mySessionId={mySessionId} subscribers={subscribers} />
 
       <div id="layout" className="w-full h-[80%]">
         {localUser && localUser.getStreamManager() && (

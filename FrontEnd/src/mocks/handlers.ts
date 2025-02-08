@@ -4,6 +4,7 @@ import { QUESTIONS } from "../data/QUESTIONS";
 import { LOGINUSER } from "../data/LOGINUSER";
 import { FINDID } from "../data/FINDID";
 import { FINDPWD } from "../data/FINDPWD";
+import { QUESTION_SPEAKING_ORDER } from "@/data/OPENVIDU";
 import { TEMPERATURE } from "@/data/TEMPERTURE";
 
 const { VITE_APP_API_URL } = import.meta.env;
@@ -58,6 +59,16 @@ const handlers = [
   // http.post(VITE_APP_API_URL + "/api/video/sessions", () => {
   //   return HttpResponse.json(OPENVIDU_SESSION);
   // }),
+
+  //질문 발언 순서 받아오기
+  http.post(VITE_APP_API_URL + "/api/users/:groupId/list", (req) => {
+    const { groupId } = req.params; // groupId 파라미터 접근
+
+    //쓰지 않는 변수 처리용
+    console.log(groupId);
+
+    return HttpResponse.json(QUESTION_SPEAKING_ORDER);
+  }),
 ];
 
 export default handlers;
