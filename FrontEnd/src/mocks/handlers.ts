@@ -4,6 +4,7 @@ import { QUESTIONS } from "../data/QUESTIONS";
 import { LOGINUSER } from "../data/LOGINUSER";
 import { FINDID } from "../data/FINDID";
 import { FINDPWD } from "../data/FINDPWD";
+import { TEMPERATURE } from "@/data/TEMPERTURE";
 
 const { VITE_APP_API_URL } = import.meta.env;
 
@@ -36,6 +37,11 @@ const handlers = [
   // FindPwd 정보
   http.post(VITE_APP_API_URL + "/api/auth/password", () => {
     return HttpResponse.json(FINDPWD);
+  }),
+
+  // 마음온도 정보
+  http.get(VITE_APP_API_URL + "/api/users/temparature", () => {
+    return HttpResponse.json({ temperture: TEMPERATURE.temperture });
   }),
 
   //SignUp 정보
