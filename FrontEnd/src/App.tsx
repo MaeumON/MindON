@@ -26,7 +26,7 @@ function App() {
       <Route path="/mydata" element={<MyData />} />
       <Route path="/mydata/:id" element={<MyDataDetail />} />
       <Route path="/groupslist" element={<GroupsList />} />
-      <Route path="/groupdetail" element={<GroupDetail />} />
+      <Route path="/groups/:groupId" element={<GroupDetail />} />
     </Routes>
   );
 }

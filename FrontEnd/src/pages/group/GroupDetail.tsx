@@ -2,13 +2,15 @@ import Introbear from "@assets/images/introbear.png";
 import Header from "@components/Layout/Header";
 import Footer from "@components/Layout/Footer";
 import Button from "@components/common/Button";
+import { useParams } from "react-router-dom";
 
 function GroupDetail() {
+  const { groupId } = useParams();
   return (
     <div className="pb-[74px]">
       <div className="flex flex-col gap-5">
         <Header title={"모임 상세보기"} isicon={true} className="bg-offWhite" />
-
+        {groupId}
         {/* 모임 상세정보 박스 */}
         <div className="flex flex-col font-suite items-start justify-center mx-5  mb-[100px] pt-6 bg-white rounded-xl gap-5 inline-flex overflow-hidden">
           <div className="px-5 justify-start items-center gap-2.5 inline-flex">
