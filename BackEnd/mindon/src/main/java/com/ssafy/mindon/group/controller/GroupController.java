@@ -6,6 +6,7 @@ import com.ssafy.mindon.group.dto.GroupListResponse;
 import com.ssafy.mindon.group.service.GroupCreateService;
 import com.ssafy.mindon.group.service.GroupJoinService;
 import com.ssafy.mindon.group.service.GroupListService;
+import com.ssafy.mindon.group.service.GroupMyListService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,13 +21,14 @@ public class GroupController {
 
     private final GroupCreateService groupCreateService;
     private final GroupJoinService groupJoinService;
-
     private final GroupListService groupListService;
+    private final GroupMyListService groupMyListService;
 
-    public GroupController(GroupCreateService groupCreateService, GroupJoinService groupJoinService, GroupListService groupListService) {
+    public GroupController(GroupCreateService groupCreateService, GroupJoinService groupJoinService, GroupListService groupListService, GroupMyListService groupMyListService) {
         this.groupCreateService = groupCreateService;
         this.groupJoinService = groupJoinService;
         this.groupListService = groupListService;
+        this.groupMyListService = groupMyListService;
     }
 
     @PostMapping
@@ -62,5 +64,15 @@ public class GroupController {
         );
 
         return ResponseEntity.ok(Collections.singletonMap("data", response));
+    }
+
+    @PostMapping("/{groupStatus}/list")
+    public ResponseEntity<List<GroupListResponse>> getGroupsByStatus(
+            @RequestHeader("Authorization") String accessToken,
+            @PathVariable Byte groupStatus
+    ) {
+        List<GroupListResponse> groupList = groupMyListService.findGroupsByAccessTokenAndStatus(accessToken, groupStatus);
+
+        return ResponseEntity.ok(groupList);
     }
 }
