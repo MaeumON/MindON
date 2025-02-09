@@ -10,9 +10,12 @@ import FavGroupCard from "@/components/Mainpage/FavGroupCard";
 import { fetchGroups } from "@/apis/groupApi";
 import { groupType } from "@/apis/types/groups";
 import Footer from "@/components/Layout/Footer";
+import useAuthStore from "@/stores/authStore";
 
 function Main() {
-  let userName = "이하영";
+  // store 유저데이터 불러오기
+  const { data } = useAuthStore();
+  const userName = data.userName || "사용자";
 
   const nav = useNavigate();
   function navToList() {
@@ -39,15 +42,20 @@ function Main() {
 
   useEffect(() => {
     const loadGroups = async () => {
-      const data = await fetchGroups();
-      setGroups(data);
+      try {
+        const data = await fetchGroups();
+        console.log("Fetched Groups: ", data);
+        setGroups(data);
+      } catch (error) {
+        console.error("Error Fetching groups : ", error);
+      }
     };
 
     loadGroups();
   }, []);
 
   return (
-    <div className="relative w-full max-w-[412px] mx-auto">
+    <div className="relative w-full max-w-[412px] mx-auto whitespace-nowrap">
       {/* 노란박스 */}
       <section className="relative flex flex-col bg-yellow100 card-title h-[245px] px-[40px] py-[40px]">
         <section className="flex flex-col gap-[10px] items-stretch">
@@ -58,7 +66,7 @@ function Main() {
       </section>
 
       {/* 흰색 박스 */}
-      <ShadowCard className="absolute top-[200px] left-1/2 transform -translate-x-1/2">
+      <ShadowCard className="absolute top-[200px] left-1/2 transform -translate-x-1/2 sm:w-[330px] w-[300px] ">
         <IllCaption diseaseName={UpCommingEvent?.diseaseName ?? "미정"} />
         <div className="flex flex-col items-start gap-[5px]">
           {UpCommingEvent ? (
@@ -87,19 +95,26 @@ function Main() {
       <div className="maincontents mb-[100px]">
         <div className="mt-[220px]">
           <section>
-            <section id="talkbutton" className="flex justify-around px-[20px] h-[300px]">
+            <section id="talkbutton" className="flex justify-around px-[20px] h-[250px] sm:h-[300px] gap-[10px]">
               {/* 온 Talk 버튼 & OkBear */}
               <div className="relative cursor-pointer">
-                <img src={OkBear} alt="온 Talk" className="w-[145px] h-[145px]" onClick={navToList} />
+                <img
+                  src={OkBear}
+                  alt="온 Talk"
+                  className="sm:w-[145px] sm:h-[145px] w-[120px] h-[120px]"
+                  onClick={navToList}
+                />
                 <section
                   onClick={navToList}
                   className="flex flex-col justify-between items-center absolute top-[60%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 bg-white py-[15px] rounded-[12px] shadow-md"
                 >
-                  <div className="flex justify-center items-center gap-[10px]">
-                    <p className="text-cardLongContent font-jamsilMedium text-24px whitespace-nowrap">온 Talk</p>
+                  <div className="flex justify-center items-center gap-[5px]">
+                    <p className="text-cardLongContent font-jamsilMedium sm:text-24px text-20px whitespace-nowrap">
+                      온 Talk
+                    </p>
                     <IconSearch />
                   </div>
-                  <div className="text-cardContent font-suite font-[600] text-18px text-center min-w-[165px]">
+                  <div className="text-cardContent font-suite font-[600] sm:text-18px text-16px text-center sm:min-w-[165px] min-w-[140px]">
                     진행자 온이가 <br />
                     <span className="whitespace-nowrap">모임을 이끌어줘요</span>
                   </div>
@@ -108,16 +123,23 @@ function Main() {
 
               {/* 자유 Talk 버튼 & HeartBear */}
               <div className="relative cursor-pointer">
-                <img src={HeartBear} alt="자유 Talk" className="w-[145px] h-[145px]" onClick={navToList} />
+                <img
+                  src={HeartBear}
+                  alt="자유 Talk"
+                  className="sm:w-[145px] sm:h-[145px] w-[120px] h-[120px]"
+                  onClick={navToList}
+                />
                 <section
                   onClick={navToList}
                   className="flex flex-col justify-between items-center absolute top-[60%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 bg-white py-[15px] rounded-[12px] shadow-md"
                 >
                   <div className="flex justify-center items-center gap-[5px]">
-                    <p className="text-cardLongContent font-jamsilMedium text-24px whitespace-nowrap">자유 Talk</p>
+                    <p className="text-cardLongContent font-jamsilMedium sm:text-24px text-20px whitespace-nowrap">
+                      자유 Talk
+                    </p>
                     <IconSearch />
                   </div>
-                  <div className="text-cardContent font-suite font-[600] text-18px text-center min-w-[165px]">
+                  <div className="text-cardContent font-suite font-[600] sm:text-18px text-16px  text-center sm:min-w-[165px] min-w-[140px]">
                     진행자 온이 없이 <br />
                     <span className="whitespace-nowrap">자유롭게 대화해요</span>
                   </div>

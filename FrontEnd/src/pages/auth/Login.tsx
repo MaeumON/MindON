@@ -25,10 +25,10 @@ function Login() {
   async function onClickLogin() {
     try {
       const result = await loginApi(userId, password);
-      const { accessToken, data } = result;
+      const { accessToken, refreshToken, data } = result;
 
       // Zustand에 로그인 정보 저장
-      setAuth(accessToken, data);
+      setAuth(accessToken, refreshToken, data);
       router("/main");
     } catch (error) {
       console.error("로그인 실패:", error);
@@ -56,10 +56,26 @@ function Login() {
         </Form>
         <Button text={"로그인"} type={"GREEN"} onClick={onClickLogin} />
       </div>
-      <section className="flex flex-col text-[16px] gap-2 text-cardContent font-medium">
-        <p>아이디를 잊어버리셨나요?</p>
-        <p>비밀번호를 잊어버리셨나요?</p>
-        <p>아직 계정이 없으신가요?</p>
+
+      <section className="flex flex-col text-center  text-[16px] gap-2 text-cardContent font-medium">
+        <div
+          className="cursor-pointer underline text-semibold decoration-cardContent2"
+          onClick={() => router("/findid")}
+        >
+          아이디 찾기
+        </div>
+        <div
+          className="cursor-pointer underline text-semibold decoration-cardContent2"
+          onClick={() => router("/findpwd")}
+        >
+          비밀번호 찾기
+        </div>
+        <div
+          className="cursor-pointer underline text-semibold decoration-cardContent2"
+          onClick={() => router("/signup")}
+        >
+          회원 가입
+        </div>
       </section>
     </Wrapper>
   );

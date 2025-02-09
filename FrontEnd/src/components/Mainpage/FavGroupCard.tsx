@@ -13,7 +13,7 @@ const FavGroupCard = ({ group }: { group: groupType }) => {
   if (!group) return null; // group이 없는 경우 렌더링 방지
 
   return (
-    <Card onClick={handleClick}>
+    <Card onClick={handleClick} className="sm:w-[330px] w-[300px] ">
       <IllCaption diseaseName={group.diseaseName ?? "기본값"} />
       <div className="font-suite font-bold text-20px text-cardTitle">{group.title}</div>
       <div className="font-suite font-semibold text-18px">

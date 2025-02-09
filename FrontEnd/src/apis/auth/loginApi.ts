@@ -5,6 +5,7 @@ import instance from "../instance";
 
 interface Data {
   accessToken: string;
+  refreshToken: string;
   data: {
     userId: string;
     userName: string;
@@ -19,6 +20,7 @@ const loginApi = async (userId: string, password: string): Promise<Data> => {
     console.log("apis/auth:", result.data);
     return {
       accessToken: result.data.accessToken,
+      refreshToken: result.data.refreshToken,
       data: result.data.data,
     };
   } catch (error) {
