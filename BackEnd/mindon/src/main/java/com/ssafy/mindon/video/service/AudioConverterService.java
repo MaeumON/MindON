@@ -1,2 +1,2 @@
-package com.ssafy.mindon.video.service;public class ㄴㅇㄹㄴㅇㄹ {
+package com.ssafy.mindon.video.service;public class AudioConverterService {
 }
