@@ -1,5 +1,6 @@
 import instance from "./instance";
 import { groupType } from "./types/groups";
+import { fetchTemperature } from "@/apis/temperture";
 
 export const fetchGroups = async (): Promise<groupType[]> => {
   try {

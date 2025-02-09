@@ -1,9 +1,4 @@
-interface IconProps {
-  width?: number;
-  height?: number;
-  fillColor?: string;
-  className?: string;
-}
+import { IconProps } from "@utils/iconProps";
 
 const IconPlus = ({ width = 100, height = 100, fillColor = "orange100", className = "" }: IconProps) => {
   return (

@@ -1,9 +1,4 @@
-interface IconProps {
-  width?: number;
-  height?: number;
-  fillColor?: string;
-  className?: string;
-}
+import { IconProps } from "@utils/iconProps";
 
 const IconChart = ({ width = 25, height = 24, fillColor = "orange100", className = "" }: IconProps) => {
   return (

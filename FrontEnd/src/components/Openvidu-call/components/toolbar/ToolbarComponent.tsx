@@ -1,52 +1,52 @@
 import React from "react";
-interface ToolbarComponentProps {
-  user?: UserModel;
-  showNotification: boolean;
-  camStatusChanged: () => void;
-  micStatusChanged: () => void;
-  toggleChat: () => void;
-  setIsEmotionModalOpen: (isOpen: boolean) => void;
-}
-
-interface UserModel {
-  isAudioActive: () => boolean;
-  isVideoActive: () => boolean;
-  isScreenShareActive: () => boolean;
-  getStreamManager: () => any;
-}
+import { ToolbarComponentProps } from "./ToolbarComponentProps";
+import IconMic from "@assets/icons/IconMic";
+import IconVideo from "@assets/icons/IconVideo";
+import IconChat from "@assets/icons/IconChat";
+import IconExit from "@assets/icons/IconExit";
 
 const ToolbarComponent: React.FC<ToolbarComponentProps> = ({
   user,
-  showNotification,
   camStatusChanged,
   micStatusChanged,
   toggleChat,
   setIsEmotionModalOpen,
 }) => {
+  //감정 기록 모달 띄우기
   function handleLeaveSession() {
     setIsEmotionModalOpen(true);
   }
+
   return (
-    <div className="bg-red" id="header">
-      <div className="flex justify-between items-center bg-gray-600">
-        <div className="w-[80%] flex justify-center items-center">
-          <button className="m-1  bg-green-500" onClick={micStatusChanged}>
-            {user && user.isAudioActive() ? <p>MIC ON</p> : <p>MIC OFF</p>}
-          </button>
+    <div className="flex justify-between items-center">
+      <div className="flex justify-center items-center">
+        <button
+          className="m-1 w-[50px] h-[50px] flex justify-center items-center bg-white shadow-md rounded-[100px]"
+          onClick={camStatusChanged}
+        >
+          {user && user.isVideoActive() ? <IconVideo width={21} height={14} fillColor={"#000"} /> : <p>CAM OFF</p>}
+        </button>
 
-          <button className="m-1 bg-green-500" onClick={camStatusChanged}>
-            {user && user.isVideoActive() ? <p>CAM ON</p> : <p>CAM OFF</p>}
-          </button>
+        <button
+          className="m-1 w-[50px] h-[50px] flex justify-center items-center bg-white shadow-md rounded-[100px]"
+          onClick={micStatusChanged}
+        >
+          {user && user.isAudioActive() ? <IconMic width={19} height={28} fillColor={"#000"} /> : <p>MIC OFF</p>}
+        </button>
 
-          <button className="m-1 bg-green-500" onClick={handleLeaveSession} id="navLeaveButton">
-            <p>LEAVE</p>
-          </button>
+        <button
+          className="m-1 w-[50px] h-[50px] flex justify-center items-center bg-white shadow-md rounded-[100px] cursor-pointer"
+          onClick={() => toggleChat(true)}
+        >
+          {<IconChat width={20} height={20} fillColor={"#000"} />}
+        </button>
 
-          <button className="m-1 w-[100%] h-10 bg-green-500 text-black" onClick={toggleChat}>
-            CHAT
-            {showNotification && <div className="w-2 h-2 bg-red-500" />}
-          </button>
-        </div>
+        <button
+          className="m-1 w-[50px] h-[50px] flex justify-center items-center bg-white shadow-md rounded-[100px]"
+          onClick={handleLeaveSession}
+        >
+          <IconExit width={21} height={23} className="text-red100" />
+        </button>
       </div>
     </div>
   );

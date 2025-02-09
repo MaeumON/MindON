@@ -7,10 +7,8 @@ const instance = axios.create({
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Credentials": "true",
   },
+  withCredentials: true,
 });
-
-//이후 인터셉터 설정
 
 export default instance;

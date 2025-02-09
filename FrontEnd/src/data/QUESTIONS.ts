@@ -1,7 +1,7 @@
 export const QUESTIONS = [
   {
     questionId: 1,
-    detail: "이번 주는 어떤 긍정적인 경험을 하셨나요?",
+    detail: "모임에 대한 소감을 말해볼까요?",
   },
   {
     questionId: 2,

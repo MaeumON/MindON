@@ -4,8 +4,8 @@ export default {
   theme: {
     center: true,
     screens: {
-      sm: "360px", // sm(360px) 이하
-      md: "412px", // md(412px) 이하
+      sm: "360px", // sm(344px) 이상
+      md: "412px", // md(412px) 이상
     },
     fontFamily: {
       jamsilRegular: ["Jamsil-Regular", "sans-serif"],
@@ -34,8 +34,12 @@ export default {
         "16px": "1rem",
         "18px": "1.125rem",
         "20px": "1.25rem",
+        "22px": "1.375rem",
         "24px": "1.5rem",
         "28px": "1.75rem",
+        "32px": "2rem",
+        "34px": "2.125rem",
+        "36px": "2.25rem",
       },
     },
   },

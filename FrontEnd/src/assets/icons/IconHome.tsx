@@ -1,9 +1,4 @@
-interface IconProps {
-  width?: number;
-  height?: number;
-  fillColor?: string;
-  className?: string;
-}
+import { IconProps } from "@utils/iconProps";
 
 const IconHome = ({
   width = 25, // 기본 크기 설정
