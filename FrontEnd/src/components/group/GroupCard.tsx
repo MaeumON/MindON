@@ -10,17 +10,35 @@ const GroupCard = ({ group }: GroupCardProps) => {
 
   const router = useNavigate();
 
+  // 12시간제로 변경해주는 함수
   const correctionHour = () => {
     if (group.meetingTime > 12 && 24 > group.meetingTime) {
       return `오후 ${group.meetingTime - 12}시`;
     } else if (group.meetingTime == 12) {
-      return "낮 12시(정오)";
+      return "낮 12시";
     } else if (group.meetingTime == 24) {
-      return "밤 12시(자정)";
+      return "밤 12시";
     } else {
       return `오전 ${group.meetingTime}시`;
     }
   };
+
+  // 숫자 요일로 변환해주는 함수
+  function dayOfWeekStr() {
+    if (!group?.dayOfWeek) return "요일 미정"; // group이 없거나 dayOfWeek가 undefined일 경우 기본값 설정
+
+    const weekDays: { [key: number]: string } = {
+      1: "월요일",
+      2: "화요일",
+      3: "수요일",
+      4: "목요일",
+      5: "금요일",
+      6: "토요일",
+      7: "일요일",
+    };
+
+    return weekDays[group.dayOfWeek] || "요일 미정"; // 유효하지 않은 값 예외 처리
+  }
 
   const onClickDetail = () => {
     router(`/groups/${group.groupId}`);
@@ -42,7 +60,7 @@ const GroupCard = ({ group }: GroupCardProps) => {
               {new Date(group.startDate).toISOString().split("T")[0]}
             </div>
             <div className="text-cardContent2 text-sm md:text-base font-semibold">시작 매주</div>
-            <div className="text-[#d98600] text-sm md:text-base font-semibold">월요일</div>
+            <div className="text-[#d98600] text-sm md:text-base font-semibold">{dayOfWeekStr()}</div>
             <div className="text-cardTitle text-sm md:text-base font-semibold">{correctionHour()}</div>
           </div>
           <div className="flex items-center gap-x-2 w-full">
