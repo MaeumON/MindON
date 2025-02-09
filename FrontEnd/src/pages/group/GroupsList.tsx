@@ -19,7 +19,7 @@ function GroupsList() {
   useEffect(() => {
     const fetchInitialGroups = async () => {
       try {
-        const result = await groupListApi({}, 1);
+        const result = await groupListApi({});
         console.log("📌 API 응답 데이터:", result);
         setGroups(result);
       } catch (error) {
