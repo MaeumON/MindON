@@ -24,7 +24,7 @@ public class VideoController {
         this.videoService = videoService;
     }
 
-    // 세션 생성
+    // 세션 API
     @PostMapping("/sessions")
     public ResponseEntity<SessionResponse> initializeSession(@RequestBody(required = false) Map<String, Object> params) {
         try {
@@ -48,6 +48,28 @@ public class VideoController {
         }
     }
 
+    @PostMapping("/remove-user")
+    public ResponseEntity<?> removeUser(@RequestBody Map<String, Object> sessionNameToken) {
+        try {
+            videoService.removeUser(sessionNameToken);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("close-session")
+    public ResponseEntity<?> closeSession(@RequestBody Map<String, Object> sessionName) {
+        try {
+            videoService.closeSession(sessionName);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    // 녹음 API
     @PostMapping("/recording/start")
     public ResponseEntity<?> startRecording(@RequestBody Map<String, Object> params) {
         try {
@@ -57,6 +79,7 @@ public class VideoController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
 
     @PostMapping("/recording/stop")
     public ResponseEntity<?> stopRecording(@RequestBody Map<String, Object> params) {
