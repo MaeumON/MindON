@@ -40,3 +40,9 @@ export interface QuestionSpeakingOrderType {
   userId: string;
   userName: string;
 }
+
+export interface Message {
+  connectionId: string;
+  nickname: string;
+  message: string;
+}
