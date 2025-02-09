@@ -14,7 +14,7 @@ const Recording = ({ sessionID }: RecordingProps) => {
   const hasVideo = false;
 
   async function startRecording() {
-    const response = await instance.post("/recording/start", {
+    const response = await instance.post("/api/video/recording/start", {
       session: sessionID,
       outputMode: OUTPUT_MODE,
       hasAudio: hasAudio,
@@ -25,7 +25,7 @@ const Recording = ({ sessionID }: RecordingProps) => {
   }
 
   async function stopRecording() {
-    const response = await instance.post("/recording/stop", {
+    const response = await instance.post("/api/video/recording/stop", {
       recording: sessionID,
     });
 
@@ -33,7 +33,7 @@ const Recording = ({ sessionID }: RecordingProps) => {
   }
 
   async function deleteRecording() {
-    const response = await instance.delete("/recording/delete", {
+    const response = await instance.delete("/api/video/recording/delete", {
       data: {
         recording: sessionID,
       },
@@ -43,13 +43,13 @@ const Recording = ({ sessionID }: RecordingProps) => {
   }
 
   async function getRecording() {
-    const response = await instance.get("/recording/get/" + sessionID);
+    const response = await instance.get("/api/video/recording/get/" + sessionID);
 
     console.log("get recording response", response);
   }
 
   async function listRecordings() {
-    const response = await instance.get("/recording/list");
+    const response = await instance.get("/api/video/recording/list");
 
     console.log("list recording response", response);
   }
