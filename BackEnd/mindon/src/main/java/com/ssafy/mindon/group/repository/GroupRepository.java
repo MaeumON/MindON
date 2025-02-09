@@ -34,4 +34,5 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
             @Param("dayOfWeek") List<Byte> dayOfWeek
     );
 
+    void deleteByGroupId(int groupId);
 }
