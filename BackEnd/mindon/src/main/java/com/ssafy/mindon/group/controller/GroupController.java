@@ -3,10 +3,7 @@ package com.ssafy.mindon.group.controller;
 import com.ssafy.mindon.group.dto.CreateGroupRequest;
 import com.ssafy.mindon.group.dto.GroupListRequest;
 import com.ssafy.mindon.group.dto.GroupListResponse;
-import com.ssafy.mindon.group.service.GroupCreateService;
-import com.ssafy.mindon.group.service.GroupJoinService;
-import com.ssafy.mindon.group.service.GroupListService;
-import com.ssafy.mindon.group.service.GroupMyListService;
+import com.ssafy.mindon.group.service.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,12 +20,14 @@ public class GroupController {
     private final GroupJoinService groupJoinService;
     private final GroupListService groupListService;
     private final GroupMyListService groupMyListService;
+    private final GroupLeaveService groupLeaveService;
 
-    public GroupController(GroupCreateService groupCreateService, GroupJoinService groupJoinService, GroupListService groupListService, GroupMyListService groupMyListService) {
+    public GroupController(GroupCreateService groupCreateService, GroupJoinService groupJoinService, GroupListService groupListService, GroupMyListService groupMyListService, GroupLeaveService groupLeaveService) {
         this.groupCreateService = groupCreateService;
         this.groupJoinService = groupJoinService;
         this.groupListService = groupListService;
         this.groupMyListService = groupMyListService;
+        this.groupLeaveService = groupLeaveService;
     }
 
     @PostMapping
@@ -74,5 +73,23 @@ public class GroupController {
         List<GroupListResponse> groupList = groupMyListService.findGroupsByAccessTokenAndStatus(accessToken, groupStatus);
 
         return ResponseEntity.ok(groupList);
+    }
+    // 그룹 탈퇴
+    @DeleteMapping("/{groupId}/members")
+    public ResponseEntity<String> leaveGroup(
+            @RequestHeader("Authorization") String accessToken,
+            @PathVariable Integer groupId) {
+
+        if (accessToken == null || accessToken.isEmpty()) {
+            return ResponseEntity.status(400).body("{\"message\": \"Missing accessToken\"}");
+        }
+
+        boolean isLeft = groupLeaveService.leaveGroup(groupId, accessToken);
+
+        if (isLeft) {
+            return ResponseEntity.ok("{\"message\": \"탈퇴 완료\"}");
+        } else {
+            return ResponseEntity.status(400).body("{\"message\": \"탈퇴 실패\"}");
+        }
     }
 }
