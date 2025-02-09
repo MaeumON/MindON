@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import HomePage from "@pages/HomePage";
 import PreJoin from "@pages/openvidu/PreJoin";
 import Welcome from "@pages/Welcome";
@@ -12,22 +13,26 @@ import MyDataDetail from "./pages/MyDataDetail";
 import GroupsList from "@pages/group/GroupsList";
 import GroupDetail from "@pages/group/GroupDetail";
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/prejoin" element={<PreJoin />} />
-      <Route path="/welcome" element={<Welcome />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/findid" element={<FindId />} />
-      <Route path="/findpwd" element={<FindPwd />} />
-      <Route path="/main" element={<Main />} />
-      <Route path="/mydata" element={<MyData />} />
-      <Route path="/mydata/:id" element={<MyDataDetail />} />
-      <Route path="/groupslist" element={<GroupsList />} />
-      <Route path="/groups/:groupId" element={<GroupDetail />} />
-    </Routes>
+    <QueryClientProvider client={queryClient}>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/prejoin" element={<PreJoin />} />
+        <Route path="/welcome" element={<Welcome />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/findid" element={<FindId />} />
+        <Route path="/findpwd" element={<FindPwd />} />
+        <Route path="/main" element={<Main />} />
+        <Route path="/mydata" element={<MyData />} />
+        <Route path="/mydata/:id" element={<MyDataDetail />} />
+        <Route path="/groupslist" element={<GroupsList />} />
+        <Route path="/groups/:groupId" element={<GroupDetail />} />
+      </Routes>
+    </QueryClientProvider>
   );
 }
 

@@ -6,16 +6,12 @@ import { FINDID } from "../data/FINDID";
 import { FINDPWD } from "../data/FINDPWD";
 import { QUESTION_SPEAKING_ORDER } from "@/data/OPENVIDU";
 import { TEMPERATURE } from "@/data/TEMPERTURE";
+import { GROUPSDETAIL } from "@/data/GROUPDETAIL";
 
 const { VITE_APP_API_URL } = import.meta.env;
 // const ITEMS_PER_PAGE = 5; // 한 페이지당 반환할 그룹 개수
 
 const handlers = [
-  //그룹 목록 조회
-  http.get(VITE_APP_API_URL + "/api/groups/list", () => {
-    return HttpResponse.json(GROUPS);
-  }),
-
   // 질문 받아오기
   http.get(VITE_APP_API_URL + "/api/meetings/:meetingId/questions", (req) => {
     const { meetingId } = req.params; // meetingId 파라미터 접근
@@ -44,6 +40,18 @@ const handlers = [
   // GroupsList 정보
   http.post(VITE_APP_API_URL + "/api/groups/list", () => {
     return HttpResponse.json(GROUPS);
+  }),
+
+  // GroupDetail 정보
+  http.get(VITE_APP_API_URL + "/api/groups/:groupId", ({ params }) => {
+    const { groupId } = params;
+    const filteredGroup = GROUPSDETAIL.find((g) => g.groupId === Number(groupId));
+
+    if (!filteredGroup) {
+      return new HttpResponse("그룹을 찾을 수 없습니다.", { status: 404 });
+    }
+
+    return HttpResponse.json(filteredGroup);
   }),
 
   // // 그룹 목록 조회 (GET 요청)
