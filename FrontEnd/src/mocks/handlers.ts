@@ -7,6 +7,7 @@ import { FINDPWD } from "../data/FINDPWD";
 import { QUESTION_SPEAKING_ORDER } from "@/data/OPENVIDU";
 import { TEMPERATURE } from "@/data/TEMPERTURE";
 import { GROUPSDETAIL } from "@/data/GROUPDETAIL";
+import { MEETINGDETIAL } from "@/data/MEETINGDETAIL";
 import { Group, RequestData } from "@/apis/group/groupListApi";
 
 const { VITE_APP_API_URL } = import.meta.env;
@@ -140,6 +141,12 @@ const handlers = [
   // 마음온도 정보
   http.get(VITE_APP_API_URL + "/api/users/temparature", () => {
     return HttpResponse.json({ temperture: TEMPERATURE.temperture });
+  }),
+
+  http.get(VITE_APP_API_URL + "/api/groups/:groupId/reviews", (req) => {
+    const { groupId } = req.params;
+    console.log(groupId);
+    return HttpResponse.json(MEETINGDETIAL);
   }),
 
   //SignUp 정보
