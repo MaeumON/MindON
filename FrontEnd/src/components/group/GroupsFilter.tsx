@@ -13,12 +13,12 @@ interface GroupsFilterProps {
 
 function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
   const [selectedDiseases, setSelectedDiseases] = useState<string[]>([]); // 질병 선택 상태
-  const [selectedPeriod, setSelectedPeriod] = useState<number>(1); // 기본값 1주
+  const [selectedPeriod, setSelectedPeriod] = useState<number>(); // 기본값 1주
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [selectedStartTime, setSelectedStartTime] = useState<string>("00:00");
   const [selectedEndTime, setSelectedEndTime] = useState<string>("23:00");
-  const [selectedHost, setSelectedHost] = useState<string>("관계없음");
+  const [selectedHost, setSelectedHost] = useState<string | null>(null);
   const [maxWidth, setMaxWidth] = useState(412);
 
   // 반응형 화면 구현
@@ -86,7 +86,7 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
 
   //  진행자 선택 (라디오 버튼처럼 동작)
   const toggleHost = (host: string) => {
-    setSelectedHost(host);
+    setSelectedHost(host === "관계 없음" ? null : host);
   };
 
   // 필터 적용하기 버튼 클릭 시 실행
@@ -108,7 +108,7 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
 
     const filterData: RequestData = {
       diseaseId: selectedDiseases.map((disease) => diseaseMap[disease] || null).filter((id) => id !== null),
-      isHost: selectedHost === "관계 없음" ? null : selectedHost === "유" ? true : false,
+      isHost: selectedHost === "유" ? true : selectedHost === "무" ? false : null,
       startDate: formattedStartDateString,
       period: selectedPeriod,
       startTime: Number(selectedStartTime.split(":")[0]),
@@ -122,10 +122,10 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
   // 필터 초기화하기 버튼 클릭시 실행
   const resetFilter = () => {
     setSelectedDays([]);
-    setSelectedHost("관계 없음");
+    setSelectedHost(null);
     setSelectedDiseases([]);
     setStartDate(new Date());
-    setSelectedPeriod(8);
+    setSelectedPeriod(1);
     setSelectedStartTime("00:00");
     setSelectedEndTime("23:00");
   };
