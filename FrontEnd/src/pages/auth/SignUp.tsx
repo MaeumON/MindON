@@ -50,6 +50,7 @@ function SignUp() {
     try {
       await signUpApi(requestData);
       alert("회원가입이 완료되었습니다");
+      console.log(requestData);
       router("/login");
     } catch (error) {
       console.error("회원가입 오류:", error);

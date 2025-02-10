@@ -6,7 +6,7 @@ const { VITE_APP_API_URL } = import.meta.env;
 const authInstance = axios.create({
   baseURL: VITE_APP_API_URL, // 프로덕션 환경
   headers: {
-    "Content-Type": "application/json",
+    "Content-Type": "application/json; charset=UTF-8",
   },
   withCredentials: true,
 });
@@ -54,7 +54,10 @@ authInstance.interceptors.response.use(
           const newRefreshToken = res.data.refreshToken;
 
           // 새 토큰 저장
-          useAuthStore.getState().setAuth(newAccessToken, newRefreshToken, useAuthStore.getState().data);
+          useAuthStore.getState().setAuth({
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken,
+          });
           // 원래 요청에 새 accessToken 추가 후 재시도
           originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
           return authInstance(originalRequest);
