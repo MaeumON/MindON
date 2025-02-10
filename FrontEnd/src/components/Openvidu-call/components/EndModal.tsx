@@ -36,9 +36,6 @@ const EndModal = ({ setIsEndModalOpen, handleRemoveUser }: EmotionModalProps) =>
           >
             모임 종료
           </button>
-          <button className="w-[130px] p-2 rounded-[12px] text-white font-bold bg-green100 cursor-pointer">
-            저장하기
-          </button>
         </div>
       </div>
     </section>

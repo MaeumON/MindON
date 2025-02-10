@@ -4,7 +4,7 @@ import ChatComponent from "@components/Openvidu-call/components/chat/ChatCompone
 import StreamComponent from "@components/Openvidu-call/components/stream/StreamComponent";
 import ToolbarComponent from "@components/Openvidu-call/components/toolbar/ToolbarComponent";
 import UserModel from "@components/Openvidu-call/models/user-model";
-import Recording from "@pages/openvidu/Recording";
+// import Recording from "@pages/openvidu/Recording";
 import EmotionModal from "@/components/Openvidu-call/components/emotionModal/EmotionModal";
 import Question from "@components/Openvidu-call/components/questions/Question";
 import { Session } from "openvidu-browser";
@@ -95,9 +95,9 @@ function Room({
           </div>
         ))}
       </div>
-      <div>
+      {/* <div>
         <Recording sessionID={mySessionId} />
-      </div>
+      </div> */}
       <div className="h-[10%] mb-[20px]">
         <ToolbarComponent
           user={localUser}
