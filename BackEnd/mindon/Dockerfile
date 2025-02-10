@@ -1,9 +1,11 @@
 # 1. Base 이미지 선택 (빌드용)
 FROM openjdk:17-jdk-slim as builder
 
+# ffmpeg 설치
+RUN apt-get update && apt-get install -y ffmpeg
+
 # 2. 작업 디렉토리 설정
 WORKDIR /app
-
 
 # 3. Gradle 빌드 환경 설정 (캐싱 최적화)
 COPY gradlew .
@@ -18,6 +20,9 @@ RUN ./gradlew build --no-daemon
 
 # 5. 실행용 JDK 이미지 설정
 FROM openjdk:17-jdk-slim
+
+# ffmpeg 설치 (실행 환경에도 필요할 경우 추가)
+RUN apt-get update && apt-get install -y ffmpeg
 
 # 6. 실행 디렉토리 설정
 WORKDIR /app
