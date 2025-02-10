@@ -1,4 +1,4 @@
-import { Group } from "@/apis/group/groupListApi";
+import { Group } from "@/utils/groups";
 import { useNavigate } from "react-router-dom";
 
 interface GroupCardProps {
