@@ -4,7 +4,7 @@ import ChatComponent from "@components/Openvidu-call/components/chat/ChatCompone
 import StreamComponent from "@components/Openvidu-call/components/stream/StreamComponent";
 import ToolbarComponent from "@components/Openvidu-call/components/toolbar/ToolbarComponent";
 import UserModel from "@components/Openvidu-call/models/user-model";
-import Recording from "@pages/openvidu/Recording";
+// import Recording from "@pages/openvidu/Recording";
 import EmotionModal from "@/components/Openvidu-call/components/emotionModal/EmotionModal";
 import Question from "@components/Openvidu-call/components/questions/Question";
 import { Session } from "openvidu-browser";
@@ -82,22 +82,22 @@ function Room({
     <section className="w-full h-[calc(100vh-80px)] px-[20px] flex flex-col justify-center items-center bg-offWhite font-suite">
       <Question session={session} mySessionId={mySessionId} subscribers={subscribers} />
 
-      <div id="layout" className="w-full h-[80%]">
+      <div className="w-full h-[80%] grid grid-cols-3 gap-4">
         {localUser && localUser.getStreamManager() && (
-          <div className="w-[45%] h-[45%]" id="localUser">
+          <div className="w-full h-full">
             <StreamComponent user={localUser} />
           </div>
         )}
 
         {subscribers.map((sub, i) => (
-          <div key={i} className="w-[50%] h-[50%]" id="remoteUsers">
+          <div key={i} className="w-full h-full">
             <StreamComponent user={sub} streamId={sub.getStreamManager().stream.streamId} />
           </div>
         ))}
       </div>
-      <div>
+      {/* <div>
         <Recording sessionID={mySessionId} />
-      </div>
+      </div> */}
       <div className="h-[10%] mb-[20px]">
         <ToolbarComponent
           user={localUser}

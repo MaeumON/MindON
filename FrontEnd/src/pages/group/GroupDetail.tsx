@@ -224,7 +224,7 @@ function GroupDetail() {
                       <br />
                     </span>
                     <span className="text-[#d98600] text-lg font-bold leading-[35px]">
-                      최소 {group?.minMembers}명 이상 최대 {group?.maxiMembers}명 이하
+                      최소 {group?.minMember}명 이상 최대 {group?.maxMember}명 이하
                     </span>
                     <span className="text-cardLongContent text-lg font-medium leading-[35px]">로 참여해요</span>
                     {getHostMessage()}
