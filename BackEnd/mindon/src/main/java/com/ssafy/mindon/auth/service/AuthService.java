@@ -2,8 +2,11 @@ package com.ssafy.mindon.auth.service;
 
 import com.ssafy.mindon.auth.dto.LoginRequestDto;
 import com.ssafy.mindon.auth.dto.SignupRequestDto;
+import com.ssafy.mindon.common.error.ErrorCode;
+import com.ssafy.mindon.common.exception.AuthException;
 import com.ssafy.mindon.common.util.JwtUtil;
 import com.ssafy.mindon.common.util.PasswordUtil;
+import com.ssafy.mindon.disease.entity.Disease;
 import com.ssafy.mindon.user.entity.User;
 import com.ssafy.mindon.user.repository.UserRepository;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -46,18 +49,24 @@ public class AuthService {
     }
 
     // 로그인
-    public Map<String, String> login(LoginRequestDto loginRequestDto) {
+    public Map<String, Object> login(LoginRequestDto loginRequestDto) {
         // userId로 사용자 조회
         User user = userRepository.findByUserId(loginRequestDto.getUserId());
 
         if (user == null) {
-            throw new IllegalArgumentException("Invalid userId or password");
+            throw new AuthException(ErrorCode.USER_NOT_FOUND);
         }
 
         // 비밀번호 검증
         if (!passwordUtil.matches(loginRequestDto.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Invalid userId or password");
+            throw new AuthException(ErrorCode.INVALID_PASSWORD);
         }
+
+        // 유저 정보 저장
+        String userId = user.getUserId();
+        String userName = user.getUserName();
+        int diseaseId = user.getDiseaseId();
+        String diseaseName = user.getDisease().getDiseaseName();
 
         // JWT 토큰 생성
         String accessToken = jwtUtil.generateAccessToken(user.getUserId());
@@ -67,9 +76,13 @@ public class AuthService {
         redisTemplate.opsForValue().set(user.getUserId(), refreshToken, 7, TimeUnit.DAYS);
 
         // 토큰 반환
-        Map<String, String> tokens = new HashMap<>();
+        Map<String, Object> tokens = new HashMap<>();
         tokens.put("accessToken", accessToken);
         tokens.put("refreshToken", refreshToken);
+        tokens.put("userId", userId);
+        tokens.put("userName", userName);
+        tokens.put("diseaseId", diseaseId);
+        tokens.put("diseaseName", diseaseName);
         return tokens;
     }
 
@@ -85,7 +98,7 @@ public class AuthService {
         String storedToken = redisTemplate.opsForValue().get(userId);
 
         if (storedToken == null || !storedToken.equals(refreshToken)) {
-            throw new IllegalArgumentException("Invalid refresh token");
+            throw new AuthException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
 
         // 새 토큰 생성
