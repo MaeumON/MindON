@@ -2,7 +2,7 @@ import { Dialog } from "@headlessui/react";
 import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { RequestData } from "@/apis/group/groupListApi";
+import { RequestData } from "@/utils/groups";
 
 interface GroupsFilterProps {
   isOpen: boolean;

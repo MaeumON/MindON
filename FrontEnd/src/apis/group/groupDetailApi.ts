@@ -1,13 +1,7 @@
 // groupDetail axios
 
 import authInstance from "../authinstance";
-import { Group } from "./groupListApi";
-
-interface GroupDetail extends Group {
-  isRegister: boolean;
-  description: string;
-  progressWeeks?: number;
-}
+import { GroupDetail } from "@/utils/groups";
 
 const groupDetailApi = async (groupId: string): Promise<GroupDetail> => {
   try {

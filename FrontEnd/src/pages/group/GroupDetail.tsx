@@ -244,8 +244,13 @@ function GroupDetail() {
             </div>
           </div>
         </div>
-        <div className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-40px)] max-w-[392px] w-auto shadow-lg ">
-          <Button text={isRegi ? "취소하기" : "참여하기"} type={isRegi ? "ORANGE" : "GREEN"} onClick={onClickJoin} />
+        <div>
+          <Button
+            text={isRegi ? "취소하기" : "참여하기"}
+            type={isRegi ? "ORANGE" : "GREEN"}
+            onClick={onClickJoin}
+            className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-40px)] max-w-[392px] w-auto shadow-lg "
+          />
         </div>
       </div>
       <Footer />

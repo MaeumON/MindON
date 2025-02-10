@@ -2,7 +2,7 @@ import Header from "@components/Layout/Header";
 import GroupCard from "@/components/group/GroupCard";
 import GroupsFilter from "@components/group/GroupsFilter";
 import Footer from "@components/Layout/Footer";
-import { Group, RequestData } from "@apis/group/groupListApi";
+import { Group, RequestData } from "@utils/groups";
 
 import IconSearch from "@assets/icons/IconSearch";
 import SeachFilter from "@assets/images/SeachFilter.png";
