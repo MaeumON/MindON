@@ -11,9 +11,9 @@ import { fetchTopGroups } from "@apis/topFiveGroupApi";
 import { groupType } from "@apis/types/groups";
 import Footer from "@components/Layout/Footer";
 import useAuthStore from "@stores/authStore";
-import { dateChanger } from "@/utils/dateChanger";
-import { EventDics } from "@/utils/EventDicsTypes";
-import { fetchUpcomingEvent } from "@/apis/upcomingEvnetsApi";
+import { dateChanger } from "@utils/dateChanger";
+import { EventDics } from "@utils/EventDicsTypes";
+import { fetchUpcomingEvent } from "@/apis/upcomingEventsApi";
 
 // 메인페이지
 
