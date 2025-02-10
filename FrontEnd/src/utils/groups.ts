@@ -22,9 +22,9 @@ export interface Group {
   period: number;
   meetingTime: number;
   dayOfWeek: number;
-  minMembers: number;
-  maxiMembers: number;
-  totalMembers: number;
+  minMember: number;
+  maxMember: number;
+  totalMember: number;
   groupStatus: number;
 }
 
