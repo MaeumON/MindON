@@ -19,6 +19,20 @@ public class GroupListService {
                                                         LocalDateTime startDate, Byte period, Byte startTime,
                                                         Byte endTime, List<Byte> dayOfWeek) {
 
+        // 빈 리스트 처리
+        if (diseaseId.isEmpty()) {
+             diseaseId = null;
+        }
+
+        if (dayOfWeek.isEmpty()) {
+            dayOfWeek = null;
+        }
+
+        // period 기본값 -> 전체 조회
+        if (period==0) {
+            period = null;
+        }
+
         // Repository에서 결과 조회
         List<Group> groups = groupRepository.findGroupsByCriteria(keyword, diseaseId, isHost, startDate, period, startTime, endTime, dayOfWeek);
 
