@@ -11,5 +11,5 @@ export interface ToolbarComponentProps {
   camStatusChanged: () => void;
   micStatusChanged: () => void;
   toggleChat: (isOpen: boolean) => void;
-  setIsEmotionModalOpen: (isOpen: boolean) => void;
+  setIsCloseModalOpen: (isOpen: boolean) => void;
 }

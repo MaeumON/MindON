@@ -10,11 +10,11 @@ const ToolbarComponent: React.FC<ToolbarComponentProps> = ({
   camStatusChanged,
   micStatusChanged,
   toggleChat,
-  setIsEmotionModalOpen,
+  setIsCloseModalOpen,
 }) => {
   //감정 기록 모달 띄우기
   function handleLeaveSession() {
-    setIsEmotionModalOpen(true);
+    setIsCloseModalOpen(true);
   }
 
   return (
