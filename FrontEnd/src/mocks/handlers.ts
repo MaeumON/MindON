@@ -6,9 +6,9 @@ import { FINDID } from "../data/FINDID";
 import { FINDPWD } from "../data/FINDPWD";
 import { QUESTION_SPEAKING_ORDER } from "@/data/OPENVIDU";
 import { TEMPERATURE } from "@/data/TEMPERTURE";
-import { GROUPSDETAIL } from "@/data/GROUPDETAIL";
+// import { GROUPSDETAIL } from "@/data/GROUPDETAIL";
 import { MEETINGDETIAL } from "@/data/MEETINGDETAIL";
-import { UPCOMING_EVENTS } from "@/data/UPCOMING_EVENTS";
+// import { UPCOMING_EVENTS } from "@/data/UPCOMING_EVENTS";
 // import { Group, RequestData } from "@/apis/group/groupListApi";
 import { TOPFIVEGROUPS } from "@/data/TOPFIVEGROUPS";
 // import { RequestData, Group } from "@/utils/groups";
@@ -100,16 +100,16 @@ const handlers = [
   // }),
 
   // GroupDetail 정보
-  http.get(VITE_APP_API_URL + "/api/groups/:groupId", ({ params }) => {
-    const { groupId } = params;
-    const filteredGroup = GROUPSDETAIL.find((g) => g.groupId === Number(groupId));
+  // http.get(VITE_APP_API_URL + "/api/groups/:groupId", ({ params }) => {
+  //   const { groupId } = params;
+  //   const filteredGroup = GROUPSDETAIL.find((g) => g.groupId === Number(groupId));
 
-    if (!filteredGroup) {
-      return new HttpResponse("그룹을 찾을 수 없습니다.", { status: 404 });
-    }
+  //   if (!filteredGroup) {
+  //     return new HttpResponse("그룹을 찾을 수 없습니다.", { status: 404 });
+  //   }
 
-    return HttpResponse.json(filteredGroup);
-  }),
+  //   return HttpResponse.json(filteredGroup);
+  // }),
 
   // TopFiveGroups 리스트트
   http.get(VITE_APP_API_URL + "/api/groups/:diseaseId/new", () => {
@@ -183,9 +183,9 @@ const handlers = [
   }),
 
   // upcoming 이벤트 조회
-  http.get(VITE_APP_API_URL + "/api/meetings/upcoming", () => {
-    return HttpResponse.json(UPCOMING_EVENTS);
-  }),
+  // http.get(VITE_APP_API_URL + "/api/meetings/upcoming", () => {
+  //   return HttpResponse.json(UPCOMING_EVENTS);
+  // }),
 ];
 
 export default handlers;

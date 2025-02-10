@@ -15,7 +15,7 @@ interface QuestionState {
 }
 
 interface QuestionActions {
-  fetchQuestionsData: (meetingId: string) => Promise<void>;
+  fetchQuestionsData: (meetingId: number) => Promise<void>;
   setIsMeetingStart: (isMeetingStart: number) => void;
   setIsQuestionStart: (isQuestionStart: number) => void;
   setCurrentQuestionNumber: (currentQuestionNumber: number) => void;
