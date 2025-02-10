@@ -30,6 +30,9 @@ const StreamComponent: React.FC<StreamComponentProps> = ({ user }) => {
     isFormValid: true,
   });
 
+  //미사용으로 인한, setState
+  console.log(setState);
+
   return (
     <div className="w-full h-full flex flex-col ">
       <div className="w-[50%] bg-black text-white">
