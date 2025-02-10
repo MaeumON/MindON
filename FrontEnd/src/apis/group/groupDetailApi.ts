@@ -4,7 +4,7 @@ import authInstance from "../authinstance";
 import { Group } from "./groupListApi";
 
 interface GroupDetail extends Group {
-  isRegistered: boolean;
+  isRegister: boolean;
   description: string;
   progressWeeks?: number;
 }
