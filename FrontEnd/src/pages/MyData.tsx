@@ -10,8 +10,8 @@ import TempertureChart from "@/components/Mydata/TempertureChart";
 import { useState } from "react";
 
 function MyData() {
-  const { data } = useAuthStore();
-  const username = data.userName || "사용자";
+  const { userName } = useAuthStore();
+  const username = userName || "사용자";
   const nav = useNavigate();
 
   // IconInfo 툴팁 상태

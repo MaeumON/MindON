@@ -11,18 +11,20 @@ import Tired from "@/assets/images/feeling/feelingTired.png";
 import thinkingbear from "@/assets/images/thinkingbear.png";
 import loudspeaker from "@/assets/icons/loudspeaker.png";
 import chat from "@/assets/icons/chat.png";
+import NoneEmotion from "@/assets/images/feeling/noneEmotion.png";
 
 import useAuthStore from "@/stores/authStore";
 import { useEffect, useState } from "react";
 import { fetchReviews, ReviewType } from "@/apis/meetingDetail";
 
 function MyDataDetail() {
-  const { data } = useAuthStore();
-  const username = data.userName || "사용자";
+  const { userName } = useAuthStore();
+  const username = userName || "사용자";
 
   const [reviews, setReviews] = useState<ReviewType[]>([]);
   const [emotionAvg, setEmotionAvg] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
+  // const [weekNum, setWeekNum] = useState<number>(1);
 
   // 리뷰 불러오고 안되면 로딩중
   useEffect(() => {
@@ -39,7 +41,7 @@ function MyDataDetail() {
 
   if (loading)
     return (
-      <div className="flex flex-col justify-center text-cardTitle text-32px font-jamsilRegular text-center">
+      <div className="flex flex-col mt-20 justify-center text-cardTitle text-32px font-jamsilRegular text-center">
         로딩 중입니다! <br /> 조금만 기다려주세요!
       </div>
     );
@@ -66,19 +68,18 @@ function MyDataDetail() {
     8: Mad,
   };
 
-  const NoneEmotion = "?";
-
   const getEmotionPosition = (emotion: number) => {
-    if (emotion >= 5) return "top-[80px]"; // 부정
-    if (emotion === 4) return "top-[50px]"; // 평온
-    return "top-[20px]"; // 좋음
+    if (emotion === 0) return "top-[62px]";
+    if (emotion >= 5) return "top-[90px]"; // 부정
+    if (emotion <= 3) return "top-[34px]"; // 긍정
+    return "top-[62px]"; // 평온
   };
 
   return (
     <div>
       <Header title="마음 리포트" isicon={true} />
       <div className="p-[20px]">
-        <div className=" flex flex-col items-center rounded-[8px] bg-white h-[265px]  shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)]  overflow-hidden px-4 py-6 ]">
+        <div className="whitespace-nowrap flex flex-col items-center rounded-[8px] bg-white h-[220px]  shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)]  overflow-hidden px-4 py-6 ]">
           <div>
             <span className="text-cardTitle text-center font-jamsilMedium text-22px">치매환자 가족모임 자조모임</span>
             <span className="text-cardTitle font-jamsilRegular text-16px">
@@ -88,35 +89,47 @@ function MyDataDetail() {
               참여하셨군요. */}
             </span>
           </div>
-          <div className="text-cardTitle font-jamsilRegular text-16px">
+          <div className="text-cardTitle font-jamsilRegular text-16px whitespace-nowrap">
             {username}님의 기분은 <span className="text-orange100">{emotionTitle}</span>이었어요.
           </div>
-          {/* ✅ 감정 꺾은선 그래프 */}
-          {/* 8번 반복하여 수직선 렌더링 */}
-          {Array.from({ length: 7 }).map((_, index) => (
-            <div
-              key={index}
-              className="w-[0px] h-[88px] origin-top-left border border-[#eeeeee] absolute left-[20px]"
-              style={{
-                top: `200px`,
-                left: `${index * 40 + 60}px`, // 0부터 7까지 수직선 위치
-              }}
-            />
-          ))}
-          <div className="relative w-full h-[150px] flex items-center justify-start mt-4 px-4">
-            {reviews.map((review, index) => {
-              const emotionImg = emotionImages[review.emotion] || NoneEmotion; // 기본값은 물음표로 설정
-              return (
-                <div key={review.meetingId}>
-                  <img
-                    src={emotionImg}
-                    alt={`emotion-${review.emotion}`}
-                    className={`w-[33px] h-[33px] absolute ${getEmotionPosition(review.emotion)}`}
-                    style={{ left: `${index * 40 + 10}px` }} // 왼쪽에서 오른쪽으로 나열
-                  />
-                </div>
-              );
-            })}
+          <div className="graphbox relative w-[280px] h-[100px] flex items-center justify-center mt-2 px-4">
+            {/* 감정 꺾은선 그래프 */}
+            {Array.from({ length: 8 }).map((_, index) => (
+              <div
+                key={index}
+                className="w-[0px] h-[80px] origin-top-left border border-[#eeeeee] absolute object-contain"
+                style={{
+                  left: `${index * 31 + 28}px`, // 0부터 6까지 수직선 위치
+                  zIndex: 1,
+                }}
+              />
+            ))}
+
+            {/* 감정 이미지가 들어갈 컨테이너 (170px) */}
+            <div className="absolute w-[300px] h-[150px] ">
+              {/* 감정 이미지 */}
+              {Array.from({ length: 8 }).map((_, index) => {
+                const review = reviews[index] || { emotion: 0 }; // 리뷰가 없으면 기본값으로 "?" 설정
+                const emotionImg = emotionImages[review.emotion] || NoneEmotion; // 기본값은 물음표로 설정
+                return (
+                  <div
+                    key={index}
+                    className={`absolute flex items-center justify-center ${getEmotionPosition(review.emotion)}`}
+                    style={{
+                      left: `${index * 31 + 26}px`, // 수직선에 맞게 배치
+                      // top: getEmotionPosition(review.emotion), // 감정에 맞는 위치로 배치
+                      zIndex: 2,
+                    }}
+                  >
+                    <img
+                      src={emotionImg}
+                      alt={`emotion-${review.emotion}`}
+                      className="w-[28px] h-[28px] object-contain ${getEmotionPosition(review.emotion)}}" // 이미지 비율 유지
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
         {/* 인덱스 */}
@@ -143,9 +156,12 @@ function MyDataDetail() {
           <div className="w-10 h-10 mt-10  bg-[#dddddd]/50 rounded-tl-lg rounded-tr-lg shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)] justify-center items-center gap-2.5 inline-flex">
             <div className="text-center text-white text-2xl font-medium font-['The Jamsil']">7</div>
           </div>
+          <div className="w-10 h-10 mt-10  bg-[#dddddd]/50 rounded-tl-lg rounded-tr-lg shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)] justify-center items-center gap-2.5 inline-flex">
+            <div className="text-center text-white text-2xl font-medium font-['The Jamsil']">8</div>
+          </div>
         </div>
         {/* 내용부분 */}
-        <div className="px-2 py-4 bg-white rounded-xl shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)]">
+        <div className="p-4 bg-white rounded-xl shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)]">
           <div className="flex gap-2 mb-5">
             <div className="flex flex-col justify-end basis-2/5">
               <img src={thinkingbear} alt="" className="scale-x-[-1] w-[100px] h-[100px] object-contain" />
@@ -157,11 +173,11 @@ function MyDataDetail() {
               </div>
             </div>
           </div>
-          <div className="px-2 py-4 bg-[#dde9ec] rounded-xl flex-col justify-center items-center gap-2.5">
+          <div className="px-2 py-4 bg-[#dde9ec] rounded-xl flex-col justify-center items-center">
             <div>
-              <div className="flex gap-2 items-center">
+              <div className="flex gap-1 items-center">
                 <img src={loudspeaker} alt="" className="w-[40px] h-[40px]" />
-                <div className="text-center-text-cardTitle text-18px font-jamsilRegular">
+                <div className="whitespace-nowrap first-line:text-center-text-cardTitle text-16px sm:text-18px font-jamsilRegular">
                   3회차에는 이런 얘기를 했어요.
                 </div>
               </div>
@@ -177,9 +193,9 @@ function MyDataDetail() {
               </div>
             </div>
             <div>
-              <div className="flex gap-2 items-center">
+              <div className="flex gap-auto items-center">
                 <img src={chat} alt="" className="w-[40px] h-[40px]" />
-                <div className="text-center-text-cardTitle text-18px font-jamsilRegular">
+                <div className="whitespace-nowrap text-center-text-cardTitle text-16px sm:text-18px font-jamsilRegular">
                   이날 {username}님은 이만큼 말했어요.
                 </div>
               </div>
