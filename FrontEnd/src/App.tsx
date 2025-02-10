@@ -18,7 +18,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Routes>
-        <Route path="/prejoin" element={<PreJoin />} />
+        <Route path="/prejoin/:groupId/:groupName" element={<PreJoin />} />
         <Route path="/" element={<Welcome />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
