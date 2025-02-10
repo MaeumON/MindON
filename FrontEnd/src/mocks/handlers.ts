@@ -11,6 +11,7 @@ import { MEETINGDETIAL } from "@/data/MEETINGDETAIL";
 import { UPCOMING_EVENTS } from "@/data/UPCOMING_EVENTS";
 // import { Group, RequestData } from "@/apis/group/groupListApi";
 import { TOPFIVEGROUPS } from "@/data/TOPFIVEGROUPS";
+// import { RequestData, Group } from "@/utils/groups";
 
 const { VITE_APP_API_URL } = import.meta.env;
 // const ITEMS_PER_PAGE = 5; // 한 페이지당 반환할 그룹 개수
@@ -87,7 +88,7 @@ const handlers = [
     return HttpResponse.json(FINDPWD);
   }),
 
-  // GroupsList 정보
+  // // GroupsList 정보
   // http.post(VITE_APP_API_URL + "/api/groups/list", async ({ request }) => {
   //   const filters = (await request.json()) as Partial<RequestData>;
   //   console.log("📌 MSW 요청 필터 데이터:", filters);
