@@ -91,7 +91,9 @@ public class VideoController {
             String url = recording.getUrl();
             videoService.saveRecording(url, sessionId, userId, questionId);
             videoService.deleteRecording(sessionId);
-            // 여기에 stt 추가 (저장명은 C:\recordings\sessionId_userId_questionId.webm
+            // 비동기 STT 작업 추가
+            videoService.processRecordingAsync(sessionId, userId, questionId);
+
             return new ResponseEntity<>(recording, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -127,4 +129,5 @@ public class VideoController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
 }

@@ -18,17 +18,17 @@ public class Stt {
 
     @ManyToOne
     @MapsId("userId")  // 복합 키와 매핑
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     private User user;
 
     @ManyToOne
     @MapsId("meetingId") // 복합 키와 매핑
-    @JoinColumn(name = "meeting_id", referencedColumnName = "meeting_id")
+    @JoinColumn(name = "meeting_id", referencedColumnName = "meeting_id", insertable = false, updatable = false)
     private Meeting meeting;
 
     @ManyToOne
     @MapsId("questionId") // 복합 키와 매핑
-    @JoinColumn(name = "question_id", referencedColumnName = "question_id")
+    @JoinColumn(name = "question_id", referencedColumnName = "question_id", insertable = false, updatable = false)
     private Question question;
 
     @Column(name = "text", nullable = false)
