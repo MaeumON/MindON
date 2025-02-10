@@ -25,8 +25,11 @@ function Main() {
   const diseaseId = data.diseaseId;
 
   const nav = useNavigate();
-  function navToList() {
-    nav("/groupslist");
+  function navToOnTalk() {
+    nav(`/groupslist?isHost=1`);
+  }
+  function navToFreeTalk() {
+    nav("/groupslist?isHost=0");
   }
 
   const [upcomingEvent, setUpcomingEvent] = useState<EventDics>();
@@ -104,10 +107,10 @@ function Main() {
                   src={OkBear}
                   alt="온 Talk"
                   className="sm:w-[145px] sm:h-[145px] w-[120px] h-[120px]"
-                  onClick={navToList}
+                  onClick={navToOnTalk}
                 />
                 <section
-                  onClick={navToList}
+                  onClick={navToOnTalk}
                   className="flex flex-col justify-between items-center absolute top-[60%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 bg-white py-[15px] rounded-[12px] shadow-md"
                 >
                   <div className="flex justify-center items-center gap-[5px]">
@@ -129,10 +132,10 @@ function Main() {
                   src={HeartBear}
                   alt="자유 Talk"
                   className="sm:w-[145px] sm:h-[145px] w-[120px] h-[120px]"
-                  onClick={navToList}
+                  onClick={navToFreeTalk}
                 />
                 <section
-                  onClick={navToList}
+                  onClick={navToFreeTalk}
                   className="flex flex-col justify-between items-center absolute top-[60%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 bg-white py-[15px] rounded-[12px] shadow-md"
                 >
                   <div className="flex justify-center items-center gap-[5px]">
