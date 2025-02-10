@@ -8,7 +8,9 @@ import { QUESTION_SPEAKING_ORDER } from "@/data/OPENVIDU";
 import { TEMPERATURE } from "@/data/TEMPERTURE";
 import { GROUPSDETAIL } from "@/data/GROUPDETAIL";
 import { MEETINGDETIAL } from "@/data/MEETINGDETAIL";
+import { UPCOMING_EVENTS } from "@/data/UPCOMING_EVENTS";
 // import { Group, RequestData } from "@/apis/group/groupListApi";
+import { TOPFIVEGROUPS } from "@/data/TOPFIVEGROUPS";
 
 const { VITE_APP_API_URL } = import.meta.env;
 // const ITEMS_PER_PAGE = 5; // 한 페이지당 반환할 그룹 개수
@@ -108,6 +110,11 @@ const handlers = [
     return HttpResponse.json(filteredGroup);
   }),
 
+  // TopFiveGroups 리스트트
+  http.get(VITE_APP_API_URL + "/api/groups/:diseaseId/new", () => {
+    return HttpResponse.json(TOPFIVEGROUPS);
+  }),
+
   // // 그룹 목록 조회 (GET 요청)
   // http.get(VITE_APP_API_URL + "/api/groups/list", ({ request }) => {
   //   const url = new URL(request.url);
@@ -172,6 +179,11 @@ const handlers = [
     console.log(groupId);
 
     return HttpResponse.json(QUESTION_SPEAKING_ORDER);
+  }),
+
+  // upcoming 이벤트 조회
+  http.get(VITE_APP_API_URL + "/api/meetings/upcoming", () => {
+    return HttpResponse.json(UPCOMING_EVENTS);
   }),
 ];
 

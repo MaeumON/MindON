@@ -7,52 +7,50 @@ import OkBear from "@assets/images/okbear.png";
 import IconSearch from "@assets/icons/IconSearch";
 import ShadowCard from "@components/common/ShadowCard";
 import FavGroupCard from "@components/Mainpage/FavGroupCard";
-import { fetchGroups } from "@apis/groupApi";
+import { fetchTopGroups } from "@apis/topFiveGroupApi";
 import { groupType } from "@apis/types/groups";
 import Footer from "@components/Layout/Footer";
 import useAuthStore from "@stores/authStore";
+import { dateChanger } from "@utils/dateChanger";
+import { EventDics } from "@utils/EventDicsTypes";
+import { fetchUpcomingEvent } from "@/apis/upcomingEventsApi";
+
+// 메인페이지
 
 function Main() {
   // store 유저데이터 불러오기
   const { data } = useAuthStore();
   console.log("data", data);
   const userName = data.userName || "사용자";
+  const diseaseId = data.diseaseId;
 
   const nav = useNavigate();
   function navToList() {
     nav("/groupslist");
   }
 
-  interface EventDics {
-    diseaseName?: string;
-    date?: string;
-    starttime?: string;
-    endtime?: string;
-    title?: string;
-  }
-
-  const UpCommingEvent: EventDics | null = {
-    diseaseName: "소아암",
-    date: "1월 27일 월",
-    starttime: "20:00",
-    endtime: "20:50",
-    title: "소아암 부모 모임 입니다",
-  };
-
+  const [upcomingEvent, setUpcomingEvent] = useState<EventDics>();
   const [groups, setGroups] = useState<groupType[]>([]);
 
-  useEffect(() => {
-    const loadGroups = async () => {
-      try {
-        const data = await fetchGroups();
-        console.log("Fetched Groups: ", data);
-        setGroups(data);
-      } catch (error) {
-        console.error("Error Fetching groups : ", error);
-      }
-    };
+  async function loadUpcomingEvent() {
+    const upcomingEventData = await fetchUpcomingEvent();
+    setUpcomingEvent(upcomingEventData);
+  }
 
+  async function loadGroups() {
+    try {
+      const data = await fetchTopGroups(diseaseId);
+      console.log("Fetched Groups: ", data);
+      setGroups(data);
+    } catch (error) {
+      console.error("Error Fetching groups : ", error);
+    }
+  }
+
+  useEffect(() => {
     loadGroups();
+
+    loadUpcomingEvent();
   }, []);
 
   return (
@@ -68,16 +66,19 @@ function Main() {
 
       {/* 흰색 박스 */}
       <ShadowCard className="absolute top-[200px] left-1/2 transform -translate-x-1/2 sm:w-[330px] w-[300px] ">
-        <IllCaption diseaseName={UpCommingEvent?.diseaseName ?? "미정"} />
+        <IllCaption diseaseName={upcomingEvent?.diseaseName ?? "미정"} />
         <div className="flex flex-col items-start gap-[5px]">
-          {UpCommingEvent ? (
+          {upcomingEvent ? (
             <>
               <div className="font-suite font-bold text-18px text-cardLongContent">
-                {UpCommingEvent["date"] ?? "날짜미정"}
+                {`${!upcomingEvent["meetingDate"] ? "날짜미정" : `${dateChanger(upcomingEvent["meetingDate"], "month")}월 ${dateChanger(upcomingEvent["meetingDate"], "day")}일`}`}
               </div>
-              <div className="font-suite font-bold text-18px text-orange100">{`${UpCommingEvent["starttime"] ?? "시간미정"}-${UpCommingEvent["endtime"] ?? "시간미정"}`}</div>
+
+              <div className="font-suite font-bold text-18px text-orange100">
+                {`${upcomingEvent["meetingTime"] ?? "시간미정"} : 00 -${upcomingEvent["meetingTime"] ?? "시간미정"} : 50`}
+              </div>
               <div className="font-suite font-extrabold text-24px text-cardLongContent">
-                {UpCommingEvent["title"] ?? "제목없음"}
+                {upcomingEvent["title"] ?? "제목없음"}
               </div>
               <Button text={"입장하기"} type={"GREEN"} />
             </>
