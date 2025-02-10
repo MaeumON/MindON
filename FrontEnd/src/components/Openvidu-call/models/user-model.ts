@@ -6,7 +6,6 @@ class UserModel {
   private connectionId: string;
   private audioActive: boolean;
   private videoActive: boolean;
-  private screenShareActive: boolean;
   private nickname: string;
   private streamManager: StreamManager | null;
   private type: UserType;
@@ -15,7 +14,6 @@ class UserModel {
     this.connectionId = "";
     this.audioActive = true;
     this.videoActive = true;
-    this.screenShareActive = false;
     this.nickname = "";
     this.streamManager = null;
     this.type = "local";
@@ -27,10 +25,6 @@ class UserModel {
 
   public isVideoActive(): boolean {
     return this.videoActive;
-  }
-
-  public isScreenShareActive(): boolean {
-    return this.screenShareActive;
   }
 
   public getConnectionId(): string {
@@ -59,10 +53,6 @@ class UserModel {
 
   public setVideoActive(isVideoActive: boolean): void {
     this.videoActive = isVideoActive;
-  }
-
-  public setScreenShareActive(isScreenShareActive: boolean): void {
-    this.screenShareActive = isScreenShareActive;
   }
 
   public setStreamManager(streamManager: StreamManager | null): void {

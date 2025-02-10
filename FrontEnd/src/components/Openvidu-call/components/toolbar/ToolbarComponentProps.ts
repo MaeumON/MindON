@@ -1,7 +1,6 @@
 interface UserModel {
   isAudioActive: () => boolean;
   isVideoActive: () => boolean;
-  isScreenShareActive: () => boolean;
   getStreamManager: () => any;
 }
 

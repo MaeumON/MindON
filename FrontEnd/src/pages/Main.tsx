@@ -19,11 +19,7 @@ import { fetchUpcomingEvent } from "@/apis/upcomingEventsApi";
 
 function Main() {
   // store 유저데이터 불러오기
-  const { data } = useAuthStore();
-  console.log("data", data);
-  const userName = data.userName || "사용자";
-  const diseaseId = data.diseaseId;
-
+  const { userName, diseaseId } = useAuthStore();
   const nav = useNavigate();
   function navToOnTalk() {
     nav(`/groupslist?isHost=1`);
@@ -48,6 +44,12 @@ function Main() {
     } catch (error) {
       console.error("Error Fetching groups : ", error);
     }
+  }
+
+  function enterVideoCall() {
+    const groupId = upcomingEvent?.groupId;
+    const groupName = upcomingEvent?.title;
+    nav(`/prejoin/${groupId}/${groupName}`);
   }
 
   useEffect(() => {
@@ -83,7 +85,7 @@ function Main() {
               <div className="font-suite font-extrabold text-24px text-cardLongContent">
                 {upcomingEvent["title"] ?? "제목없음"}
               </div>
-              <Button text={"입장하기"} type={"GREEN"} />
+              <Button text={"입장하기"} type={"GREEN"} onClick={enterVideoCall} />
             </>
           ) : (
             <>

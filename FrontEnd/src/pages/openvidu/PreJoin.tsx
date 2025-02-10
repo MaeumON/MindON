@@ -3,13 +3,13 @@ import { OpenVidu, Publisher } from "openvidu-browser";
 import Room from "@pages/openvidu/Room";
 import { createSessionResponse, UserModelType, VideoRoomState } from "@utils/openviduTypes";
 import UserModel from "@components/Openvidu-call/models/user-model";
-import OpenViduLayout from "@components/Openvidu-call/layout/openvidu-layout";
+// import OpenViduLayout from "@components/Openvidu-call/layout/openvidu-layout";
 import Button from "@components/common/Button";
 import { closeSession, createSession, createToken, removeUser } from "@apis/openvidu/openviduApi";
 import useAuthStore from "@stores/authStore";
 import IconCheck from "@assets/icons/IconCheck";
 import NoHostRoom from "./NoHostRoom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 /*
 실제 화상채팅으로 진입하기 전에,
@@ -18,19 +18,21 @@ import { useNavigate } from "react-router-dom";
 - 세션에 참여: connectToRoom
 - 참여하기 버튼으로 화상 화면으로 이동
 */
-
-const SESSION_ID = 5; //전역에 설정되어야하는 값
-const GROUP_NAME = "소아암 아이를 키우는 부모 모임"; //임시, 추후 참가하기 버튼에 있던 그룹 정보에서 가져오기
+//임시, 추후 참가하기 버튼에 있던 그룹 정보에서 가져오기
 
 const localUser = new UserModel();
 
 const Prejoin = () => {
   const navigate = useNavigate();
-  const { data } = useAuthStore();
+  const { groupId, groupName } = useParams();
+  const SESSION_ID = String(groupId);
+  const GROUP_NAME = groupName;
+
+  const { userName } = useAuthStore();
 
   const [state, setState] = useState<VideoRoomState>({
-    sessionId: String(SESSION_ID), //meetingID
-    userName: data.userName,
+    sessionId: SESSION_ID, //meetingID
+    userName: userName,
     session: undefined,
     localUser: undefined, //publisher
     subscribers: [],
@@ -42,7 +44,7 @@ const Prejoin = () => {
   const [token, setToken] = useState<string>("");
   const [isHost, setIsHost] = useState<boolean>(false); //호스트여부에 따라 레이아웃 달리하기 위함
   const remotes = useRef<UserModelType[]>([]); //실제 참여자 목록은 state.subscribers로 관리되기 때문에 useRef로 설정
-  const layout = useRef(new OpenViduLayout());
+  // const layout = useRef(new OpenViduLayout());
 
   //세션 생성 함수
   const joinSession = () => {
@@ -98,7 +100,6 @@ const Prejoin = () => {
     // 로컬 사용자 설정
     localUser.setNickname(state.userName);
     localUser.setConnectionId(state.session?.connection.connectionId || "");
-    localUser.setScreenShareActive(false);
     localUser.setStreamManager(publisher);
 
     subscribeToUserChanged();
@@ -109,9 +110,9 @@ const Prejoin = () => {
       localUser: localUser as UserModelType,
     }));
 
-    publisher.on("streamPlaying", () => {
-      updateLayout();
-    });
+    // publisher.on("streamPlaying", () => {
+    //   updateLayout();
+    // });
   };
 
   const updateSubscribers = useCallback(() => {
@@ -128,21 +129,21 @@ const Prejoin = () => {
       });
     }
 
-    updateLayout();
+    // updateLayout();
   }, [state.localUser]);
 
   const deleteSubscriber = useCallback(
     (stream: any) => {
-      const remoteUsers = state.subscribers;
-      const userStream = remoteUsers.filter((user) => user.getStreamManager().stream === stream)[0];
-      const index = remoteUsers.indexOf(userStream, 0);
-      if (index > -1) {
-        remoteUsers.splice(index, 1);
-        setState((prev) => ({
-          ...prev,
-          subscribers: remoteUsers,
-        }));
-      }
+      // remotes.current에서도 해당 유저를 제거
+      remotes.current = remotes.current.filter((user) => user.getStreamManager().stream !== stream);
+
+      // state의 subscribers도 업데이트
+      const remoteUsers = state.subscribers.filter((user) => user.getStreamManager().stream !== stream);
+
+      setState((prev) => ({
+        ...prev,
+        subscribers: remoteUsers,
+      }));
     },
     [state.subscribers]
   );
@@ -176,10 +177,7 @@ const Prejoin = () => {
   const subscribeToStreamDestroyed = useCallback(() => {
     state.session?.on("streamDestroyed", (event) => {
       deleteSubscriber(event.stream);
-
       event.preventDefault();
-
-      updateLayout();
     });
   }, [state.session, deleteSubscriber]);
 
@@ -256,12 +254,6 @@ const Prejoin = () => {
   //   }));
   // }, []);
 
-  const updateLayout = useCallback(() => {
-    setTimeout(() => {
-      layout.current.updateLayout();
-    }, 20);
-  }, []);
-
   // 타이머 종료 시 closeSession 호출 , 임시 console.log
   console.log(closeSession);
   // async function handleCloseSession() {
@@ -293,7 +285,7 @@ const Prejoin = () => {
     }
 
     console.log("!!!!!!!!!! navigate !!!!!!!");
-    navigate("/");
+    navigate("/main");
   }
 
   // 유저가 '참여하기' 버튼 누르면, joinSession 함수가 호출되면서
@@ -319,30 +311,30 @@ const Prejoin = () => {
     //마운트될 때, 바로 토큰 생성
     getToken(state.sessionId).then((token) => setToken(token));
 
-    //레이아웃 초기화
-    const openViduLayoutOptions = {
-      maxRatio: 3 / 2,
-      minRatio: 9 / 16,
-      fixedRatio: false,
-      bigClass: "OV_big",
-      bigPercentage: 0.8,
-      bigFixedRatio: false,
-      bigMaxRatio: 3 / 2,
-      bigMinRatio: 9 / 16,
-      bigFirst: true,
-      animate: true,
-    };
+    // //레이아웃 초기화
+    // const openViduLayoutOptions = {
+    //   maxRatio: 3 / 2,
+    //   minRatio: 9 / 16,
+    //   fixedRatio: false,
+    //   bigClass: "OV_big",
+    //   bigPercentage: 0.8,
+    //   bigFixedRatio: false,
+    //   bigMaxRatio: 3 / 2,
+    //   bigMinRatio: 9 / 16,
+    //   bigFirst: true,
+    //   animate: true,
+    // };
 
-    const layoutElement = document.getElementById("layout");
-    if (layoutElement) {
-      layout.current.initLayoutContainer(layoutElement, openViduLayoutOptions);
-    }
+    // const layoutElement = document.getElementById("layout");
+    // if (layoutElement) {
+    //   layout.current.initLayoutContainer(layoutElement, openViduLayoutOptions);
+    // }
 
-    window.addEventListener("resize", updateLayout);
+    // window.addEventListener("resize", updateLayout);
 
     return () => {
       //언마운트될 때, 사용자 세션 나가기 함수 호출
-      window.removeEventListener("resize", updateLayout);
+      // window.removeEventListener("resize", updateLayout);
       if (token && state.sessionId) removeUser({ sessionName: state.sessionId, token: token });
 
       console.log("unMount, and remaining users", state.subscribers);
