@@ -11,7 +11,7 @@ public class GroupListRequest {
     private String keyword;
     private List<Byte> diseaseId;
     private Boolean isHost;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime startDate;
     private Byte period;
     private Byte startTime;
