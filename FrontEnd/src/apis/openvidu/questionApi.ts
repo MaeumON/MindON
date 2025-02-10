@@ -17,7 +17,7 @@ export const fetchQuestions = async (meetingId: number): Promise<questionType[]>
 
   console.log("response", response);
 
-  return await response.data;
+  return await response.data.data;
 };
 
 interface QuestionSpeakingOrderType {
