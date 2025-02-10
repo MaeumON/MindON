@@ -61,10 +61,10 @@ public class MeetingController {
             UpcomingMeetingResponseDto upcomingMeetingDto = meetingService.getUpcomingMeetingDto(userId);
             if (upcomingMeetingDto == null) {
                 System.out.println("비었음.");
-                return ResponseEntity.ok(Collections.singletonMap("data", upcomingMeetingDto));
+                return ResponseEntity.ok(upcomingMeetingDto);
             }
 
-            return ResponseEntity.ok(Map.of("data",upcomingMeetingDto));
+            return ResponseEntity.ok(upcomingMeetingDto);
         }  catch(Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Internal Server Error", "message", e.getMessage()));
@@ -86,7 +86,7 @@ public class MeetingController {
                         .body(Map.of("error", "Not Found", "message", "진행 중인 미팅이 없습니다."));
             }
 
-            return ResponseEntity.ok(Map.of("data", ongoingMeetingId));
+            return ResponseEntity.ok(Map.of("meetingId", ongoingMeetingId));
         } catch (Exception e) {
             log.error("진행 중인 미팅 조회 중 오류 발생: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
