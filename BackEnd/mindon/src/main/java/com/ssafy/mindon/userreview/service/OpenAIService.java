@@ -1,4 +1,4 @@
-package com.ssafy.mindon.meeting.service;
+package com.ssafy.mindon.userreview.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;

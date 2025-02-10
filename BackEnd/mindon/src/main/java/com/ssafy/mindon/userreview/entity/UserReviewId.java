@@ -1,4 +1,4 @@
-package com.ssafy.mindon.meeting.domain;
+package com.ssafy.mindon.userreview.entity;
 
 import lombok.*;
 
