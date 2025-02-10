@@ -16,6 +16,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,7 +35,8 @@ public class SpeechToTextService {
     private final UserRepository userRepository;
 
     @Autowired
-    public SpeechToTextService(SttRepository sttRepository, MeetingRepository meetingRepository, QuestionRepository questionRepository, UserRepository userRepository) {
+    public SpeechToTextService(SttRepository sttRepository, MeetingRepository meetingRepository,
+                               QuestionRepository questionRepository, UserRepository userRepository) {
         this.sttRepository = sttRepository;
         this.meetingRepository = meetingRepository;
         this.questionRepository = questionRepository;
@@ -57,20 +62,26 @@ public class SpeechToTextService {
         RecognitionConfig config = createRecognitionConfig();
         RecognitionAudio audio = createRecognitionAudio(audioBytes);
 
+        // 3. WAV 파일의 길이를 초 단위로 계산
+        int speechTime = getAudioDurationInSeconds(audioFile);
+        logger.info("음성 파일 길이: {} 초", speechTime);
+
         try (SpeechClient speechClient = SpeechClient.create()) {
-            // 3. Google STT 요청
+            // 4. Google STT 요청
             RecognizeResponse response = speechClient.recognize(config, audio);
 
-            // 4. 변환된 텍스트 처리
+            // 5. 변환된 텍스트 처리
             String transcribedText = extractTranscription(response);
 
-            // 5. Meeting ID 조회
+            // 6. Meeting ID 조회
             int meetingId = findMeetingId(sessionId);
 
-            // 6. STT 데이터 저장
-            saveSttData(meetingId, userId, questionId, transcribedText);
+            // 7. STT 데이터 저장 (speechTime 포함)
+            saveSttData(meetingId, userId, questionId, transcribedText, speechTime);
 
-            logger.info("STT 변환 및 저장 성공: sessionId={}, userId={}, questionId={}", sessionId, userId, questionId);
+            logger.info("STT 변환 및 저장 성공: sessionId={}, userId={}, questionId={}, speechTime={}",
+                    sessionId, userId, questionId, speechTime);
+
         } catch (Exception e) {
             logger.error("STT 변환 중 오류 발생: 파일 경로={}, sessionId={}, userId={}, questionId={}",
                     audioFile.getPath(), sessionId, userId, questionId, e);
@@ -101,12 +112,28 @@ public class SpeechToTextService {
     }
 
     private int findMeetingId(String sessionId) {
-        return meetingRepository.findByGroup_GroupIdAndMeetingStatus(Integer.parseInt(sessionId), 0)
+        return meetingRepository.findByGroup_GroupIdAndMeetingStatus(Integer.parseInt(sessionId), 1) // 진행 중인 모임 (meetingStatus==1)
                 .map(Meeting::getMeetingId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 sessionId와 meeting_status에 대한 meeting_id를 찾을 수 없습니다: " + sessionId));
     }
 
-    private void saveSttData(int meetingId, String userId, int questionId, String transcribedText) {
+    /**
+     * WAV 파일의 길이를 초 단위로 계산
+     */
+    private int getAudioDurationInSeconds(File audioFile) throws IOException {
+        try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile)) {
+            AudioFormat format = audioInputStream.getFormat();
+            long audioFileLength = audioFile.length();
+            int frameSize = format.getFrameSize();
+            float frameRate = format.getFrameRate();
+
+            return (int) (audioFileLength / (frameSize * frameRate));
+        } catch (UnsupportedAudioFileException e) {
+            throw new IOException("지원되지 않는 오디오 파일 형식: " + e.getMessage(), e);
+        }
+    }
+
+    private void saveSttData(int meetingId, String userId, int questionId, String transcribedText, int speechTime) {
         SttId sttId = new SttId();
         sttId.setUserId(userId);
         sttId.setMeetingId(meetingId);
@@ -119,20 +146,21 @@ public class SpeechToTextService {
         // Question 객체 조회
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new IllegalArgumentException("Question ID에 해당하는 Question 객체를 찾을 수 없습니다: " + questionId));
-        // User 객체 조회 (userId를 이용하여 User 객체 조회)
+
+        // User 객체 조회
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User ID에 해당하는 User 객체를 찾을 수 없습니다: " + userId));
 
         // Stt 객체 생성 및 데이터 설정
         Stt stt = new Stt();
         stt.setId(sttId);
-        stt.setMeeting(meeting); // Meeting 연관 관계 설정
-        stt.setQuestion(question); // Question 연관 관계 설정
-        stt.setUser(user); // User 연관 관계 설정
+        stt.setMeeting(meeting);
+        stt.setQuestion(question);
+        stt.setUser(user);
         stt.setText(transcribedText);
+        stt.setSpeechTime(speechTime); // 음성 길이 저장
 
         // Stt 저장
         sttRepository.save(stt);
     }
-
 }

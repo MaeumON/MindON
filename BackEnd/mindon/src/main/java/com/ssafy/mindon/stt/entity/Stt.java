@@ -33,4 +33,8 @@ public class Stt {
 
     @Column(name = "text", nullable = false)
     private String text;
+
+    @Column(name = "speech_time", nullable = false)
+    private int speechTime = 0;
+
 }
