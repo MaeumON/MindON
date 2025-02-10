@@ -15,4 +15,6 @@ public interface UserGroupRepository extends JpaRepository<UserGroup, UserGroupI
     List<UserGroup> findByUser_UserId(String userId);
 
     Optional<UserGroup> findByUser_UserIdAndGroup_GroupId(String userId, int groupId); // 사용자와 그룹으로 UserGroup 찾기
+
+    boolean existsByUser_UserIdAndGroup_GroupId(String userId, int groupId);
 }

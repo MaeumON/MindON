@@ -1,9 +1,7 @@
-package com.ssafy.mindon.meeting.domain;
+package com.ssafy.mindon.userreview.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDate;
 
 @Entity
 @Getter

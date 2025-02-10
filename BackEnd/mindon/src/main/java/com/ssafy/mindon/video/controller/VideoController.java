@@ -28,10 +28,9 @@ public class VideoController {
     @PostMapping("/sessions")
     public ResponseEntity<SessionResponse> initializeSession(@RequestBody(required = false) Map<String, Object> params) {
         try {
-            String sessionId = videoService.initializeSession(params);
-            boolean isHost = videoService.isHostGroup(sessionId);
+            SessionResponse response = videoService.initializeSession(params);
 
-            return new ResponseEntity<>(new SessionResponse(sessionId, isHost), HttpStatus.OK);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }

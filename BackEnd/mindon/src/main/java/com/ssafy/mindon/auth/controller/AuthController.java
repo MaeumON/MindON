@@ -23,12 +23,12 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignupRequestDto requestDto) {
         authService.signup(requestDto);
-        return ResponseEntity.ok("Signup successful");
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequestDto loginRequestDto) {
-        Map<String, String> tokens = authService.login(loginRequestDto); // AuthService에서 로그인 처리
+    public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequestDto loginRequestDto) {
+        Map<String, Object> tokens = authService.login(loginRequestDto); // AuthService에서 로그인 처리
         return ResponseEntity.ok(tokens);
     }
 
@@ -46,6 +46,6 @@ public class AuthController {
     public ResponseEntity<String> logout(@RequestBody Map<String, String> logoutRequest) {
         String userId = logoutRequest.get("userId");
         authService.logout(userId); // 로그아웃 처리 (Redis에서 리프레시 토큰 삭제)
-        return ResponseEntity.ok("Logout successful"); // 성공 메시지 반환
+        return ResponseEntity.ok().build();
     }
 }
