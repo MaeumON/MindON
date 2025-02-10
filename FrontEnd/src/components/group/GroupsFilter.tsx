@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { RequestData } from "@/utils/groups";
+import RadioButton from "../common/RadioButton";
 
 interface GroupsFilterProps {
   isOpen: boolean;
@@ -12,7 +13,7 @@ interface GroupsFilterProps {
 
 function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
   const [selectedDiseases, setSelectedDiseases] = useState<string[]>([]); // 질병 선택 상태
-  const [selectedPeriod, setSelectedPeriod] = useState<number>(8); // 기본값 1주
+  const [selectedPeriod, setSelectedPeriod] = useState<number>(1); // 기본값 1주
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [selectedStartTime, setSelectedStartTime] = useState<string>("00:00");
@@ -91,9 +92,9 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
   // 필터 적용하기 버튼 클릭 시 실행
   const applyFilter = () => {
     // 현재 날짜 이용하여 시간 변환
-    const currentDate = new Date();
 
     const startDateObj = startDate ? new Date(startDate) : new Date();
+
     const formattedStartDate = new Date(
       startDateObj.getFullYear(),
       startDateObj.getMonth(),
@@ -103,13 +104,15 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
       0
     );
 
+    const formattedStartDateString = formattedStartDate.toISOString().split("T")[0] + "T00:00:00Z";
+
     const filterData: RequestData = {
       diseaseId: selectedDiseases.map((disease) => diseaseMap[disease] || null).filter((id) => id !== null),
-      isHost: selectedHost === "관계 없음" ? null : selectedHost === "유",
-      startDate: formattedStartDate,
+      isHost: selectedHost === "관계 없음" ? null : selectedHost === "유" ? true : false,
+      startDate: formattedStartDateString,
       period: selectedPeriod,
-      startTime: new Date(currentDate.setHours(Number(selectedStartTime.split(":")[0]), 0, 0, 0)),
-      endTime: new Date(currentDate.setHours(Number(selectedEndTime.split(":")[0]), 0, 0, 0)),
+      startTime: Number(selectedStartTime.split(":")[0]),
+      endTime: Number(selectedEndTime.split(":")[0]),
       dayOfWeek: selectedDays.map((day) => dayMap[day] ?? null).filter((id) => id !== null),
     };
     console.log("FilterData : ", filterData);
@@ -243,22 +246,21 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
             })}
           </select>
         </div>
-
         {/* 진행자 선택 */}
         <div className="mt-4">
           <span className="text-lg font-bold text-cardTitle">진행자</span>
           <div className="flex gap-4 mt-2">
             {["유", "무", "관계 없음"].map((option) => (
-              <label key={option} className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="w-6 h-6 border border-gray-400 rounded-md transition-all "
-                  checked={selectedHost === option}
-                  onChange={() => toggleHost(option)}
-                />
-                <span className="text-lg font-bold text-cardTitle">{option}</span>
-              </label>
-            ))}
+              <RadioButton
+                key={option}
+                name="host"
+                value={option}
+                checked={selectedHost === option}
+                onChange={() => toggleHost(option)}
+              >
+                {option}{" "}
+              </RadioButton>
+            ))}{" "}
           </div>
         </div>
 
