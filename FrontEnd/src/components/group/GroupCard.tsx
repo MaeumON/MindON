@@ -9,6 +9,7 @@ const GroupCard = ({ group }: GroupCardProps) => {
   // console.log("📌 GroupCard Props:", group);
 
   const router = useNavigate();
+  console.log(group);
 
   // 12시간제로 변경해주는 함수
   const correctionHour = () => {
@@ -66,8 +67,8 @@ const GroupCard = ({ group }: GroupCardProps) => {
           <div className="flex items-center gap-x-2 w-full">
             <div className="text-cardContent2 text-sm md:text-base font-semibold">참여인원</div>
             <div>
-              <span className="text-[#d98600] text-sm md:text-base font-semibold">{group.totalMembers}</span>
-              <span className="text-cardTitle text-sm md:text-base font-semibold"> / {group.maxiMembers}</span>
+              <span className="text-[#d98600] text-sm md:text-base font-semibold">{group.totalMember}</span>
+              <span className="text-cardTitle text-sm md:text-base font-semibold"> / {group.maxMember}</span>
             </div>
           </div>
         </div>

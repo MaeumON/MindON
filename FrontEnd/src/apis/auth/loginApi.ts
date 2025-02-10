@@ -6,12 +6,10 @@ import instance from "../instance";
 interface Data {
   accessToken: string;
   refreshToken: string;
-  data: {
-    userId: string;
-    userName: string;
-    diseaseId: number;
-    diseaseName: string;
-  };
+  userId: string;
+  userName: string;
+  diseaseId: number;
+  diseaseName: string;
 }
 
 const loginApi = async (userId: string, password: string): Promise<Data> => {
@@ -21,7 +19,10 @@ const loginApi = async (userId: string, password: string): Promise<Data> => {
     return {
       accessToken: result.data.accessToken,
       refreshToken: result.data.refreshToken,
-      data: result.data.data,
+      userId: result.data.userId,
+      userName: result.data.userName,
+      diseaseId: result.data.diseaseId,
+      diseaseName: result.data.diseaseName,
     };
   } catch (error) {
     console.error("Login error:", error);
