@@ -12,10 +12,7 @@ import java.util.List;
 @Repository
 public interface SttRepository extends JpaRepository<Stt, SttId> {
 
-    // JPQL을 사용
-    @Query("SELECT s FROM Stt s WHERE s.user.userId = :userId AND s.meeting.meetingId = :meetingId")
-    List<Stt> findByUserIdAndMeetingId(@Param("userId") String userId, @Param("meetingId") Integer meetingId);
+    List<Stt> findByUserUserIdAndMeetingMeetingId(String userId, Integer meetingId);
 
-    @Query("SELECT s FROM Stt s WHERE s.meeting.meetingId = :meetingId")
-    List<Stt> findByMeetingId(Integer meetingId);
+    List<Stt> findByMeetingMeetingId(Integer meetingId);
 }
