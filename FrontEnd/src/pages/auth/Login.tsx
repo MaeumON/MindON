@@ -8,7 +8,7 @@ import useAuthStore from "@stores/authStore";
 import loginApi from "@/apis/auth/loginApi";
 
 function Login() {
-  const [userId, setUserId] = useState("");
+  const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const router = useNavigate();
 
@@ -16,7 +16,7 @@ function Login() {
   const setAuth = useAuthStore((state) => state.setAuth);
 
   function onChangeId(e: React.ChangeEvent<HTMLInputElement>) {
-    setUserId(e.target.value);
+    setId(e.target.value);
   }
   function onChangePwd(e: React.ChangeEvent<HTMLInputElement>) {
     setPassword(e.target.value);
@@ -24,11 +24,12 @@ function Login() {
 
   async function onClickLogin() {
     try {
-      const result = await loginApi(userId, password);
-      const { accessToken, refreshToken, data } = result;
+      const result = await loginApi(id, password);
+      const { accessToken, refreshToken, userId, userName, diseaseId, diseaseName } = result;
+      console.log("API result :", result);
 
       // Zustand에 로그인 정보 저장
-      setAuth(accessToken, refreshToken, data);
+      setAuth({ accessToken, refreshToken, userId, userName, diseaseId, diseaseName });
       router("/main");
     } catch (error) {
       console.error("로그인 실패:", error);
@@ -44,7 +45,7 @@ function Login() {
           <div>온기를 나눌 준비가 되셨나요?</div>
         </TextSection>
         <Form className="gap-[30px]">
-          <InputForm title={"아이디"} titleClassName="text-xl" holder={"아이디"} value={userId} onChange={onChangeId} />
+          <InputForm title={"아이디"} titleClassName="text-xl" holder={"아이디"} value={id} onChange={onChangeId} />
           <InputForm
             type="password"
             title={"비밀번호"}

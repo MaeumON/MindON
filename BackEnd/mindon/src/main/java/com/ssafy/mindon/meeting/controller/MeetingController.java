@@ -1,6 +1,5 @@
 package com.ssafy.mindon.meeting.controller;
 
-import com.ssafy.mindon.meeting.domain.UserReview;
 import com.ssafy.mindon.meeting.dto.UpcomingMeetingResponseDto;
 import com.ssafy.mindon.common.util.JwtUtil;
 import com.ssafy.mindon.meeting.service.MeetingService;
@@ -9,6 +8,7 @@ import com.ssafy.mindon.question.dto.QuestionsResponseDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
