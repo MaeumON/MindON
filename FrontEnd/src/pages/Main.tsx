@@ -7,7 +7,7 @@ import OkBear from "@assets/images/okbear.png";
 import IconSearch from "@assets/icons/IconSearch";
 import ShadowCard from "@components/common/ShadowCard";
 import FavGroupCard from "@components/Mainpage/FavGroupCard";
-import { fetchGroups } from "@apis/groupApi";
+import { fetchTopGroups } from "@apis/topFiveGroupApi";
 import { groupType } from "@apis/types/groups";
 import Footer from "@components/Layout/Footer";
 import useAuthStore from "@stores/authStore";
@@ -39,7 +39,7 @@ function Main() {
 
   async function loadGroups() {
     try {
-      const data = await fetchGroups();
+      const data = await fetchTopGroups(diseaseId);
       console.log("Fetched Groups: ", data);
       setGroups(data);
     } catch (error) {
