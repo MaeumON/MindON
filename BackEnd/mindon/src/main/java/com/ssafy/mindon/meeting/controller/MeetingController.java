@@ -27,6 +27,7 @@ public class MeetingController {
     private final JwtUtil jwtUtil;
     private final MeetingService meetingService;
 
+
     @GetMapping("/{meetingId}/questions")
     public ResponseEntity<?> getQuestions(@PathVariable Integer meetingId) {
         try {
@@ -67,6 +68,29 @@ public class MeetingController {
         }  catch(Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Internal Server Error", "message", e.getMessage()));
+        }
+    }
+
+
+    @GetMapping("/ongoing/{groupId}")
+    public ResponseEntity<?> getOngoingMeetingId(@PathVariable Integer groupId) {
+        try {
+            if (groupId <= 0) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Bad Request", "message", "유효하지 않은 groupId입니다."));
+            }
+
+            Integer ongoingMeetingId = meetingService.getOngoingMeetingId(groupId);
+            if (ongoingMeetingId == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Not Found", "message", "진행 중인 미팅이 없습니다."));
+            }
+
+            return ResponseEntity.ok(Map.of("data", ongoingMeetingId));
+        } catch (Exception e) {
+            log.error("진행 중인 미팅 조회 중 오류 발생: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Internal Server Error", "message", "서버 내부 오류가 발생했습니다."));
         }
     }
 }
