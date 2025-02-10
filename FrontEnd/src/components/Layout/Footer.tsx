@@ -25,7 +25,7 @@ function Footer() {
       <div
         className="flex flex-col items-center gap-1.5 cursor-pointer"
         onClick={() => {
-          nav("/groups");
+          nav("/groupslist");
         }}
       >
         <IconPeople width={32} height={32} />
