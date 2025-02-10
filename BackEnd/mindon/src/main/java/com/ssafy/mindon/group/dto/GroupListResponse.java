@@ -18,8 +18,8 @@ public class GroupListResponse {
     private Byte period;
     private Byte meetingTime;
     private Byte dayOfWeek;
-    private Byte minMembers;
-    private Byte maxMembers;
-    private Byte totalMembers;
+    private Byte minMember;
+    private Byte maxMember;
+    private Byte totalMember;
     private Byte groupStatus;
 }

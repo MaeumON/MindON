@@ -74,8 +74,8 @@ public class GroupCreateService {
         group.setPeriod(request.getPeriod().byteValue());
         group.setMeetingTime(request.getMeetingTime().byteValue());
         group.setDayOfWeek(request.getDayOfWeek().byteValue());
-        group.setMinMember(request.getMinMembers().byteValue());
-        group.setMaxMember(request.getMaxMembers().byteValue());
+        group.setMinMember(request.getMinMember().byteValue());
+        group.setMaxMember(request.getMaxMember().byteValue());
         group.setStartDate(request.getStartDate());
         group.setCreatedUser(user);
         group.setDisease(disease);
