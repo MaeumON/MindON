@@ -10,6 +10,7 @@ import useAuthStore from "@stores/authStore";
 import IconCheck from "@assets/icons/IconCheck";
 import NoHostRoom from "./NoHostRoom";
 import { useNavigate, useParams } from "react-router-dom";
+import { fetchMeetingId } from "@/apis/openvidu/questionApi";
 
 /*
 실제 화상채팅으로 진입하기 전에,
@@ -42,6 +43,7 @@ const Prejoin = () => {
 
   const [OV, setOV] = useState<OpenVidu | null>(null);
   const [token, setToken] = useState<string>("");
+  const [meetingId, setMeetingId] = useState<number>(0);
   const [isHost, setIsHost] = useState<boolean>(false); //호스트여부에 따라 레이아웃 달리하기 위함
   const remotes = useRef<UserModelType[]>([]); //실제 참여자 목록은 state.subscribers로 관리되기 때문에 useRef로 설정
   // const layout = useRef(new OpenViduLayout());
@@ -280,11 +282,9 @@ const Prejoin = () => {
     const requestData = { sessionName: state.sessionId, token: token };
 
     if (state.session) {
-      console.log("!!!!!!!!!! session !!!!!!!");
       await removeUser(requestData);
     }
 
-    console.log("!!!!!!!!!! navigate !!!!!!!");
     navigate("/main");
   }
 
@@ -307,30 +307,18 @@ const Prejoin = () => {
     return generatedToken;
   };
 
+  const getMeetingId = async (groupId: string): Promise<number> => {
+    const meetingId = await fetchMeetingId(groupId);
+    return meetingId;
+  };
+
   useEffect(() => {
     //마운트될 때, 바로 토큰 생성
     getToken(state.sessionId).then((token) => setToken(token));
 
-    // //레이아웃 초기화
-    // const openViduLayoutOptions = {
-    //   maxRatio: 3 / 2,
-    //   minRatio: 9 / 16,
-    //   fixedRatio: false,
-    //   bigClass: "OV_big",
-    //   bigPercentage: 0.8,
-    //   bigFixedRatio: false,
-    //   bigMaxRatio: 3 / 2,
-    //   bigMinRatio: 9 / 16,
-    //   bigFirst: true,
-    //   animate: true,
-    // };
-
-    // const layoutElement = document.getElementById("layout");
-    // if (layoutElement) {
-    //   layout.current.initLayoutContainer(layoutElement, openViduLayoutOptions);
-    // }
-
-    // window.addEventListener("resize", updateLayout);
+    getMeetingId(SESSION_ID).then((meetingId) => {
+      setMeetingId(meetingId);
+    });
 
     return () => {
       //언마운트될 때, 사용자 세션 나가기 함수 호출
@@ -359,6 +347,7 @@ const Prejoin = () => {
       )}
       {state.session && isHost && (
         <Room
+          meetingId={meetingId}
           session={state.session}
           mySessionId={state.sessionId}
           localUser={localUser}
