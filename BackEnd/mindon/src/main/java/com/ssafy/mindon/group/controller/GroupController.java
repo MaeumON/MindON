@@ -1,6 +1,7 @@
 package com.ssafy.mindon.group.controller;
 
 import com.ssafy.mindon.group.dto.CreateGroupRequest;
+import com.ssafy.mindon.group.dto.GroupDetailResponse;
 import com.ssafy.mindon.group.dto.GroupListRequest;
 import com.ssafy.mindon.group.dto.GroupListResponse;
 import com.ssafy.mindon.group.service.*;
@@ -21,13 +22,15 @@ public class GroupController {
     private final GroupListService groupListService;
     private final GroupMyListService groupMyListService;
     private final GroupLeaveService groupLeaveService;
+    private final GroupDetailService groupDetailService;
 
-    public GroupController(GroupCreateService groupCreateService, GroupJoinService groupJoinService, GroupListService groupListService, GroupMyListService groupMyListService, GroupLeaveService groupLeaveService) {
+    public GroupController(GroupCreateService groupCreateService, GroupJoinService groupJoinService, GroupListService groupListService, GroupMyListService groupMyListService, GroupLeaveService groupLeaveService, GroupDetailService groupDetailService) {
         this.groupCreateService = groupCreateService;
         this.groupJoinService = groupJoinService;
         this.groupListService = groupListService;
         this.groupMyListService = groupMyListService;
         this.groupLeaveService = groupLeaveService;
+        this.groupDetailService = groupDetailService;
     }
 
     @PostMapping
@@ -91,5 +94,18 @@ public class GroupController {
         } else {
             return ResponseEntity.status(400).body("{\"message\": \"탈퇴 실패\"}");
         }
+    }
+
+    @GetMapping("/{groupId}")
+    public ResponseEntity<GroupDetailResponse> getGroupDetail(
+            @RequestHeader("Authorization") String accessToken,
+            @PathVariable Integer groupId) {
+
+        if (accessToken == null || accessToken.isEmpty()) {
+            return ResponseEntity.status(400).body(null);
+        }
+
+        GroupDetailResponse response = groupDetailService.findGroupDetailById(accessToken, groupId);
+        return ResponseEntity.ok(response);
     }
 }
