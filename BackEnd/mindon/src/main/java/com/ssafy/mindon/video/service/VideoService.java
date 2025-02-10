@@ -1,11 +1,12 @@
 package com.ssafy.mindon.video.service;
 
 import com.ssafy.mindon.group.repository.GroupRepository;
+import com.ssafy.mindon.stt.service.AudioConverterService;
+import com.ssafy.mindon.stt.service.SpeechToTextService;
 import io.openvidu.java.client.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import com.ssafy.mindon.group.entity.Group;
 import java.io.*;
@@ -29,6 +30,8 @@ public class VideoService {
 
     private OpenVidu openvidu;
     private final GroupRepository groupRepository;
+    private final AudioConverterService audioConverterService;
+    private final SpeechToTextService speechToTextService;
 
     // 세션 이름과 OpenVidu Session 객체를 매핑하는 컬렉션
     private Map<String, Session> mapSessions = new ConcurrentHashMap<>();
@@ -38,8 +41,10 @@ public class VideoService {
     private Map<String, Boolean> sessionRecordings = new ConcurrentHashMap<>();
     // No-argument constructor is needed for Spring to instantiate the bean
     @Autowired
-    public VideoService(GroupRepository groupRepository) {
+    public VideoService(GroupRepository groupRepository, AudioConverterService audioConverterService, SpeechToTextService speechToTextService) {
         this.groupRepository = groupRepository;
+        this.audioConverterService = audioConverterService;
+        this.speechToTextService = speechToTextService;
     }
 
     @PostConstruct
@@ -226,4 +231,25 @@ public class VideoService {
             e.printStackTrace();
         }
     }
+
+    @Async
+    public void processRecordingAsync(String sessionId, String userId, int questionId) {
+        try {
+            String filePath = "C:\\recordings\\" + sessionId + "_" + userId + "_" + questionId + ".webm";
+
+            // WebM → FLAC 변환
+            String wavPath = audioConverterService.convertWebMToWav(filePath);
+
+            // WAV → STT 변환 및 저장
+            File wavFile = new File(wavPath);
+            speechToTextService.convertAndSaveSTT(wavFile, sessionId, userId, questionId);
+
+        } catch (Exception e) {
+            // 로깅 및 디버깅을 위한 상세 정보 출력
+            System.err.println("비동기 처리 중 오류 발생: sessionId=" + sessionId + ", userId=" + userId + ", questionId=" + questionId);
+            e.printStackTrace();
+        }
+    }
+
+
 }
