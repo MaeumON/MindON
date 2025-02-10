@@ -24,6 +24,15 @@ const Button = ({ text, type, onClick, className }: ButtonProps) => {
         {text}
       </button>
     );
+  } else if (type === "ORANGE") {
+    return (
+      <button
+        className={`bg-[#EF945B] font-suite rounded-xl py-3 px-4 text-cardLongContent text-lg font-bold whitespace-nowrap w-full ${className}`}
+        onClick={onClick}
+      >
+        {text}
+      </button>
+    );
   }
 };
 

@@ -5,9 +5,8 @@ import StreamComponent from "@components/Openvidu-call/components/stream/StreamC
 import ToolbarComponent from "@components/Openvidu-call/components/toolbar/ToolbarComponent";
 import UserModel from "@components/Openvidu-call/models/user-model";
 import Recording from "@pages/openvidu/Recording";
-import EmotionModal from "@/components/Openvidu-call/components/emotionModal/EmotionModal";
-import Question from "@components/Openvidu-call/components/questions/Question";
 import { Session } from "openvidu-browser";
+import EndModal from "@/components/Openvidu-call/components/EndModal";
 
 /*
 - 미팅 시작하기 전, 시작하겠습니다 멘트
@@ -37,7 +36,7 @@ interface RoomProps {
   handleRemoveUser: () => void;
 }
 
-function Room({
+const NoHostRoom = ({
   session,
   mySessionId,
   localUser,
@@ -45,8 +44,8 @@ function Room({
   camStatusChanged,
   micStatusChanged,
   handleRemoveUser,
-}: RoomProps) {
-  const [isEmotionModalOpen, setIsEmotionModalOpen] = useState<boolean>(false);
+}: RoomProps) => {
+  const [isEndModalOpen, setIsEndModalOpen] = useState<boolean>(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState<boolean>(false);
   const [messageList, setMessageList] = useState<Message[]>([]);
   const chatScroll = useRef<HTMLDivElement>(null);
@@ -80,8 +79,6 @@ function Room({
 
   return (
     <section className="w-full h-[calc(100vh-80px)] px-[20px] flex flex-col justify-center items-center bg-offWhite font-suite">
-      <Question session={session} mySessionId={mySessionId} subscribers={subscribers} />
-
       <div id="layout" className="w-full h-[80%]">
         {localUser && localUser.getStreamManager() && (
           <div className="w-[45%] h-[45%]" id="localUser">
@@ -104,13 +101,11 @@ function Room({
           camStatusChanged={camStatusChanged}
           micStatusChanged={micStatusChanged}
           toggleChat={setIsChatModalOpen}
-          setIsCloseModalOpen={setIsEmotionModalOpen}
+          setIsCloseModalOpen={setIsEndModalOpen}
         />
       </div>
 
-      {isEmotionModalOpen && (
-        <EmotionModal setIsEmotionModalOpen={setIsEmotionModalOpen} handleRemoveUser={handleRemoveUser} />
-      )}
+      {isEndModalOpen && <EndModal setIsEndModalOpen={setIsEndModalOpen} handleRemoveUser={handleRemoveUser} />}
       {isChatModalOpen && (
         <ChatComponent
           user={localUser && localUser.getStreamManager() ? localUser : new UserModel()}
@@ -121,6 +116,6 @@ function Room({
       )}
     </section>
   );
-}
+};
 
-export default Room;
+export default NoHostRoom;

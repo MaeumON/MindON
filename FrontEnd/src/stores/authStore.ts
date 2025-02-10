@@ -21,7 +21,7 @@ const useAuthStore = create<StoreState>((set) => ({
   data: {
     userId: "",
     userName: "",
-    diseaseId: 0,
+    diseaseId: 1,
     diseaseName: "",
   },
 

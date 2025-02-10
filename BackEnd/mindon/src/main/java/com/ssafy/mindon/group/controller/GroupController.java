@@ -67,7 +67,7 @@ public class GroupController {
                 request.getEndTime(), request.getDayOfWeek()
         );
 
-        return ResponseEntity.ok(Collections.singletonMap("data", response));
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{groupStatus}/list")
@@ -121,6 +121,6 @@ public class GroupController {
         }
 
         List<GroupListResponse> response = groupRecommendService.getRecommendedGroups(diseaseId);
-        return ResponseEntity.ok(Collections.singletonMap("data", response));
+        return ResponseEntity.ok(response);
     }
 }

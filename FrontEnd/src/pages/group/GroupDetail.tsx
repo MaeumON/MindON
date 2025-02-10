@@ -5,9 +5,13 @@ import Button from "@components/common/Button";
 import groupDetailApi from "@apis/group/groupDetailApi";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import groupDetailJoinApi from "@/apis/group/groupDetailJoinApi";
+import groupDetailLeaveApi from "@/apis/group/groupDetailLeaveApi";
 
 function GroupDetail() {
   const { groupId } = useParams();
+  const [isRegi, setIsRegi] = useState(false);
 
   // React 쿼리로 그룹 상세 정보 가져오기
   // undefined일 경우 API 요청 안함(타입 가드)
@@ -33,6 +37,36 @@ function GroupDetail() {
     enabled: !!groupId, // groupId가 존재할 때만 API 요청
   });
 
+  // group 데이터가 변경될 때 isRegi 상태 업데이트
+  useEffect(() => {
+    if (group) setIsRegi(group.isRegister);
+  }, [group]);
+
+  // 참여/취소 버튼 클릭 시 API 요청
+  const onClickJoin = async () => {
+    if (!groupId) {
+      return Promise.reject(new Error("groupId가 없습니다.")); // ✅ 예외 처리
+    }
+    try {
+      if (!isRegi) {
+        const result = await groupDetailJoinApi(groupId);
+        if (result.message === "success") {
+          setIsRegi(true);
+        } else if (result.message === "GroupJoinSameTime") {
+          alert("같은 시간대에 다른 모임이 있습니다");
+        } else {
+          alert("그룹 참여 인원이 가득찼습니다");
+        }
+      } else {
+        //그룹 탈퇴 요청
+        await groupDetailLeaveApi(groupId);
+        setIsRegi(false);
+      }
+    } catch (error) {
+      console.error("API 요청 중 오류 발생:", error);
+      alert("요청을 처리하는 중 오류가 발생했습니다. 잠시후 다시 시도해주세요.");
+    }
+  };
   // 12시간제로 변경해주는 함수
   function correctionHour() {
     if (!group || group.meetingTime === undefined) return ""; // group `undefined 방지
@@ -210,11 +244,14 @@ function GroupDetail() {
             </div>
           </div>
         </div>
-        <Button
-          text={"참여하기"}
-          type="GREEN"
-          className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-40px)] max-w-[392px] w-auto shadow-lg "
-        />
+        <div>
+          <Button
+            text={isRegi ? "취소하기" : "참여하기"}
+            type={isRegi ? "ORANGE" : "GREEN"}
+            onClick={onClickJoin}
+            className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-40px)] max-w-[392px] w-auto shadow-lg "
+          />
+        </div>
       </div>
       <Footer />
     </div>
