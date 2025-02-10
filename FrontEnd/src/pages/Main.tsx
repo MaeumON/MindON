@@ -1,22 +1,23 @@
 import { useEffect, useState } from "react"; // useState 추가
 import { useNavigate } from "react-router-dom";
-import IllCaption from "@components/common/IllCaption";
-import Button from "@components/common/Button";
-import HeartBear from "@assets/images/heartbear.png";
-import OkBear from "@assets/images/okbear.png";
-import IconSearch from "@assets/icons/IconSearch";
-import ShadowCard from "@components/common/ShadowCard";
-import FavGroupCard from "@components/Mainpage/FavGroupCard";
-import { fetchGroups } from "@apis/groupApi";
-import { groupType } from "@apis/types/groups";
-import Footer from "@components/Layout/Footer";
-import useAuthStore from "@stores/authStore";
+import IllCaption from "@/components/common/IllCaption";
+import Button from "@/components/common/Button";
+import HeartBear from "@/assets/images/heartbear.png";
+import OkBear from "@/assets/images/okbear.png";
+import IconSearch from "@/assets/icons/IconSearch";
+import ShadowCard from "@/components/common/ShadowCard";
+import FavGroupCard from "@/components/Mainpage/FavGroupCard";
+import { fetchTopGroups } from "@/apis/topFiveGroupApi";
+import { groupType } from "@/apis/types/groups";
+import Footer from "@/components/Layout/Footer";
+import useAuthStore from "@/stores/authStore";
 
 function Main() {
   // store 유저데이터 불러오기
   const { data } = useAuthStore();
   console.log("data", data);
   const userName = data.userName || "사용자";
+  const diseaseId = data.diseaseId;
 
   const nav = useNavigate();
   function navToList() {
@@ -44,7 +45,7 @@ function Main() {
   useEffect(() => {
     const loadGroups = async () => {
       try {
-        const data = await fetchGroups();
+        const data = await fetchTopGroups(diseaseId);
         console.log("Fetched Groups: ", data);
         setGroups(data);
       } catch (error) {
