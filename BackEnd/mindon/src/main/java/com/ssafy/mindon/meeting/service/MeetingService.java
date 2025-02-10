@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class MeetingService {
     private final QuestionRepository questionRepository;
 
     private final UserGroupRepository userGroupRepository;
+    private final GroupRepository groupRepository;
 
     @Transactional(readOnly = true)
     public UpcomingMeetingResponseDto getUpcomingMeetingDto(String userId) {
@@ -113,4 +115,22 @@ public class MeetingService {
         questions.add(new QuestionDto(101, "오늘 모임에 대한 소감을 말해볼까요?"));
         return questions;
     }
+
+    public Integer getOngoingMeetingId(Integer groupId) {
+        boolean groupExists = groupRepository.existsById(groupId);
+        if (!groupExists) {
+            throw new IllegalArgumentException("해당 groupId(" + groupId + ")가 존재하지 않습니다.");
+        }
+
+        Optional<Meeting> meeting = meetingRepository.findByGroup_GroupIdAndMeetingStatus(groupId, 1);
+
+        if (meeting.isEmpty()) {
+            System.out.println("Meeting not found for groupId: " + groupId);
+            throw new IllegalArgumentException("해당 groupId(" + groupId + ")에 대한 진행 중인 미팅이 존재하지 않습니다.");
+        }
+
+        return meeting.get().getMeetingId();
+    }
+
+
 }

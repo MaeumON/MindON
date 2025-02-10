@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 public interface MeetingRepository extends JpaRepository<Meeting, Integer> {
 
+    @EntityGraph(attributePaths = {"group"})
     Optional<Meeting> findByGroup_GroupIdAndMeetingStatus(int groupId, int meetingStatus);
 
     @EntityGraph(attributePaths = {"group", "group.disease"})
