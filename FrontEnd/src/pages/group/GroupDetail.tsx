@@ -33,15 +33,15 @@ function GroupDetail() {
     enabled: !!groupId, // groupId가 존재할 때만 API 요청
   });
 
-  // 12시간제로 변경해주는 함수수
+  // 12시간제로 변경해주는 함수
   function correctionHour() {
     if (!group || group.meetingTime === undefined) return ""; // group `undefined 방지
     if (group.meetingTime > 12 && 24 > group.meetingTime) {
       return `오후 ${group.meetingTime - 12}시`;
-    } else if (group.meetingTime == 12) {
-      return "낮 12시(정오)";
-    } else if (group.meetingTime == 24) {
-      return "밤 12시(자정)";
+    } else if (group.meetingTime === 12) {
+      return "낮 12시";
+    } else if (group.meetingTime === 0) {
+      return "밤 12시";
     } else {
       return `오전 ${group.meetingTime}시`;
     }
@@ -57,6 +57,8 @@ function GroupDetail() {
       3: "수요일",
       4: "목요일",
       5: "금요일",
+      6: "토요일",
+      7: "일요일",
     };
 
     return weekDays[group.dayOfWeek] || "요일 미정"; // 유효하지 않은 값 예외 처리

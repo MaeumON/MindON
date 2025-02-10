@@ -3,14 +3,14 @@
 import authInstance from "../authinstance";
 
 export interface RequestData {
-  keyword: string;
-  diseaseId: number;
-  isHost: boolean;
-  startDate: Date;
-  period: number;
-  startTime: Date;
-  endTime: Date;
-  dayOfWeek: number;
+  keyword?: string;
+  diseaseId: number[];
+  isHost: boolean | null; // 진행자 여부 (true, false, null)
+  startDate: Date; // 날짜 (YYYY-MM-DD 00-00-00)
+  period: number; // 기간 (1~8주)
+  startTime: Date; // 시작 시간 (HH)
+  endTime: Date; // 종료 시간 (HH)
+  dayOfWeek: number[]; // 요일 (1~7)
 }
 
 export interface Group {
@@ -40,8 +40,7 @@ const groupListApi = async (requestData: Partial<RequestData> = {}, page: number
   try {
     const payload = { ...requestData, page };
     const result = await authInstance.post<Group[]>("/api/groups/list", payload);
-    console.log("📌 전체 API 응답:", result); // ✅ 전체 응답 확인
-    console.log("📌 Apis 응답 데이터(result.data):", result.data); // ✅ result.data만 확인
+    console.log("📌 전체 API 응답:", result);
     return result.data;
   } catch (error) {
     console.error("groupList axios error:", error);

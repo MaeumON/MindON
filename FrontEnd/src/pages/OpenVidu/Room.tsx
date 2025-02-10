@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { UserModelType } from "@/utils/openviduTypes";
+import { useEffect, useRef, useState } from "react";
+import { Message, UserModelType } from "@/utils/openviduTypes";
 import ChatComponent from "@components/Openvidu-call/components/chat/ChatComponent";
 import StreamComponent from "@components/Openvidu-call/components/stream/StreamComponent";
 import ToolbarComponent from "@components/Openvidu-call/components/toolbar/ToolbarComponent";
@@ -50,8 +50,35 @@ function Room({
 }: RoomProps) {
   const [isEmotionModalOpen, setIsEmotionModalOpen] = useState<boolean>(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState<boolean>(false);
+  const [messageList, setMessageList] = useState<Message[]>([]);
+  const chatScroll = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (session) {
+      const handleChatMessage = (event: any) => {
+        const data = JSON.parse(event.data);
+        const newMessage: Message = {
+          connectionId: event.from.connectionId,
+          nickname: data.nickname,
+          message: data.message,
+        };
+        setMessageList((prev) => [...prev, newMessage]);
+
+        // 스크롤 처리
+        setTimeout(() => {
+          if (chatScroll.current) {
+            chatScroll.current.scrollTop = chatScroll.current.scrollHeight;
+          }
+        }, 20);
+      };
+
+      session.on("signal:chat", handleChatMessage);
+
+      return () => {
+        session.off("signal:chat", handleChatMessage);
+      };
+    }
+  }, [session, chatScroll]);
 
   return (
     <section className="w-full h-[calc(100vh-80px)] px-[20px] flex flex-col justify-center items-center bg-offWhite font-suite">
@@ -94,6 +121,8 @@ function Room({
         <ChatComponent
           user={localUser && localUser.getStreamManager() ? localUser : new UserModel()}
           close={setIsChatModalOpen}
+          messageList={messageList}
+          chatScroll={chatScroll}
         />
       )}
     </section>

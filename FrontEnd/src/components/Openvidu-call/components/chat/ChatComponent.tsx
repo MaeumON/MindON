@@ -1,8 +1,8 @@
-import React, { useState, useRef, useCallback } from "react";
-import "./ChatComponent.css";
+import React, { useState, useCallback } from "react";
 import IconExit from "@assets/icons/IconExit";
 import IconSendMsg from "@assets/icons/IconSendMsg";
 import { StreamManager } from "openvidu-browser";
+import { Message } from "@utils/openviduTypes";
 
 interface ChatComponentProps {
   user: {
@@ -10,114 +10,65 @@ interface ChatComponentProps {
     getNickname: () => string;
     getConnectionId: () => string;
   };
-  chatDisplay?: boolean;
   close: (isOpen: boolean) => void;
-  messageReceived?: () => void;
+  messageList: Message[];
+  chatScroll: React.RefObject<HTMLDivElement>;
 }
 
-interface Message {
-  connectionId: string;
-  nickname: string;
-  message: string;
-}
-
-const ChatComponent: React.FC<ChatComponentProps> = ({ user, close }) => {
-  const [messageList, setMessageList] = useState<Message[]>([]);
+const ChatComponent: React.FC<ChatComponentProps> = ({ user, close, messageList, chatScroll }) => {
   const [message, setMessage] = useState<string>("");
-  const chatScroll = useRef<HTMLDivElement>(null);
 
-  console.log(setMessageList);
+  const sendMessage = () => {
+    if (message.trim() === "") return;
 
-  // useEffect(() => {
-  //   user.getStreamManager().stream.session.on("signal:chat", (event) => {
-  //     const data = JSON.parse(event.data);
-  //     const newMessage: Message = {
-  //       connectionId: event.from.connectionId,
-  //       nickname: data.nickname,
-  //       message: data.message,
-  //     };
+    const session = user?.getStreamManager()?.stream.session;
+    if (session) {
+      const messageData = {
+        message: message,
+        nickname: user.getNickname(),
+      };
 
-  //     setMessageList((prevList) => [...prevList, newMessage]);
+      session.signal({
+        data: JSON.stringify(messageData),
+        type: "chat",
+      });
 
-  //     const document = window.document;
-  //     setTimeout(() => {
-  //       const userImg = document.getElementById("userImg-" + messageList.length) as HTMLCanvasElement;
-  //       const video = document.getElementById("video-" + data.streamId) as HTMLVideoElement;
-  //       if (userImg && video) {
-  //         const avatar = userImg.getContext("2d");
-  //         if (avatar) {
-  //           avatar.drawImage(video, 200, 120, 285, 285, 0, 0, 60, 60);
-  //           // messageReceived();
-  //         }
-  //       }
-  //     }, 50);
-
-  //     scrollToBottom();
-  //   });
-  // }, [user, messageList.length, messageReceived]);
+      setMessage("");
+    }
+  };
 
   const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(event.target.value);
   }, []);
-
-  const handlePressKey = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      sendMessage();
-    }
-  }, []);
-
-  const sendMessage = useCallback(() => {
-    if (message && user) {
-      let messageText = message.replace(/ +(?= )/g, "");
-      if (messageText !== "" && messageText !== " ") {
-        const streamManager = user.getStreamManager();
-        if (streamManager) {
-          const data = {
-            message: messageText,
-            nickname: user.getNickname(),
-            streamId: streamManager.stream.streamId,
-          };
-          streamManager.stream.session.signal({
-            data: JSON.stringify(data),
-            type: "chat",
-          });
-        }
-      }
-    }
-    setMessage("");
-  }, [message, user]);
-
-  // const scrollToBottom = useCallback(() => {
-  //   setTimeout(() => {
-  //     if (chatScroll.current) {
-  //       chatScroll.current.scrollTop = chatScroll.current.scrollHeight;
-  //     }
-  //   }, 20);
-  // }, []);
 
   const closeChat = () => {
     close(false);
   };
 
   return (
-    <div className="absolute inset-0 flex justify-center items-center w-[90%] h-[700px] bg-black/50">
+    <div className="absolute inset-0 flex justify-center items-center w-full h-[100%] bg-black/50">
       <div className="w-[90%] h-[600px] py-[10px] flex flex-col justify-between bg-white/80 rounded-[12px]">
-        <div className="message-wrap" ref={chatScroll}>
+        <div className="mt-[5px] mr-[10px] flex items-start justify-end">
+          {/* <span>{user.getStreamManager().stream.session.sessionId} - CHAT</span> */}
+          <div onClick={closeChat}>
+            <IconExit width={25} height={25} fillColor="" />
+          </div>
+        </div>
+        <div
+          ref={chatScroll}
+          className="w-full h-full mt-[15px] px-[15px] py-[10px] flex flex-col gap-[10px] overflow-y-scroll"
+        >
           {messageList.map((data, i) => (
-            <div
-              key={i}
-              id="remoteUsers"
-              className={`message ${data.connectionId !== user?.getConnectionId() ? "left" : "right"}`}
-            >
-              <canvas id={`userImg-${i}`} width="60" height="60" className="user-img" />
-              <div className="msg-detail">
-                <div className="msg-info">
-                  <p>{data.nickname}</p>
+            <div key={i}>
+              <div
+                className={`px-[20px] py-[10px] rounded-[12px] ${data.connectionId !== user?.getConnectionId() ? "bg-white" : "bg-[#DDE9EC]"} shadow-[0px_0px_4px_0px_rgba(0,0,0,0.25)] `}
+              >
+                <div className="text-14px font-bold">
+                  {/* <p>{data.nickname}</p> */}
+
+                  <p>사용자</p>
                 </div>
-                <div className="msg-content">
-                  <span className="triangle" />
-                  <p className="text">{data.message}</p>
-                </div>
+                <p className="text-14px font-medium">{data.message}</p>
               </div>
             </div>
           ))}
@@ -125,21 +76,13 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ user, close }) => {
 
         <div className="p-[10px] flex justify-around items-center">
           <input
-            placeholder="Send a message"
-            id="chatInput"
+            placeholder="메시지를 입력하세요"
             value={message}
             onChange={handleChange}
-            onKeyPress={handlePressKey}
             className="w-[85%] py-[12px] px-[8px] rounded-[12px] "
           />
-          <div className="w-[10%] px-[5px]">
+          <div className="w-[10%] px-[5px]" onClick={sendMessage}>
             <IconSendMsg width={25} height={25} fillColor="#828282" />
-          </div>
-        </div>
-        <div className="absolute inset-0 mt-[60px] mr-[30px] flex items-start justify-end">
-          {/* <span>{user.getStreamManager().stream.session.sessionId} - CHAT</span> */}
-          <div onClick={closeChat}>
-            <IconExit width={25} height={25} fillColor="" />
           </div>
         </div>
       </div>

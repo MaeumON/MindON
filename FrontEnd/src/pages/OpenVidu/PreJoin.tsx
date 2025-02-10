@@ -323,7 +323,9 @@ function RecordingPrejoin() {
 
   return (
     <section className="w-full h-full min-h-screen flex flex-col items-center">
-      <div className="w-full h-[80px] font-jamsilMedium text-28px text-center leading-[80px]">{GROUP_NAME}</div>
+      <div className="w-full h-[80px] font-jamsilMedium text-20px sm:text-24px text-center leading-[80px]">
+        {GROUP_NAME}
+      </div>
       {state.session && (
         <Room
           session={state.session}
@@ -339,25 +341,25 @@ function RecordingPrejoin() {
       {!state.session && (
         <div className="w-[95%] h-[70%] mt-[20px] flex flex-col justify-around items-center font-suite">
           <div className="w-full flex flex-col items-center justify-center  rounded-[12px] shadow-md bg-white">
-            <div className="w-[90%] h-[100px] mt-[43px] p-[17px] font-bold text-24px text-cardLongContent text-center rounded-[12px] shadow-[0px_0px_4px_0px_rgba(0,0,0,0.25)] leading-[70px] bg-offWhite">
+            <div className="w-[90%] h-[100px] mt-[43px] p-[17px] font-bold  text-20px sm:text-24px text-cardLongContent text-center rounded-[12px] shadow-[0px_0px_4px_0px_rgba(0,0,0,0.25)] leading-[70px] bg-offWhite">
               모임 중 지켜야 할 규칙
             </div>
-            <div className="w-[90%] h-[171px] my-[30px] flex flex-col justify-center gap-[10px] font-medium text-18px">
-              <div className="h-[30px] px-[10px] flex items-center gap-[15px]">
+            <div className="w-[90%] h-[171px] my-[30px] flex flex-col justify-center gap-[10px] font-medium text-14px sm:text-16px">
+              <div className="h-[30px] px-[10px] flex items-center gap-[10px]">
                 <IconCheck width={26} height={26} fillColor="#6BB07C" />
-                <p>발언 기회를 존중해 주세요</p>
+                <p>발언 기회를 존중해 주세요.</p>
               </div>
-              <div className="h-[30px] px-[10px] flex items-center gap-[15px]">
+              <div className="h-[30px] px-[10px] flex items-center gap-[10px]">
                 <IconCheck width={26} height={26} fillColor="#6BB07C" />
-                <p>적극적으로 경청해 주세요요</p>
+                <p>적극적으로 경청해 주세요.</p>
               </div>
-              <div className="h-[30px] px-[10px] flex items-center gap-[15px]">
+              <div className="h-[30px] px-[10px] flex items-center gap-[10px]">
                 <IconCheck width={26} height={26} fillColor="#6BB07C" />
-                <p>정중하고 예의 바르게 대화해 주세요요</p>
+                <p>정중하고 예의 바르게 대화해 주세요.</p>
               </div>
-              <div className="h-[30px] px-[10px] flex items-center gap-[15px]">
+              <div className="h-[30px] px-[10px] flex items-center gap-[10px]">
                 <IconCheck width={26} height={26} fillColor="#6BB07C" />
-                <p>부정적인 표현이나 비난은 삼가해 주세요</p>
+                <p>부정적인 표현이나 비난은 삼가해 주세요.</p>
               </div>
             </div>
           </div>
