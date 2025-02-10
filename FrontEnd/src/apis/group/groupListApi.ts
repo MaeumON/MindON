@@ -1,5 +1,4 @@
 // groupList axios
-
 import authInstance from "../authinstance";
 
 export interface RequestData {
@@ -39,7 +38,8 @@ export interface Group {
 const groupListApi = async (requestData: Partial<RequestData> = {}, page: number = 1): Promise<Group[]> => {
   try {
     const payload = { ...requestData, page };
-    const result = await authInstance.post<Group[]>("/api/groups/list", payload);
+    const result = await authInstance.post<Group[]>("/api/groups/list", requestData);
+    // const result = await authInstance.post<Group[]>("/api/groups/list", payload);
     console.log("📌 전체 API 응답:", result);
     return result.data;
   } catch (error) {

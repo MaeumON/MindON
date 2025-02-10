@@ -1,7 +1,7 @@
 import { http, HttpResponse } from "msw";
 import { GROUPS } from "../data/GROUPS";
-import { QUESTIONS } from "../data/QUESTIONS";
-import { LOGINUSER } from "../data/LOGINUSER";
+// import { QUESTIONS } from "../data/QUESTIONS";
+// import { LOGINUSER } from "../data/LOGINUSER";
 import { FINDID } from "../data/FINDID";
 import { FINDPWD } from "../data/FINDPWD";
 import { QUESTION_SPEAKING_ORDER } from "@/data/OPENVIDU";
@@ -61,19 +61,19 @@ const filterGroups = (groups: Group[], filters: Partial<RequestData>) => {
 
 const handlers = [
   // 질문 받아오기
-  http.get(VITE_APP_API_URL + "/api/meetings/:meetingId/questions", (req) => {
-    const { meetingId } = req.params; // meetingId 파라미터 접근
+  // http.get(VITE_APP_API_URL + "/api/meetings/:meetingId/questions", (req) => {
+  //   const { meetingId } = req.params; // meetingId 파라미터 접근
 
-    //쓰지 않는 변수 처리용
-    console.log(meetingId);
+  //   //쓰지 않는 변수 처리용
+  //   console.log(meetingId);
 
-    return HttpResponse.json(QUESTIONS);
-  }),
+  //   return HttpResponse.json(QUESTIONS);
+  // }),
 
   // User Login 정보
-  http.post(VITE_APP_API_URL + "/api/auth/login", () => {
-    return HttpResponse.json(LOGINUSER);
-  }),
+  // http.post(VITE_APP_API_URL + "/api/auth/login", () => {
+  //   return HttpResponse.json(LOGINUSER);
+  // }),
 
   // FindId 정보
   http.post(VITE_APP_API_URL + "/api/auth/userid", () => {
@@ -86,15 +86,15 @@ const handlers = [
   }),
 
   // GroupsList 정보
-  http.post(VITE_APP_API_URL + "/api/groups/list", async ({ request }) => {
-    const filters = (await request.json()) as Partial<RequestData>;
-    console.log("📌 MSW 요청 필터 데이터:", filters);
+  // http.post(VITE_APP_API_URL + "/api/groups/list", async ({ request }) => {
+  //   const filters = (await request.json()) as Partial<RequestData>;
+  //   console.log("📌 MSW 요청 필터 데이터:", filters);
 
-    const filteredGroups = filterGroups(GROUPS, filters);
+  //   const filteredGroups = filterGroups(GROUPS, filters);
 
-    console.log("📌 MSW 필터링된 데이터:", filteredGroups);
-    return HttpResponse.json(filteredGroups);
-  }),
+  //   console.log("📌 MSW 필터링된 데이터:", filteredGroups);
+  //   return HttpResponse.json(filteredGroups);
+  // }),
 
   // GroupDetail 정보
   http.get(VITE_APP_API_URL + "/api/groups/:groupId", ({ params }) => {
