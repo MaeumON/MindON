@@ -8,6 +8,7 @@ import { Session } from "openvidu-browser";
 import { useEffect, useState } from "react";
 
 interface QuestionProps {
+  meetingId: number;
   session: Session;
   mySessionId: string;
   subscribers: UserModelType[];
@@ -15,7 +16,7 @@ interface QuestionProps {
 
 const userId = "4";
 
-const Question = ({ session, mySessionId }: QuestionProps) => {
+const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
   const {
     isMeetingStart,
     isQuestionStart,
@@ -74,7 +75,8 @@ const Question = ({ session, mySessionId }: QuestionProps) => {
 
   useEffect(() => {
     //질문 받아와서 전역에 설정
-    fetchQuestionsData(mySessionId);
+    console.log("meetingId", meetingId);
+    fetchQuestionsData(meetingId);
 
     //질문 발언 순서 받아오기
     fetchOrder();
