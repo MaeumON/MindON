@@ -36,10 +36,10 @@ public class CreateGroupRequest {
     private Integer dayOfWeek;
 
     @NotNull
-    private Integer minMembers;
+    private Integer minMember;
 
     @NotNull
-    private Integer maxMembers;
+    private Integer maxMember;
 
     @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")

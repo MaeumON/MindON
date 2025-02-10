@@ -37,9 +37,9 @@ public class GroupListService {
             dto.setPeriod(group.getPeriod());
             dto.setMeetingTime(group.getMeetingTime());
             dto.setDayOfWeek(group.getDayOfWeek());
-            dto.setMinMembers(group.getMinMember());
-            dto.setMaxMembers(group.getMaxMember());
-            dto.setTotalMembers(group.getTotalMember());
+            dto.setMinMember(group.getMinMember());
+            dto.setMaxMember(group.getMaxMember());
+            dto.setTotalMember(group.getTotalMember());
             dto.setGroupStatus(group.getGroupStatus());
             return dto;
         }).toList();
