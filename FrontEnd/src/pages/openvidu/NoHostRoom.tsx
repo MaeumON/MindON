@@ -4,7 +4,7 @@ import ChatComponent from "@components/Openvidu-call/components/chat/ChatCompone
 import StreamComponent from "@components/Openvidu-call/components/stream/StreamComponent";
 import ToolbarComponent from "@components/Openvidu-call/components/toolbar/ToolbarComponent";
 import UserModel from "@components/Openvidu-call/models/user-model";
-import Recording from "@pages/openvidu/Recording";
+// import Recording from "@pages/openvidu/Recording";
 import { Session } from "openvidu-browser";
 import EndModal from "@/components/Openvidu-call/components/EndModal";
 
@@ -38,7 +38,7 @@ interface RoomProps {
 
 const NoHostRoom = ({
   session,
-  mySessionId,
+  // mySessionId,
   localUser,
   subscribers,
   camStatusChanged,
@@ -92,9 +92,9 @@ const NoHostRoom = ({
           </div>
         ))}
       </div>
-      <div>
+      {/* <div>
         <Recording sessionID={mySessionId} />
-      </div>
+      </div> */}
       <div className="h-[10%] mb-[20px]">
         <ToolbarComponent
           user={localUser}
