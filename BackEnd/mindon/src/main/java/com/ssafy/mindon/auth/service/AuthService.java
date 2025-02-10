@@ -40,7 +40,6 @@ public class AuthService {
         User user = new User();
         user.setUserId(requestDto.getUserId());
         user.setUserName(requestDto.getUserName());
-        user.setEmail(requestDto.getEmail());
         user.setPhone(requestDto.getPhone());
         user.setPassword(encodedPassword);
         user.setDiseaseId(requestDto.getDiseaseId());
