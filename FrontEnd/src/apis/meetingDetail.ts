@@ -1,5 +1,7 @@
 import instance from "./instance";
 
+const { VITE_APP_API_URL } = import.meta.env;
+
 export interface ReviewType {
   meetingId: number;
   userId: string;
