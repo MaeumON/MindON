@@ -8,6 +8,7 @@ import { QUESTION_SPEAKING_ORDER } from "@/data/OPENVIDU";
 import { TEMPERATURE } from "@/data/TEMPERTURE";
 import { GROUPSDETAIL } from "@/data/GROUPDETAIL";
 import { MEETINGDETIAL } from "@/data/MEETINGDETAIL";
+import { UPCOMING_EVENTS } from "@/data/UPCOMING_EVENTS";
 // import { Group, RequestData } from "@/apis/group/groupListApi";
 import { TOPFIVEGROUPS } from "@/data/TOPFIVEGROUPS";
 
@@ -178,6 +179,11 @@ const handlers = [
     console.log(groupId);
 
     return HttpResponse.json(QUESTION_SPEAKING_ORDER);
+  }),
+
+  // upcoming 이벤트 조회
+  http.get(VITE_APP_API_URL + "/api/meetings/upcoming", () => {
+    return HttpResponse.json(UPCOMING_EVENTS);
   }),
 ];
 
