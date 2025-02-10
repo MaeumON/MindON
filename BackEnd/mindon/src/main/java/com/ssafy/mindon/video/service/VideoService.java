@@ -1,8 +1,10 @@
 package com.ssafy.mindon.video.service;
 
 import com.ssafy.mindon.group.repository.GroupRepository;
+import com.ssafy.mindon.group.service.GroupService;
 import com.ssafy.mindon.stt.service.AudioConverterService;
 import com.ssafy.mindon.stt.service.SpeechToTextService;
+import com.ssafy.mindon.video.dto.SessionResponse;
 import io.openvidu.java.client.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +31,7 @@ public class VideoService {
     private String OPENVIDU_SECRET;
 
     private OpenVidu openvidu;
-    private final GroupRepository groupRepository;
+    private final GroupService groupService;
     private final AudioConverterService audioConverterService;
     private final SpeechToTextService speechToTextService;
 
@@ -41,10 +43,10 @@ public class VideoService {
     private Map<String, Boolean> sessionRecordings = new ConcurrentHashMap<>();
     // No-argument constructor is needed for Spring to instantiate the bean
     @Autowired
-    public VideoService(GroupRepository groupRepository, AudioConverterService audioConverterService, SpeechToTextService speechToTextService) {
-        this.groupRepository = groupRepository;
+    public VideoService(AudioConverterService audioConverterService, SpeechToTextService speechToTextService, GroupService groupService) {
         this.audioConverterService = audioConverterService;
         this.speechToTextService = speechToTextService;
+        this.groupService = groupService;
     }
 
     @PostConstruct
@@ -55,15 +57,17 @@ public class VideoService {
         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
     }
 
-    public String initializeSession(Map<String, Object> params) throws Exception {
+    public SessionResponse initializeSession(Map<String, Object> params) throws Exception {
         try {
             SessionProperties properties = SessionProperties.fromJson(params).build();
             Session session = openvidu.createSession(properties);
 
             // mapSessions에 세션 저장
             mapSessions.put(session.getSessionId(), session);
+            String sessionId = session.getSessionId();
+            boolean isHost = groupService.isHostGroup(session.getSessionId());
 
-            return session.getSessionId();
+            return new SessionResponse(sessionId, isHost);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             throw new Exception("Error initializing session: " + e.getMessage());
         }
@@ -192,17 +196,6 @@ public class VideoService {
             return openvidu.listRecordings();
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             throw new Exception("Error listing recordings: " + e.getMessage());
-        }
-    }
-
-    public boolean isHostGroup(String sessionId) {
-        try {
-            int groupId = Integer.parseInt(sessionId);
-            return groupRepository.findById(groupId)
-                    .map(Group::getIsHost)
-                    .orElse(false); // 그룹이 없으면 기본값 false 반환
-        } catch (NumberFormatException e) {
-            return false; // sessionId가 숫자가 아닐 경우 false 반환
         }
     }
 
