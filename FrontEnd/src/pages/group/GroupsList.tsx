@@ -10,10 +10,12 @@ import SeachFilter from "@assets/images/SeachFilter.png";
 import groupListApi from "@apis/group/groupListApi";
 
 import { useState, useEffect } from "react";
+// import React from "react";
 
 function GroupsList() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [groups, setGroups] = useState<Group[]>([]);
+  // const [search, setSearch] = useState<string>("");
 
   // 첫 렌더링 시 accessToken만 보내서 그룹 목록 불러오기
   useEffect(() => {
@@ -36,7 +38,7 @@ function GroupsList() {
     console.log("📌 groups 상태 변경됨:", groups);
   }, [groups]);
 
-  // ✅ 필터가 적용된 API 요청을 받으면 실행됨
+  // 필터가 적용된 API 요청을 받으면 실행됨
   const handleApplyFilter = async (selectedFilters: Partial<RequestData>) => {
     try {
       const result = await groupListApi({ ...selectedFilters });
@@ -48,6 +50,44 @@ function GroupsList() {
     }
   };
 
+  // // 검색창 입력 내용 API 요청 보내는 함수
+  // const fetchSearch = async (search: Partial<RequestData>) => {
+  //   try {
+  //     const result = await groupListApi(search);
+  //     console.log("📌 검색 기능 API 응답 :", result);
+  //   } catch (error) {
+  //     console.log("검색 에러 :", error);
+  //   }
+  // };
+
+  // // 검색 버튼 또는 엔터 키를 눌렀을 때 실행
+  // const onClickEmptySearch = () => {
+  //   fetchGroups(search);
+  // };
+
+  // // 검색어 입력 핸들러
+  // const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSearch(e.target.value);
+  // };
+
+  // // 검색 실행 함수
+  // const fetchSearchGroups = async () => {
+  //   if (!search.trim()) return;
+  //   setLoading;
+  // };
+  // const onClickSearch = (e: string) => {
+  //   setSearch(e.target.value);
+  //   console.log(search);
+  //   fetchSearch(search);
+  // };
+
+  // // 엔터 키 이벤트 핸들러
+  // const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (e.key === "Enter") {
+  //     onClickSearch();
+  //   }
+  // };
+
   return (
     <div>
       <Header title={"모임목록보기"} isicon={true} className="bg-yellow100" />
@@ -57,6 +97,7 @@ function GroupsList() {
         <div className="self-stretch h-[46px] px-4 py-2 bg-offWhite rounded-lg justify-start items-center gap-5 inline-flex overflow-hidden">
           <div className="grow shrink basis-0 h-5 justify-start items-center gap-2.5 flex">
             <input
+              // value={search}
               className="bg-offWhite grow shrink basis-0 text-cardLongContent text-base font-bold font-suite offWhite"
               placeholder="원하는 모임이나 초대코드를 검색해보세요"
             ></input>
