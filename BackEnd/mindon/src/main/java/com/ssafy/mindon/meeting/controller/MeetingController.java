@@ -1,9 +1,10 @@
 package com.ssafy.mindon.meeting.controller;
 
 import com.ssafy.mindon.meeting.domain.UserReview;
+import com.ssafy.mindon.meeting.dto.UpcomingMeetingResponseDto;
 import com.ssafy.mindon.meeting.service.MeetingAnalysisService;
 import com.ssafy.mindon.common.util.JwtUtil;
-import com.ssafy.mindon.meeting.service.MeetingQuestionService;
+import com.ssafy.mindon.meeting.service.MeetingService;
 import com.ssafy.mindon.question.dto.QuestionDto;
 import com.ssafy.mindon.question.dto.QuestionsResponseDto;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,8 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -23,9 +26,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MeetingController {
 
-    private final MeetingAnalysisService meetingAnalysisService;
     private final JwtUtil jwtUtil;
-    private final MeetingQuestionService meetingQuestionService;
+    private final MeetingAnalysisService meetingAnalysisService;
+    private final MeetingService meetingService;
 
     /**
      * 사용자의 미팅 분석 요청을 처리
@@ -84,7 +87,7 @@ public class MeetingController {
                         .body(Map.of("error", "Bad Request", "message", "유효하지 않은 meetingId입니다."));
             }
 
-            List<QuestionDto> questions = meetingQuestionService.getMeetingQuestions(meetingId);
+            List<QuestionDto> questions = meetingService.getMeetingQuestions(meetingId);
             return ResponseEntity.ok(new QuestionsResponseDto(questions));
 
         } catch (EntityNotFoundException e) {
@@ -94,6 +97,28 @@ public class MeetingController {
             log.error("미팅 질문 조회 중 오류 발생: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Internal Server Error", "message", "서버 내부 오류가 발생했습니다."));
+        }
+    }
+
+    @GetMapping("/upcoming")
+    public ResponseEntity<?> getUpcomingMeeting(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
+
+        try{
+            String userId = jwtUtil.extractUserId(accessToken);
+            if(userId == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "Invalid Token","message","유효하지 않은 accessToken 입니다."));
+            }
+            UpcomingMeetingResponseDto upcomingMeetingDto = meetingService.getUpcomingMeetingDto(userId);
+            if (upcomingMeetingDto == null) {
+                System.out.println("비었음.");
+                return ResponseEntity.ok(Collections.singletonMap("data", upcomingMeetingDto));
+            }
+
+            return ResponseEntity.ok(Map.of("data",upcomingMeetingDto));
+        }  catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Internal Server Error", "message", e.getMessage()));
         }
     }
 }

@@ -1,24 +1,70 @@
 package com.ssafy.mindon.meeting.service;
 
+import com.ssafy.mindon.disease.entity.Disease;
+import com.ssafy.mindon.group.entity.Group;
+import com.ssafy.mindon.group.repository.GroupRepository;
+import com.ssafy.mindon.meeting.dto.UpcomingMeetingResponseDto;
 import com.ssafy.mindon.meeting.entity.Meeting;
 import com.ssafy.mindon.meeting.repository.MeetingRepository;
 import com.ssafy.mindon.question.dto.QuestionDto;
 import com.ssafy.mindon.question.repository.QuestionRepository;
+import com.ssafy.mindon.usergroup.repository.UserGroupRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
-public class MeetingQuestionService {
+public class MeetingService {
 
     private final MeetingRepository meetingRepository;
     private final QuestionRepository questionRepository;
+
+    private final UserGroupRepository userGroupRepository;
+
+    @Transactional(readOnly = true)
+    public UpcomingMeetingResponseDto getUpcomingMeetingDto(String userId) {
+        List<Integer> groupIds = userGroupRepository.findByUser_UserId(userId)
+                .stream()
+                .map(userGroup -> userGroup.getGroup().getGroupId())
+                .collect(Collectors.toList());
+
+        if (groupIds.isEmpty()) {
+            return null;
+        }
+
+        Meeting upcomingMeeting = meetingRepository
+                .findFirstByGroup_GroupIdInAndMeetingStatusAndDateGreaterThanEqualOrderByDate(
+                        groupIds,
+                        (byte) 0,
+                        LocalDateTime.now()
+                )
+                .orElse(null);
+
+        if (upcomingMeeting == null) {
+            return null; // ✅ 데이터가 없으면 null 반환
+        }
+
+        Group group = upcomingMeeting.getGroup();
+        Disease disease = group.getDisease();
+        System.out.println("Meeting Date: " + upcomingMeeting.getDate());
+
+
+        return UpcomingMeetingResponseDto.builder()
+                .title(group.getTitle())
+                .groupId(group.getGroupId())
+                .meetingTime(group.getMeetingTime().intValue())
+                .diseaseId(disease.getDiseaseId().intValue())
+                .diseaseName(disease.getDiseaseName())
+                .meetingDate(upcomingMeeting.getDate())
+                .build();
+    }
 
     public List<QuestionDto> getMeetingQuestions(Integer meetingId) {
         Meeting meeting = meetingRepository.findById(meetingId)
