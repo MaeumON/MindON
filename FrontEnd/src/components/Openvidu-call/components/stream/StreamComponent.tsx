@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import OvVideoComponent from "./OvVideo";
 
 interface StreamComponentProps {
@@ -16,28 +16,25 @@ interface UserModel {
 }
 
 //미사용으로 인한 주석 처리
-// interface StreamComponentState {
-//   nickname: string;
-//   mutedSound: boolean;
-//   isFormValid: boolean;
-// }
+interface StreamComponentState {
+  nickname: string;
+  mutedSound: boolean;
+  isFormValid: boolean;
+}
 
 const StreamComponent: React.FC<StreamComponentProps> = ({ user }) => {
   //추후 개발 시 주석 해제 필요
-  // const [state, setState] = useState<StreamComponentState>({
-  //   nickname: user.getNickname(),
-  //   mutedSound: false,
-  //   isFormValid: true,
-  // });
-
-  const state = { nickname: user.getNickname(), mutedSound: false, isFormValid: true };
+  const [state, setState] = useState<StreamComponentState>({
+    nickname: user.getNickname(),
+    mutedSound: false,
+    isFormValid: true,
+  });
 
   return (
     <div className="w-full h-full flex flex-col ">
       <div className="w-[50%] bg-black text-white">
         <div>
-          <span id="nickname">{user.getNickname()}</span>
-          {user.isLocal() && <span id=""> (edit)</span>}
+          <span>{user.getNickname()}</span>
         </div>
       </div>
 
