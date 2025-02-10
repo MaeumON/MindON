@@ -24,7 +24,7 @@ function MyDataDetail() {
   const [reviews, setReviews] = useState<ReviewType[]>([]);
   const [emotionAvg, setEmotionAvg] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
-  // const [weekNum, setWeekNum] = useState<number>(1);
+  const [weekNum, setWeekNum] = useState<number>(1);
 
   // 리뷰 불러오고 안되면 로딩중
   useEffect(() => {
