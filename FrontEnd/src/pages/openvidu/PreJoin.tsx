@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { OpenVidu, Publisher } from "openvidu-browser";
 import Room from "@pages/openvidu/Room";
-import { UserModelType, VideoRoomState } from "@utils/openviduTypes";
+import { createSessionResponse, UserModelType, VideoRoomState } from "@utils/openviduTypes";
 import UserModel from "@components/Openvidu-call/models/user-model";
 import OpenViduLayout from "@components/Openvidu-call/layout/openvidu-layout";
 import Button from "@components/common/Button";
-import { closeSession, getToken, removeUser } from "@apis/openvidu/openviduApi";
+import { closeSession, createSession, createToken, removeUser } from "@apis/openvidu/openviduApi";
 import useAuthStore from "@stores/authStore";
 import IconCheck from "@assets/icons/IconCheck";
+import NoHostRoom from "./NoHostRoom";
 
 /*
 실제 화상채팅으로 진입하기 전에,
@@ -22,7 +23,7 @@ const GROUP_NAME = "소아암 아이를 키우는 부모 모임"; //임시, 추�
 
 const localUser = new UserModel();
 
-function RecordingPrejoin() {
+const Prejoin = () => {
   const { data } = useAuthStore();
 
   const [state, setState] = useState<VideoRoomState>({
@@ -37,6 +38,7 @@ function RecordingPrejoin() {
 
   const [OV, setOV] = useState<OpenVidu | null>(null);
   const [token, setToken] = useState<string>("");
+  const [isHost, setIsHost] = useState<boolean>(false); //호스트여부에 따라 레이아웃 달리하기 위함
   const remotes = useRef<UserModelType[]>([]); //실제 참여자 목록은 state.subscribers로 관리되기 때문에 useRef로 설정
   const layout = useRef(new OpenViduLayout());
 
@@ -289,6 +291,15 @@ function RecordingPrejoin() {
     connectToRoom();
   }, [state.session, OV]);
 
+  const getToken = async (sessionId: string): Promise<string> => {
+    const { sessionId: createdSessionId, host: isHost }: createSessionResponse = await createSession(sessionId);
+    const generatedToken = await createToken(createdSessionId);
+
+    setIsHost(isHost);
+
+    return generatedToken;
+  };
+
   useEffect(() => {
     //마운트될 때, 바로 토큰 생성
     getToken(state.sessionId).then((token) => setToken(token));
@@ -326,7 +337,19 @@ function RecordingPrejoin() {
       <div className="w-full h-[80px] font-jamsilMedium text-20px sm:text-24px text-center leading-[80px]">
         {GROUP_NAME}
       </div>
-      {state.session && (
+      {state.session && !isHost && (
+        <NoHostRoom
+          session={state.session}
+          mySessionId={state.sessionId}
+          localUser={localUser}
+          subscribers={state.subscribers}
+          camStatusChanged={camStatusChanged}
+          micStatusChanged={micStatusChanged}
+          handleCloseSession={handleCloseSession}
+          handleRemoveUser={handleRemoveUser}
+        />
+      )}
+      {state.session && isHost && (
         <Room
           session={state.session}
           mySessionId={state.sessionId}
@@ -370,6 +393,6 @@ function RecordingPrejoin() {
       )}
     </section>
   );
-}
+};
 
-export default RecordingPrejoin;
+export default Prejoin;
