@@ -237,7 +237,7 @@ public class VideoService {
         try {
             String filePath = "C:\\recordings\\" + sessionId + "_" + userId + "_" + questionId + ".webm";
 
-            // WebM → FLAC 변환
+            // WebM → WAV 변환
             String wavPath = audioConverterService.convertWebMToWav(filePath);
 
             // WAV → STT 변환 및 저장
