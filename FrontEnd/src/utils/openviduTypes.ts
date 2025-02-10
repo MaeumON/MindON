@@ -1,5 +1,10 @@
 import { Session, StreamManager, Device } from "openvidu-browser";
 
+export interface createSessionResponse {
+  sessionId: string;
+  host: boolean;
+}
+
 export interface UserModelType {
   isLocal(): boolean;
   isAudioActive: () => boolean;

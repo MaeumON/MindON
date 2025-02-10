@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { OpenVidu, Publisher } from "openvidu-browser";
 import Room from "@pages/openvidu/Room";
-import { UserModelType, VideoRoomState } from "@utils/openviduTypes";
+import { createSessionResponse, UserModelType, VideoRoomState } from "@utils/openviduTypes";
 import UserModel from "@components/Openvidu-call/models/user-model";
 import OpenViduLayout from "@components/Openvidu-call/layout/openvidu-layout";
 import Button from "@components/common/Button";
-import { closeSession, getToken, removeUser } from "@apis/openvidu/openviduApi";
+import { closeSession, createSession, createToken, removeUser } from "@apis/openvidu/openviduApi";
 import useAuthStore from "@stores/authStore";
 import IconCheck from "@assets/icons/IconCheck";
+import NoHostRoom from "./NoHostRoom";
+import { useNavigate } from "react-router-dom";
 
 /*
 실제 화상채팅으로 진입하기 전에,
@@ -17,12 +19,13 @@ import IconCheck from "@assets/icons/IconCheck";
 - 참여하기 버튼으로 화상 화면으로 이동
 */
 
-const SESSION_ID = 4; //전역에 설정되어야하는 값
+const SESSION_ID = 1; //전역에 설정되어야하는 값
 const GROUP_NAME = "소아암 아이를 키우는 부모 모임"; //임시, 추후 참가하기 버튼에 있던 그룹 정보에서 가져오기
 
 const localUser = new UserModel();
 
-function RecordingPrejoin() {
+const Prejoin = () => {
+  const navigate = useNavigate();
   const { data } = useAuthStore();
 
   const [state, setState] = useState<VideoRoomState>({
@@ -37,6 +40,7 @@ function RecordingPrejoin() {
 
   const [OV, setOV] = useState<OpenVidu | null>(null);
   const [token, setToken] = useState<string>("");
+  const [isHost, setIsHost] = useState<boolean>(false); //호스트여부에 따라 레이아웃 달리하기 위함
   const remotes = useRef<UserModelType[]>([]); //실제 참여자 목록은 state.subscribers로 관리되기 때문에 useRef로 설정
   const layout = useRef(new OpenViduLayout());
 
@@ -258,14 +262,14 @@ function RecordingPrejoin() {
     }, 20);
   }, []);
 
-  const handleCloseSession = () => {
-    if (state.session) closeSession(state.sessionId);
+  async function handleCloseSession() {
+    if (state.session) await closeSession(state.sessionId);
 
     setOV(null);
     setState({
       ...state,
       session: undefined,
-      sessionId: state.sessionId,
+      sessionId: String(SESSION_ID),
       userName: data.userName,
       subscribers: [],
       localUser: undefined,
@@ -274,10 +278,15 @@ function RecordingPrejoin() {
     remotes.current = [];
     console.log("leaveSession", state);
     console.log("remotes ", remotes.current);
-  };
 
-  function handleRemoveUser() {
-    removeUser({ sessionName: state.sessionId, token: token });
+    navigate("/");
+  }
+
+  async function handleRemoveUser() {
+    const requestData = { sessionName: state.sessionId, token: token };
+
+    await removeUser(requestData);
+    navigate("/");
   }
 
   // 유저가 '참여하기' 버튼 누르면, joinSession 함수가 호출되면서
@@ -288,6 +297,16 @@ function RecordingPrejoin() {
     //세션 연결
     connectToRoom();
   }, [state.session, OV]);
+
+  const getToken = async (sessionId: string): Promise<string> => {
+    const { sessionId: createdSessionId, host: isHost }: createSessionResponse = await createSession(sessionId);
+    const generatedToken = await createToken(createdSessionId);
+
+    setIsHost(isHost);
+    setIsHost(true); //테스트용
+
+    return generatedToken;
+  };
 
   useEffect(() => {
     //마운트될 때, 바로 토큰 생성
@@ -317,7 +336,7 @@ function RecordingPrejoin() {
     return () => {
       //언마운트될 때, 사용자 세션 나가기 함수 호출
       window.removeEventListener("resize", updateLayout);
-      removeUser({ sessionName: state.sessionId, token: token });
+      if (token && state.sessionId) removeUser({ sessionName: state.sessionId, token: token });
     };
   }, []);
 
@@ -326,7 +345,19 @@ function RecordingPrejoin() {
       <div className="w-full h-[80px] font-jamsilMedium text-20px sm:text-24px text-center leading-[80px]">
         {GROUP_NAME}
       </div>
-      {state.session && (
+      {state.session && !isHost && (
+        <NoHostRoom
+          session={state.session}
+          mySessionId={state.sessionId}
+          localUser={localUser}
+          subscribers={state.subscribers}
+          camStatusChanged={camStatusChanged}
+          micStatusChanged={micStatusChanged}
+          handleCloseSession={handleCloseSession}
+          handleRemoveUser={handleRemoveUser}
+        />
+      )}
+      {state.session && isHost && (
         <Room
           session={state.session}
           mySessionId={state.sessionId}
@@ -370,6 +401,6 @@ function RecordingPrejoin() {
       )}
     </section>
   );
-}
+};
 
-export default RecordingPrejoin;
+export default Prejoin;
