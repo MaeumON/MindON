@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 - 참여하기 버튼으로 화상 화면으로 이동
 */
 
-const SESSION_ID = 1; //전역에 설정되어야하는 값
+const SESSION_ID = 5; //전역에 설정되어야하는 값
 const GROUP_NAME = "소아암 아이를 키우는 부모 모임"; //임시, 추후 참가하기 버튼에 있던 그룹 정보에서 가져오기
 
 const localUser = new UserModel();
@@ -262,30 +262,37 @@ const Prejoin = () => {
     }, 20);
   }, []);
 
-  async function handleCloseSession() {
-    if (state.session) await closeSession(state.sessionId);
+  // 타이머 종료 시 closeSession 호출 , 임시 console.log
+  console.log(closeSession);
+  // async function handleCloseSession() {
+  //   if (state.session) await closeSession(state.sessionId);
 
-    setOV(null);
-    setState({
-      ...state,
-      session: undefined,
-      sessionId: String(SESSION_ID),
-      userName: data.userName,
-      subscribers: [],
-      localUser: undefined,
-    });
+  //   setOV(null);
+  //   setState({
+  //     ...state,
+  //     session: undefined,
+  //     sessionId: String(SESSION_ID),
+  //     userName: data.userName,
+  //     subscribers: [],
+  //     localUser: undefined,
+  //   });
 
-    remotes.current = [];
-    console.log("leaveSession", state);
-    console.log("remotes ", remotes.current);
+  //   remotes.current = [];
+  //   console.log("leaveSession", state);
+  //   console.log("remotes ", remotes.current);
 
-    navigate("/");
-  }
+  //   navigate("/");
+  // }
 
   async function handleRemoveUser() {
     const requestData = { sessionName: state.sessionId, token: token };
 
-    await removeUser(requestData);
+    if (state.session) {
+      console.log("!!!!!!!!!! session !!!!!!!");
+      await removeUser(requestData);
+    }
+
+    console.log("!!!!!!!!!! navigate !!!!!!!");
     navigate("/");
   }
 
@@ -303,7 +310,7 @@ const Prejoin = () => {
     const generatedToken = await createToken(createdSessionId);
 
     setIsHost(isHost);
-    setIsHost(true); //테스트용
+    setIsHost(false); //테스트용
 
     return generatedToken;
   };
@@ -337,6 +344,8 @@ const Prejoin = () => {
       //언마운트될 때, 사용자 세션 나가기 함수 호출
       window.removeEventListener("resize", updateLayout);
       if (token && state.sessionId) removeUser({ sessionName: state.sessionId, token: token });
+
+      console.log("unMount, and remaining users", state.subscribers);
     };
   }, []);
 
@@ -353,7 +362,6 @@ const Prejoin = () => {
           subscribers={state.subscribers}
           camStatusChanged={camStatusChanged}
           micStatusChanged={micStatusChanged}
-          handleCloseSession={handleCloseSession}
           handleRemoveUser={handleRemoveUser}
         />
       )}
@@ -365,7 +373,6 @@ const Prejoin = () => {
           subscribers={state.subscribers}
           camStatusChanged={camStatusChanged}
           micStatusChanged={micStatusChanged}
-          handleCloseSession={handleCloseSession}
           handleRemoveUser={handleRemoveUser}
         />
       )}

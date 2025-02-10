@@ -34,7 +34,6 @@ interface RoomProps {
   checkNotification?: () => void;
   camStatusChanged: () => void;
   micStatusChanged: () => void;
-  handleCloseSession: () => void;
   handleRemoveUser: () => void;
 }
 
@@ -45,7 +44,6 @@ function Room({
   subscribers,
   camStatusChanged,
   micStatusChanged,
-  handleCloseSession,
   handleRemoveUser,
 }: RoomProps) {
   const [isEmotionModalOpen, setIsEmotionModalOpen] = useState<boolean>(false);
@@ -106,16 +104,12 @@ function Room({
           camStatusChanged={camStatusChanged}
           micStatusChanged={micStatusChanged}
           toggleChat={setIsChatModalOpen}
-          setIsEmotionModalOpen={setIsEmotionModalOpen}
+          setIsCloseModalOpen={setIsEmotionModalOpen}
         />
       </div>
 
       {isEmotionModalOpen && (
-        <EmotionModal
-          setIsEmotionModalOpen={setIsEmotionModalOpen}
-          handleCloseSession={handleCloseSession}
-          handleRemoveUser={handleRemoveUser}
-        />
+        <EmotionModal setIsEmotionModalOpen={setIsEmotionModalOpen} handleRemoveUser={handleRemoveUser} />
       )}
       {isChatModalOpen && (
         <ChatComponent

@@ -5,8 +5,8 @@ import StreamComponent from "@components/Openvidu-call/components/stream/StreamC
 import ToolbarComponent from "@components/Openvidu-call/components/toolbar/ToolbarComponent";
 import UserModel from "@components/Openvidu-call/models/user-model";
 import Recording from "@pages/openvidu/Recording";
-import EmotionModal from "@/components/Openvidu-call/components/emotionModal/EmotionModal";
 import { Session } from "openvidu-browser";
+import EndModal from "@/components/Openvidu-call/components/EndModal";
 
 /*
 - 미팅 시작하기 전, 시작하겠습니다 멘트
@@ -33,7 +33,6 @@ interface RoomProps {
   checkNotification?: () => void;
   camStatusChanged: () => void;
   micStatusChanged: () => void;
-  handleCloseSession: () => void;
   handleRemoveUser: () => void;
 }
 
@@ -44,11 +43,9 @@ const NoHostRoom = ({
   subscribers,
   camStatusChanged,
   micStatusChanged,
-
-  handleCloseSession,
   handleRemoveUser,
 }: RoomProps) => {
-  const [isEmotionModalOpen, setIsEmotionModalOpen] = useState<boolean>(false);
+  const [isEndModalOpen, setIsEndModalOpen] = useState<boolean>(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState<boolean>(false);
   const [messageList, setMessageList] = useState<Message[]>([]);
   const chatScroll = useRef<HTMLDivElement>(null);
@@ -104,17 +101,11 @@ const NoHostRoom = ({
           camStatusChanged={camStatusChanged}
           micStatusChanged={micStatusChanged}
           toggleChat={setIsChatModalOpen}
-          setIsEmotionModalOpen={setIsEmotionModalOpen}
+          setIsCloseModalOpen={setIsEndModalOpen}
         />
       </div>
 
-      {isEmotionModalOpen && (
-        <EmotionModal
-          setIsEmotionModalOpen={setIsEmotionModalOpen}
-          handleCloseSession={handleCloseSession}
-          handleRemoveUser={handleRemoveUser}
-        />
-      )}
+      {isEndModalOpen && <EndModal setIsEndModalOpen={setIsEndModalOpen} handleRemoveUser={handleRemoveUser} />}
       {isChatModalOpen && (
         <ChatComponent
           user={localUser && localUser.getStreamManager() ? localUser : new UserModel()}

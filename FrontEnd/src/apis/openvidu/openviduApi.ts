@@ -22,6 +22,7 @@ export async function removeUser(requestData: { sessionName: string; token: stri
   try {
     console.log("requestData in api", requestData);
     await instance.post(VIDEO_API_BASE + "/remove-user", requestData);
+    console.log("removeUser 성공");
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       console.log("사용자 세션 나가기 오류");
