@@ -20,6 +20,7 @@ function Main() {
   const { data } = useAuthStore();
   console.log("data", data);
   const userName = data.userName || "사용자";
+  const diseaseId = data.diseaseId;
 
   const nav = useNavigate();
   function navToList() {
