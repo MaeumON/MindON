@@ -12,6 +12,8 @@ import { groupType } from "@/apis/types/groups";
 import Footer from "@/components/Layout/Footer";
 import useAuthStore from "@/stores/authStore";
 
+// 메인페이지
+
 function Main() {
   // store 유저데이터 불러오기
   const { data } = useAuthStore();
