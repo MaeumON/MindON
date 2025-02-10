@@ -9,6 +9,7 @@ import { closeSession, createSession, createToken, removeUser } from "@apis/open
 import useAuthStore from "@stores/authStore";
 import IconCheck from "@assets/icons/IconCheck";
 import NoHostRoom from "./NoHostRoom";
+import { useNavigate } from "react-router-dom";
 
 /*
 실제 화상채팅으로 진입하기 전에,
@@ -18,12 +19,13 @@ import NoHostRoom from "./NoHostRoom";
 - 참여하기 버튼으로 화상 화면으로 이동
 */
 
-const SESSION_ID = 4; //전역에 설정되어야하는 값
+const SESSION_ID = 1; //전역에 설정되어야하는 값
 const GROUP_NAME = "소아암 아이를 키우는 부모 모임"; //임시, 추후 참가하기 버튼에 있던 그룹 정보에서 가져오기
 
 const localUser = new UserModel();
 
 const Prejoin = () => {
+  const navigate = useNavigate();
   const { data } = useAuthStore();
 
   const [state, setState] = useState<VideoRoomState>({
@@ -260,14 +262,14 @@ const Prejoin = () => {
     }, 20);
   }, []);
 
-  const handleCloseSession = () => {
-    if (state.session) closeSession(state.sessionId);
+  async function handleCloseSession() {
+    if (state.session) await closeSession(state.sessionId);
 
     setOV(null);
     setState({
       ...state,
       session: undefined,
-      sessionId: state.sessionId,
+      sessionId: String(SESSION_ID),
       userName: data.userName,
       subscribers: [],
       localUser: undefined,
@@ -276,10 +278,15 @@ const Prejoin = () => {
     remotes.current = [];
     console.log("leaveSession", state);
     console.log("remotes ", remotes.current);
-  };
 
-  function handleRemoveUser() {
-    removeUser({ sessionName: state.sessionId, token: token });
+    navigate("/");
+  }
+
+  async function handleRemoveUser() {
+    const requestData = { sessionName: state.sessionId, token: token };
+
+    await removeUser(requestData);
+    navigate("/");
   }
 
   // 유저가 '참여하기' 버튼 누르면, joinSession 함수가 호출되면서
@@ -296,6 +303,7 @@ const Prejoin = () => {
     const generatedToken = await createToken(createdSessionId);
 
     setIsHost(isHost);
+    setIsHost(true); //테스트용
 
     return generatedToken;
   };
@@ -328,7 +336,7 @@ const Prejoin = () => {
     return () => {
       //언마운트될 때, 사용자 세션 나가기 함수 호출
       window.removeEventListener("resize", updateLayout);
-      removeUser({ sessionName: state.sessionId, token: token });
+      if (token && state.sessionId) removeUser({ sessionName: state.sessionId, token: token });
     };
   }, []);
 

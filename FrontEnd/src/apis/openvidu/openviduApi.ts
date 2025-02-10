@@ -2,19 +2,6 @@ import { AxiosError } from "axios";
 import instance from "../instance";
 import { createSessionResponse } from "@utils/openviduTypes";
 
-// 세션아이디 (그룹아이디)로 새로우 세션 생성
-// const createSession = async (sessionId: string): Promise<{ createdSessionId: string; isHost: boolean }> => {
-//   const response = await openviduInstance.post(
-//     "sessions",
-//     { customSessionId: sessionId },
-//     { headers: { "Content-Type": "application/json" } }
-//   );
-
-//   console.log("createSession", response.data);
-
-//   return response.data;
-// };
-
 const VIDEO_API_BASE = "/api/video";
 
 export const createSession = async (sessionId: string): Promise<createSessionResponse> => {
@@ -31,12 +18,10 @@ export const createToken = async (sessionId: string): Promise<string> => {
 };
 
 //사용자 한 명 세션 나가기
-export async function removeUser({ sessionName, token }: { sessionName: string; token: string }) {
+export async function removeUser(requestData: { sessionName: string; token: string }) {
   try {
-    await instance.post(VIDEO_API_BASE + "/remove-user", {
-      sessionName: sessionName,
-      token: token,
-    });
+    console.log("requestData in api", requestData);
+    await instance.post(VIDEO_API_BASE + "/remove-user", requestData);
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       console.log("사용자 세션 나가기 오류");
