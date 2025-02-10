@@ -19,7 +19,7 @@ function Main() {
 
   const nav = useNavigate();
   function navToList() {
-    nav("/welcome");
+    nav("/groupslist");
   }
 
   interface EventDics {
