@@ -33,9 +33,9 @@ public class GroupRecommendService {
             response.setPeriod(group.getPeriod());
             response.setMeetingTime(group.getMeetingTime());
             response.setDayOfWeek(group.getDayOfWeek());
-            response.setMinMembers(group.getMinMember());
-            response.setMaxMembers(group.getMaxMember());
-            response.setTotalMembers(group.getTotalMember());
+            response.setMinMember(group.getMinMember());
+            response.setMaxMember(group.getMaxMember());
+            response.setTotalMember(group.getTotalMember());
             response.setGroupStatus(group.getGroupStatus());
             return response;
         }).toList();

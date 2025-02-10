@@ -50,9 +50,9 @@ public class GroupLeaveService {
             Optional<Group> groupOptional = groupRepository.findById(groupId);
             if (groupOptional.isPresent()) {
                 Group group = groupOptional.get();
-                byte totalMembers = group.getTotalMember();
-                if (totalMembers > 0) {
-                    group.setTotalMember((byte) (totalMembers - 1));
+                byte totalMember = group.getTotalMember();
+                if (totalMember > 0) {
+                    group.setTotalMember((byte) (totalMember - 1));
                 }
                 groupRepository.save(group); // 그룹 업데이트
 
