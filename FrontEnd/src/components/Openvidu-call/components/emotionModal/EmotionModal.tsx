@@ -3,11 +3,10 @@ import { emotionList } from "@utils/emotionList";
 
 interface EmotionModalProps {
   setIsEmotionModalOpen: (isOpen: boolean) => void;
-  handleCloseSession: () => void;
   handleRemoveUser: () => void;
 }
 
-function EmotionModal({ setIsEmotionModalOpen, handleCloseSession, handleRemoveUser }: EmotionModalProps) {
+function EmotionModal({ setIsEmotionModalOpen, handleRemoveUser }: EmotionModalProps) {
   function handleCloseModal() {
     setIsEmotionModalOpen(false);
   }
@@ -21,10 +20,6 @@ function EmotionModal({ setIsEmotionModalOpen, handleCloseSession, handleRemoveU
     handleRemoveUser();
   }
 
-  function handleCloseMeeting() {
-    setIsEmotionModalOpen(false);
-    handleCloseSession();
-  }
   return (
     <section className="absolute inset-0 flex items-center justify-center bg-black/50">
       <div className="w-[85%] h-[450px] flex flex-col items-center justify-center bg-offWhite rounded-[12px]">
@@ -62,7 +57,7 @@ function EmotionModal({ setIsEmotionModalOpen, handleCloseSession, handleRemoveU
         </div>
         <div className="w-[85%] mt-[25px] flex justify-center gap-[10px]">
           <button
-            onClick={handleCloseMeeting}
+            onClick={handleRemoveUserBtn}
             className="w-[130px] p-2 rounded-[12px] text-white font-bold bg-cardContent cursor-pointer z-100"
           >
             모임 종료
@@ -70,15 +65,6 @@ function EmotionModal({ setIsEmotionModalOpen, handleCloseSession, handleRemoveU
           <button className="w-[130px] p-2 rounded-[12px] text-white font-bold bg-green100 cursor-pointer">
             저장하기
           </button>
-        </div>
-
-        <div className="flex ">
-          <div className="bg-white p-2 cursor-pointer" onClick={handleRemoveUserBtn}>
-            한 명만 나가기
-          </div>
-          <div className="bg-white p-2 cursor-pointer" onClick={handleCloseMeeting}>
-            세션 종료
-          </div>
         </div>
       </div>
     </section>
