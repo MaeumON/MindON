@@ -35,14 +35,8 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
 
     const data = JSON.parse(event.data || "");
 
-    console.log("data", data);
     const speakingOrder = data.speakingOrder;
     const userId = data.userId;
-
-    console.log("isMeetingStart", isMeetingStart);
-    console.log("isQuestionStart", isQuestionStart);
-    console.log("currentQuestionNumber", currentQuestionNumber);
-    console.log("currentUser", currentUser);
 
     //질문 교체
     //미팅 시작 전
@@ -94,11 +88,5 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
         setCurrentUserId(speakingOrder[currentUser + 1].userId);
       }
     }
-
-    console.log("--------------------------------");
-    console.log("isMeetingStart", isMeetingStart);
-    console.log("isQuestionStart", isQuestionStart);
-    console.log("currentQuestionNumber", currentQuestionNumber);
-    console.log("currentUser", currentUser);
   });
 }

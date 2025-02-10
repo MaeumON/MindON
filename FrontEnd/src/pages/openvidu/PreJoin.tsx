@@ -310,7 +310,7 @@ const Prejoin = () => {
     const generatedToken = await createToken(createdSessionId);
 
     setIsHost(isHost);
-    setIsHost(false); //테스트용
+    // setIsHost(false); //테스트용
 
     return generatedToken;
   };
