@@ -2,7 +2,7 @@ import Header from "@components/Layout/Header";
 import GroupCard from "@/components/group/GroupCard";
 import GroupsFilter from "@components/group/GroupsFilter";
 import Footer from "@components/Layout/Footer";
-import { Group, RequestData } from "@apis/group/groupListApi";
+import { Group, RequestData } from "@utils/groups";
 
 import IconSearch from "@assets/icons/IconSearch";
 import SeachFilter from "@assets/images/SeachFilter.png";
@@ -22,6 +22,7 @@ function GroupsList() {
         const result = await groupListApi({});
         console.log("📌 API 응답 데이터:", result);
         setGroups(result);
+        console.log("📌 setGroup 이후 :", groups);
       } catch (error) {
         console.error("초기 그룹 목록 요청 실패:", error);
         setGroups([]); // 에러 발생 시 빈 배열 설정
@@ -41,6 +42,7 @@ function GroupsList() {
       const result = await groupListApi({ ...selectedFilters });
       console.log("📌 필터 적용 API 응답:", result);
       setGroups(result); // 기존 그룹 목록을 새로운 목록으로 갱신
+      console.log("📌 setGroup 이후 :", groups);
     } catch (error) {
       console.error("필터 적용 후 그룹 목록 요청 실패:", error);
     }

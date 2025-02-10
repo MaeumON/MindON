@@ -15,6 +15,7 @@ import useAuthStore from "@/stores/authStore";
 function Main() {
   // store 유저데이터 불러오기
   const { data } = useAuthStore();
+  console.log("data", data);
   const userName = data.userName || "사용자";
   const diseaseId = data.diseaseId;
 
