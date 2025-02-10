@@ -18,8 +18,8 @@ import { useEffect, useState } from "react";
 import { fetchReviews, ReviewType } from "@/apis/meetingDetail";
 
 function MyDataDetail() {
-  const { data } = useAuthStore();
-  const username = data.userName || "사용자";
+  const { userName } = useAuthStore();
+  const username = userName || "사용자";
 
   const [reviews, setReviews] = useState<ReviewType[]>([]);
   const [emotionAvg, setEmotionAvg] = useState<number>(0);

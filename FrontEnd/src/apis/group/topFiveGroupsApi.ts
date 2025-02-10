@@ -1,4 +1,4 @@
-import { Group } from "./groupListApi";
+import { Group } from "@/utils/groups";
 import authInstance from "../authinstance";
 
 const topFiveGroupsApi = async (diseaseId: number): Promise<Group[]> => {
