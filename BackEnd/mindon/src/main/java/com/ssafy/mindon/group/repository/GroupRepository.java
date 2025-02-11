@@ -41,4 +41,5 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
 
     long countByGroupIdInAndGroupStatus(List<Integer> groupIds, byte groupStatus);
 
+    Group findByGroupId(Integer groupId);
 }
