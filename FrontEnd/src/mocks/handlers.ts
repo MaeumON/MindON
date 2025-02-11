@@ -128,7 +128,7 @@ const handlers = [
   // }),
 
   //질문 발언 순서 받아오기
-  http.post(VITE_APP_API_URL + "/api/users/:groupId/list", (req) => {
+  http.get(VITE_APP_API_URL + "/api/users/:groupId/list", (req) => {
     const { groupId } = req.params; // groupId 파라미터 접근
 
     //쓰지 않는 변수 처리용

@@ -1,7 +1,6 @@
 import { Session } from "openvidu-browser";
 import { useEffect, useState } from "react";
 import { fetchQuestionSpeakingOrder } from "@apis/openvidu/questionApi";
-import { PARTICIPANT_LIST } from "@/data/OPENVIDU";
 import useAuthStore from "@stores/authStore";
 import { useQuestionStore } from "@stores/questionStore";
 import {
@@ -41,7 +40,7 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
   function stateChanger() {
     const signalData: QuestionChangedData = { userId: userId, speakingOrder: speakingOrder };
     if (isMeetingStart === 0) {
-      sendSignalStartMeeting({ data: speakingOrder, session });
+      sendSignalStartMeeting({ data: { speakingOrder: speakingOrder }, session });
     }
     sendSignalQuestionChanged({ data: signalData, session });
   }
@@ -60,6 +59,11 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
     }
 
     if (isMeetingStart === 1 && isQuestionStart === 1) {
+      console.log("currentUserId", currentUserId);
+      console.log("userId", userId);
+      console.log("isSpeaking", isSpeaking);
+      console.log("currentUser", currentUser);
+
       if (currentUserId === userId && !isSpeaking) {
         return "답변 시작하기";
       } else if (currentUserId === userId && isSpeaking) {
@@ -72,7 +76,7 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
   }
 
   const fetchOrder = async () => {
-    const response = await fetchQuestionSpeakingOrder({ groupId: mySessionId, participants: PARTICIPANT_LIST });
+    const response = await fetchQuestionSpeakingOrder({ groupId: mySessionId });
 
     const sortedResponse = response.sort((a, b) => a.no - b.no);
     setSpeakingOrder(sortedResponse);
