@@ -29,7 +29,7 @@ export interface Group {
 }
 
 export interface GroupDetail extends Group {
-  isRegister: boolean;
+  registered: boolean;
   description: string;
   progressWeeks?: number;
 }
