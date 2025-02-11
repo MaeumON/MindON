@@ -5,8 +5,6 @@ import { BrowserRouter } from "react-router-dom";
 import { worker } from "./mocks/browser";
 
 async function deferRender() {
-  console.log("dev? ", import.meta.env.DEV);
-  console.log("VITE_APP_API_URL", import.meta.env.VITE_APP_API_URL);
   //개발모드 확인
   if (!import.meta.env.DEV) {
     // 프로덕션 환경에서 서비스 워커 제거
