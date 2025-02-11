@@ -35,4 +35,3 @@ EXPOSE 8080
 
 # 9. 컨테이너 실행 명령어
 ENTRYPOINT ["java", "-jar", "app.jar"]
-
