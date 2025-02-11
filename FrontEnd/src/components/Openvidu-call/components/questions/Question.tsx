@@ -2,7 +2,12 @@ import { fetchQuestionSpeakingOrder } from "@/apis/openvidu/questionApi";
 import { PARTICIPANT_LIST } from "@/data/OPENVIDU";
 // import useAuthStore from "@/stores/authStore";
 import { useQuestionStore } from "@/stores/questionStore";
-import { sendSignalQuestionChanged, subscribeToQuestionChanged } from "@/utils/openvidu/signal";
+import {
+  sendSignalQuestionChanged,
+  // sendSignalStartMeeting,
+  subscribeToQuestionChanged,
+  // subscribeToStartMeeting,
+} from "@/utils/openvidu/signal";
 import { QuestionChangedData, QuestionSpeakingOrderType, UserModelType } from "@/utils/openviduTypes";
 import { Session } from "openvidu-browser";
 import { useEffect, useState } from "react";
@@ -38,10 +43,13 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
 
   function stateChanger() {
     const signalData: QuestionChangedData = { userId: userId, speakingOrder: speakingOrder };
+    // if (isMeetingStart === 0) {
+    //   sendSignalStartMeeting({ session });
+    // }
     sendSignalQuestionChanged({ data: signalData, session });
   }
 
-  const getButtonText = () => {
+  function getButtonText() {
     if (isMeetingStart === 0) {
       return "모임 바로 시작하기";
     }
@@ -64,7 +72,7 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
       return `${speakingOrder[currentUser].userName}님이 발언 중이에요`;
     }
     return currentBtnText;
-  };
+  }
 
   const fetchOrder = async () => {
     const response = await fetchQuestionSpeakingOrder({ groupId: mySessionId, participants: PARTICIPANT_LIST });
@@ -88,6 +96,7 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
     subscribeToQuestionChanged({
       session,
     });
+    // subscribeToStartMeeting({ session });
   }, []);
 
   return (

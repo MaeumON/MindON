@@ -40,7 +40,6 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
 
     //질문 교체
     //미팅 시작 전
-
     if (isMeetingStart === 0) {
       setIsMeetingStart(1);
       setIsQuestionStart(0);
@@ -90,3 +89,41 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
     }
   });
 }
+
+// //모임 바로 시작하기 버튼 누르면 모임 시작 시그널 보내기
+// export function sendSignalStartMeeting({ data, session }: { data: QuestionChangedData; session: Session }) {
+//   const signalOptions = {
+//     data: JSON.stringify(data),
+//     type: "startMeeting",
+//   };
+//   session?.signal(signalOptions);
+// }
+
+// export function subscribeToStartMeeting({ session }: { session: Session }) {
+//   session.on("signal:startMeeting", (event) => {
+//     // 매번 최신 store 상태를 가져오도록 수정
+//     const store = useQuestionStore.getState();
+//     const {
+//       questions,
+//       isMeetingStart,
+//       isQuestionStart,
+//       currentQuestionNumber,
+//       currentUser,
+//       currentUserId,
+//       isSpeaking,
+//       setIsMeetingStart,
+//       setIsQuestionStart,
+//       setCurrentQuestionNumber,
+//       setCurrentUser,
+//       setCurrentUserId,
+//       setCurrentQuestionText,
+
+//       setIsSpeaking,
+//     } = store;
+
+//     const data = JSON.parse(event.data || "");
+
+//     const speakingOrder = data.speakingOrder;
+//     const userId = data.userId;
+//   });
+// }
