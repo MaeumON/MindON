@@ -5,10 +5,10 @@ import { http, HttpResponse } from "msw";
 import { FINDID } from "../data/FINDID";
 import { FINDPWD } from "../data/FINDPWD";
 import { QUESTION_SPEAKING_ORDER } from "@/data/OPENVIDU";
-import { TEMPERATURE } from "@/data/TEMPERTURE";
+// import { TEMPERATURE } from "@/data/TEMPERTURE";
 // import { GROUPSDETAIL } from "@/data/GROUPDETAIL";
-import { MEETINGDETIAL } from "@/data/MEETINGDETAIL";
-import { UPCOMING_EVENTS } from "@/data/UPCOMING_EVENTS";
+// import { MEETINGDETIAL } from "@/data/MEETINGDETAIL";
+// import { UPCOMING_EVENTS } from "@/data/UPCOMING_EVENTS";
 // import { Group, RequestData } from "@/apis/group/groupListApi";
 // import { TOPFIVEGROUPS } from "@/data/TOPFIVEGROUPS";
 // import { RequestData, Group } from "@/utils/groups";
@@ -101,16 +101,16 @@ const handlers = [
   // }),
 
   // 마음온도 정보
-  http.get(VITE_APP_API_URL + "/api/users/temparature", () => {
-    return HttpResponse.json({ temperture: TEMPERATURE.temperture });
-  }),
+  // http.get(VITE_APP_API_URL + "/api/users/temparature", () => {
+  //   return HttpResponse.json({ temperture: TEMPERATURE.temperture });
+  // }),
 
-  // 마이데이터 리뷰조회
-  http.get(VITE_APP_API_URL + "/api/groups/:groupId/reviews", (req) => {
-    const { groupId } = req.params;
-    console.log(groupId);
-    return HttpResponse.json(MEETINGDETIAL);
-  }),
+  // // 마이데이터 리뷰조회
+  // http.get(VITE_APP_API_URL + "/api/groups/:groupId/reviews", (req) => {
+  //   const { groupId } = req.params;
+  //   console.log(groupId);
+  //   return HttpResponse.json(MEETINGDETIAL);
+  // }),
 
   // SignUp 정보
   // 성공함함

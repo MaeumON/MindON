@@ -39,7 +39,7 @@ function GroupDetail() {
 
   // group 데이터가 변경될 때 isRegi 상태 업데이트
   useEffect(() => {
-    if (group) setIsRegi(group.isRegister);
+    if (group) setIsRegi(group.registered);
   }, [group]);
 
   // 참여/취소 버튼 클릭 시 API 요청

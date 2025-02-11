@@ -34,10 +34,13 @@ function MyDataDetail() {
     const loadReviews = async () => {
       const data = await fetchReviews(1);
       if (data) {
-        setReviews(data.data);
+        const result = data.data;
+        console.log("결과", data);
+        setReviews(result);
         setEmotionAvg(data.emotionAvg);
-        const filteredReviews = data.data.filter((review) => review.progressWeeks === weekNum);
+        const filteredReviews = result.filter((review) => review.period === weekNum);
         if (filteredReviews.length > 0) {
+          console.log("필터리뷰", filteredReviews);
           setEachReview(filteredReviews[0]);
           setSpeechAmount(filteredReviews[0].speechAmount); // 필터된 값의 첫 번째 인덱스를 저장
         } else {
@@ -48,6 +51,8 @@ function MyDataDetail() {
     };
     loadReviews();
   }, [weekNum]); // weeknum 변경되면 다시 필터링
+  // console.log("reviews", reviews);
+  // console.log("각데이터", eachReview);
 
   const handleWeekChange = (week: number) => {
     setWeekNum(week); // 클릭한 인덱스로 weekNum 변경
@@ -125,11 +130,11 @@ function MyDataDetail() {
               {/* 감정 이미지 */}
               {Array.from({ length: 8 }).map((_, index) => {
                 const review = reviews[index] || { emotion: 0 }; // 리뷰가 없으면 기본값으로 "?" 설정
-                const emotionImg = emotionImages[review.emotion] || NoneEmotion; // 기본값은 물음표로 설정
+                const emotionImg = emotionImages[review.emotionId] || NoneEmotion; // 기본값은 물음표로 설정
                 return (
                   <div
                     key={index}
-                    className={`absolute flex items-center justify-center ${getEmotionPosition(review.emotion)}`}
+                    className={`absolute flex items-center justify-center ${getEmotionPosition(review.emotionId)}`}
                     style={{
                       left: `${index * 31 + 26}px`, // 수직선에 맞게 배치
                       // top: getEmotionPosition(review.emotion), // 감정에 맞는 위치로 배치
@@ -138,7 +143,7 @@ function MyDataDetail() {
                   >
                     <img
                       src={emotionImg}
-                      alt={`emotion-${review.emotion}`}
+                      alt={`emotion-${review.emotionId}`}
                       className="w-[28px] h-[28px] object-contain ${getEmotionPosition(review.emotion)}}" // 이미지 비율 유지
                     />
                   </div>

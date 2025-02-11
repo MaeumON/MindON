@@ -6,20 +6,20 @@ import React, { useState } from "react";
 
 function FindPwd() {
   const [userId, setUserId] = useState("");
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [state, setState] = useState(false);
 
   function onChangeId(e: React.ChangeEvent<HTMLInputElement>) {
     setUserId(e.target.value);
   }
 
-  function onChangeEmail(e: React.ChangeEvent<HTMLInputElement>) {
-    setEmail(e.target.value);
+  function onChangePhone(e: React.ChangeEvent<HTMLInputElement>) {
+    setPhone(e.target.value);
   }
 
   async function onClickFindPwd() {
     try {
-      const result = await findPwdApi(userId, email);
+      const result = await findPwdApi(userId, phone);
 
       // setState가 비동기적으로 작동하므로 동기적으로 처리
       const newState = result[0].data.state;
@@ -38,9 +38,9 @@ function FindPwd() {
 
   const checkProps = {
     userId,
-    email,
+    phone,
     onChangeId,
-    onChangeEmail,
+    onChangePhone,
     onClickFindPwd,
   };
 
