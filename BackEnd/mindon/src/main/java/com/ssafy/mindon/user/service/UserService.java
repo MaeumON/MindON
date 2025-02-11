@@ -6,6 +6,8 @@ import com.ssafy.mindon.common.exception.NotFoundException;
 import com.ssafy.mindon.group.repository.GroupRepository;
 import com.ssafy.mindon.meeting.entity.Meeting;
 import com.ssafy.mindon.meeting.repository.MeetingRepository;
+import com.ssafy.mindon.user.dto.SpeakerDto;
+import com.ssafy.mindon.user.dto.SpeakerListDto;
 import com.ssafy.mindon.user.dto.UserEmotionResponseDto;
 import com.ssafy.mindon.user.entity.User;
 import com.ssafy.mindon.user.repository.UserRepository;
@@ -92,6 +94,21 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         user.setUserStatus((byte) 1);
+    }
+
+    public SpeakerListDto getSpeakerList(Set<String> userIds) {
+        List<SpeakerDto> speakerDtos = new ArrayList<>();
+        int no = 1;
+
+        for (String userId : userIds) {
+            User user = userRepository.findByUserId(userId);
+
+            if (user != null) {
+                speakerDtos.add(new SpeakerDto(no++, user.getUserId(), user.getUserName()));
+            }
+        }
+
+        return new SpeakerListDto(speakerDtos);
     }
 
 }
