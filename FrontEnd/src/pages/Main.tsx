@@ -34,6 +34,7 @@ function Main() {
   async function loadUpcomingEvent() {
     const upcomingEventData = await fetchUpcomingEvent();
     setUpcomingEvent(upcomingEventData);
+    console.log("upcomingEvent", upcomingEventData);
   }
 
   async function loadGroups() {

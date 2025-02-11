@@ -1,5 +1,7 @@
 package com.ssafy.mindon.meeting.service;
 
+import com.ssafy.mindon.common.error.ErrorCode;
+import com.ssafy.mindon.common.exception.MeetingException;
 import com.ssafy.mindon.disease.entity.Disease;
 import com.ssafy.mindon.group.entity.Group;
 import com.ssafy.mindon.group.repository.GroupRepository;
@@ -98,7 +100,8 @@ public class MeetingService {
             int questionsPerWeek = allQuestions.size() / totalMiddleWeeks;
 
             int startIndex = (meetingWeek - 2) * questionsPerWeek;
-            int endIndex = (meetingWeek - 1) * questionsPerWeek;
+            startIndex = Math.min(startIndex, allQuestions.size() - 1);
+            int endIndex = Math.min((meetingWeek - 1) * questionsPerWeek, allQuestions.size());
 
             if (meetingWeek == totalMiddleWeeks + 1) {
                 endIndex = allQuestions.size();
@@ -131,6 +134,7 @@ public class MeetingService {
 
         return meeting.get().getMeetingId();
     }
+
 
 
 }

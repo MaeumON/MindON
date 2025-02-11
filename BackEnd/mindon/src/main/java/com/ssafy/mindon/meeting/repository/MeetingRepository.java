@@ -22,4 +22,6 @@ public interface MeetingRepository extends JpaRepository<Meeting, Integer> {
             byte meetingStatus,
             LocalDateTime currentDate
     );
+
+    List<Meeting> findAllByGroup_GroupIdIn(List<Integer> joinedGroupIds);
 }

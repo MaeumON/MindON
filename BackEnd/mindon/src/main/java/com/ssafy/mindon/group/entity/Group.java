@@ -88,7 +88,7 @@ public class Group {
             this.progressWeeks = 0;
         }
         if (this.totalMember == null) {
-            this.totalMember = 0; // 인원 추가 로직은 user_group 생성될 때 +1
+            this.totalMember = 1; // 인원 추가 로직은 user_group 생성될 때 +1
         }
         if (this.groupStatus == null) {
             this.groupStatus = 0;

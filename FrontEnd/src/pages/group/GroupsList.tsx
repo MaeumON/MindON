@@ -19,7 +19,7 @@ function GroupsList() {
 
   const fetchInitialGroups = async () => {
     try {
-      const result = await groupListApi({});
+      const result = await groupListApi();
       console.log("📌 API 응답 데이터:", result);
       setGroups(result);
       console.log("📌 setGroup 이후 :", groups);

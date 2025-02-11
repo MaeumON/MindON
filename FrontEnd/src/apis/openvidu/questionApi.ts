@@ -2,13 +2,22 @@ import { ParticipantType } from "@utils/openviduTypes";
 import instance from "../instance";
 import { questionType } from "../types/questions";
 
+// 미팅 ID 받아오기
+export const fetchMeetingId = async (groupId: string): Promise<number> => {
+  const response = await instance.get(`/api/meetings/ongoing/${groupId}`);
+  return response.data.meetingId;
+};
+
 //meetingID에 맞는 질문 받아오기
-export const fetchQuestions = async (meetingId: string): Promise<questionType[]> => {
+
+//meetingID에 맞는 질문 받아오기
+export const fetchQuestions = async (meetingId: number): Promise<questionType[]> => {
+  console.log("fetch Questions meetingId", meetingId);
   const response = await instance.get(`/api/meetings/${meetingId}/questions`);
 
   console.log("response", response);
 
-  return await response.data;
+  return await response.data.data;
 };
 
 interface QuestionSpeakingOrderType {

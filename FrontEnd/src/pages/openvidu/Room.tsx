@@ -26,6 +26,7 @@ import { Session } from "openvidu-browser";
 */
 
 interface RoomProps {
+  meetingId: number;
   session: Session;
   mySessionId: string;
   localUser: UserModel;
@@ -38,6 +39,7 @@ interface RoomProps {
 }
 
 function Room({
+  meetingId,
   session,
   mySessionId,
   localUser,
@@ -80,7 +82,7 @@ function Room({
 
   return (
     <section className="w-full h-[calc(100vh-80px)] px-[20px] flex flex-col justify-center items-center bg-offWhite font-suite">
-      <Question session={session} mySessionId={mySessionId} subscribers={subscribers} />
+      <Question meetingId={meetingId} session={session} mySessionId={mySessionId} subscribers={subscribers} />
 
       <div className="w-full h-[80%] grid grid-cols-3 gap-4">
         {localUser && localUser.getStreamManager() && (

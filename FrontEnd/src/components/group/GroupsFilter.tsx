@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { RequestData } from "@/utils/groups";
+import RadioButton from "../common/RadioButton";
 
 interface GroupsFilterProps {
   isOpen: boolean;
@@ -12,12 +13,12 @@ interface GroupsFilterProps {
 
 function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
   const [selectedDiseases, setSelectedDiseases] = useState<string[]>([]); // 질병 선택 상태
-  const [selectedPeriod, setSelectedPeriod] = useState<number>(8); // 기본값 1주
+  const [selectedPeriod, setSelectedPeriod] = useState<number>(0); // 기본값 1주
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [selectedStartTime, setSelectedStartTime] = useState<string>("00:00");
   const [selectedEndTime, setSelectedEndTime] = useState<string>("23:00");
-  const [selectedHost, setSelectedHost] = useState<string>("관계없음");
+  const [selectedHost, setSelectedHost] = useState<string | null>(null);
   const [maxWidth, setMaxWidth] = useState(412);
 
   // 반응형 화면 구현
@@ -73,6 +74,9 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
     기타: 10,
   } as Record<string, number>;
 
+  // const periodMap = {
+  //   "1~8주": 0,
+  // };
   // 질병 선택 시 토글
   const toggleDisease = (disease: string) => {
     setSelectedDiseases((prev) => (prev.includes(disease) ? prev.filter((d) => d !== disease) : [...prev, disease]));
@@ -91,9 +95,9 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
   // 필터 적용하기 버튼 클릭 시 실행
   const applyFilter = () => {
     // 현재 날짜 이용하여 시간 변환
-    const currentDate = new Date();
 
     const startDateObj = startDate ? new Date(startDate) : new Date();
+
     const formattedStartDate = new Date(
       startDateObj.getFullYear(),
       startDateObj.getMonth(),
@@ -103,13 +107,14 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
       0
     );
 
+    const formattedStartDateString = formattedStartDate.toISOString().split("T")[0] + "T00:00:00Z";
     const filterData: RequestData = {
       diseaseId: selectedDiseases.map((disease) => diseaseMap[disease] || null).filter((id) => id !== null),
-      isHost: selectedHost === "관계 없음" ? null : selectedHost === "유",
-      startDate: formattedStartDate,
+      isHost: selectedHost === "유" ? true : selectedHost === "무" ? false : null,
+      startDate: formattedStartDateString,
       period: selectedPeriod,
-      startTime: new Date(currentDate.setHours(Number(selectedStartTime.split(":")[0]), 0, 0, 0)),
-      endTime: new Date(currentDate.setHours(Number(selectedEndTime.split(":")[0]), 0, 0, 0)),
+      startTime: Number(selectedStartTime.split(":")[0]),
+      endTime: Number(selectedEndTime.split(":")[0]),
       dayOfWeek: selectedDays.map((day) => dayMap[day] ?? null).filter((id) => id !== null),
     };
     console.log("FilterData : ", filterData);
@@ -119,10 +124,10 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
   // 필터 초기화하기 버튼 클릭시 실행
   const resetFilter = () => {
     setSelectedDays([]);
-    setSelectedHost("관계 없음");
+    setSelectedHost(null);
     setSelectedDiseases([]);
     setStartDate(new Date());
-    setSelectedPeriod(8);
+    setSelectedPeriod(0);
     setSelectedStartTime("00:00");
     setSelectedEndTime("23:00");
   };
@@ -171,9 +176,10 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
             <span className="text-lg font-bold text-cardTitle">기간</span>
             <select
               value={selectedPeriod}
-              onChange={(e) => setSelectedPeriod(Number(e.target.value))}
-              className="px-3 py-2 border border-cardSubcontent rounded-xl text-lg"
+              onChange={(e) => setSelectedPeriod(e.target.value === "1~8주" ? 0 : Number(e.target.value))}
+              className="px-3 py-2 border border-cardSubcontent rounded-xl text-md text-suite"
             >
+              <option value="1~8주">{"1~8주"}</option>
               {[...Array(8)].map((_, i) => (
                 <option key={i + 1} value={i + 1}>
                   {i + 1}주
@@ -243,22 +249,21 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
             })}
           </select>
         </div>
-
         {/* 진행자 선택 */}
         <div className="mt-4">
           <span className="text-lg font-bold text-cardTitle">진행자</span>
           <div className="flex gap-4 mt-2">
             {["유", "무", "관계 없음"].map((option) => (
-              <label key={option} className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="w-6 h-6 border border-gray-400 rounded-md transition-all "
-                  checked={selectedHost === option}
-                  onChange={() => toggleHost(option)}
-                />
-                <span className="text-lg font-bold text-cardTitle">{option}</span>
-              </label>
-            ))}
+              <RadioButton
+                key={option}
+                name="host"
+                value={option}
+                checked={selectedHost === option}
+                onChange={() => toggleHost(option)}
+              >
+                {option}{" "}
+              </RadioButton>
+            ))}{" "}
           </div>
         </div>
 
