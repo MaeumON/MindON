@@ -1,18 +1,25 @@
+import { saveEmotion } from "@/apis/openvidu/emotionApi";
 import IconExit from "@assets/icons/IconExit";
 import { emotionList } from "@utils/emotionList";
+import { useState } from "react";
 
 interface EmotionModalProps {
+  meetingId: number;
   setIsEmotionModalOpen: (isOpen: boolean) => void;
   handleRemoveUser: () => void;
 }
 
-function EmotionModal({ setIsEmotionModalOpen, handleRemoveUser }: EmotionModalProps) {
+function EmotionModal({ meetingId, setIsEmotionModalOpen, handleRemoveUser }: EmotionModalProps) {
+  const [selectedEmotionId, setSelectedEmotionId] = useState<number>(0);
+
   function handleCloseModal() {
     setIsEmotionModalOpen(false);
   }
 
-  function handleSelectEmotion(id: number) {
-    console.log(id);
+  function handleClickSaveEmotion() {
+    console.log("selectedEmotionId", selectedEmotionId);
+    saveEmotion(meetingId, selectedEmotionId);
+    handleRemoveUserBtn();
   }
 
   function handleRemoveUserBtn() {
@@ -40,16 +47,34 @@ function EmotionModal({ setIsEmotionModalOpen, handleRemoveUser }: EmotionModalP
         <div className="w-[85%] mt-[30px] flex flex-col gap-[20px]">
           <div className="flex justify-between">
             {emotionList.slice(0, 4).map((emotion) => (
-              <div key={emotion.id} onClick={() => handleSelectEmotion(emotion.id)}>
-                <img src={emotion.src} alt={emotion.alt} className="w-[60px] h-[60px] cursor-pointer" />
+              <div
+                key={emotion.id}
+                onClick={() => setSelectedEmotionId(emotion.id)}
+                className="relative flex flex-col items-center"
+              >
+                <div
+                  className={`relative w-[60px] h-[60px] cursor-pointer
+                  ${selectedEmotionId === emotion.id ? "after:absolute after:inset-0 after:bg-black/20 after:rounded-full" : ""}`}
+                >
+                  <img src={emotion.src} alt={emotion.alt} className="w-full h-full" />
+                </div>
                 <p>{emotion.text}</p>
               </div>
             ))}
           </div>
           <div className="flex justify-between">
             {emotionList.slice(4, 8).map((emotion) => (
-              <div key={emotion.id} onClick={() => handleSelectEmotion(emotion.id)}>
-                <img src={emotion.src} alt={emotion.alt} className="w-[60px] h-[60px] cursor-pointer" />
+              <div
+                key={emotion.id}
+                onClick={() => setSelectedEmotionId(emotion.id)}
+                className="relative flex flex-col items-center"
+              >
+                <div
+                  className={`relative w-[60px] h-[60px] cursor-pointer
+                  ${selectedEmotionId === emotion.id ? "after:absolute after:inset-0 after:bg-black/20 after:rounded-full" : ""}`}
+                >
+                  <img src={emotion.src} alt={emotion.alt} className="w-full h-full" />
+                </div>
                 <p>{emotion.text}</p>
               </div>
             ))}
@@ -62,7 +87,10 @@ function EmotionModal({ setIsEmotionModalOpen, handleRemoveUser }: EmotionModalP
           >
             모임 종료
           </button>
-          <button className="w-[130px] p-2 rounded-[12px] text-white font-bold bg-green100 cursor-pointer">
+          <button
+            onClick={handleClickSaveEmotion}
+            className="w-[130px] p-2 rounded-[12px] text-white font-bold bg-green100 cursor-pointer"
+          >
             저장하기
           </button>
         </div>

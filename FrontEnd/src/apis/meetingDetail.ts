@@ -17,7 +17,7 @@ interface ReviewsResponse {
 }
 
 // 특정 그룹의 리뷰 목록 조회
-export const fetchReviews = async (groupId: string): Promise<ReviewsResponse> => {
+export const fetchReviews = async (groupId: number): Promise<ReviewsResponse> => {
   const response = await instance.get(`/api/groups/${groupId}/reviews`);
 
   return await response.data;

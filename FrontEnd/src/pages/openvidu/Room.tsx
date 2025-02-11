@@ -5,7 +5,7 @@ import StreamComponent from "@components/Openvidu-call/components/stream/StreamC
 import ToolbarComponent from "@components/Openvidu-call/components/toolbar/ToolbarComponent";
 import UserModel from "@components/Openvidu-call/models/user-model";
 // import Recording from "@pages/openvidu/Recording";
-import EmotionModal from "@/components/Openvidu-call/components/emotionModal/EmotionModal";
+import EmotionModal from "@components/Openvidu-call/components/emotionModal/EmotionModal";
 import Question from "@components/Openvidu-call/components/questions/Question";
 import { Session } from "openvidu-browser";
 
@@ -82,7 +82,7 @@ function Room({
 
   return (
     <section className="w-full h-[calc(100vh-80px)] px-[20px] flex flex-col justify-center items-center bg-offWhite font-suite">
-      <Question meetingId={meetingId} session={session} mySessionId={mySessionId} subscribers={subscribers} />
+      <Question meetingId={meetingId} session={session} mySessionId={mySessionId} />
 
       <div className="w-full h-[80%] grid grid-cols-3 gap-4">
         {localUser && localUser.getStreamManager() && (
@@ -111,7 +111,11 @@ function Room({
       </div>
 
       {isEmotionModalOpen && (
-        <EmotionModal setIsEmotionModalOpen={setIsEmotionModalOpen} handleRemoveUser={handleRemoveUser} />
+        <EmotionModal
+          meetingId={meetingId}
+          setIsEmotionModalOpen={setIsEmotionModalOpen}
+          handleRemoveUser={handleRemoveUser}
+        />
       )}
       {isChatModalOpen && (
         <ChatComponent
