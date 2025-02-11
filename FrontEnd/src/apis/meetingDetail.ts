@@ -1,9 +1,9 @@
-import instance from "./instance";
+import authInstance from "./authinstance";
 
 export interface ReviewType {
   meetingId: number;
   userId: string;
-  emotion: number;
+  emotionId: number;
   summation: string;
   cheeringMessage: string;
   speechAmount: number;
@@ -18,7 +18,7 @@ interface ReviewsResponse {
 
 // 특정 그룹의 리뷰 목록 조회
 export const fetchReviews = async (groupId: number): Promise<ReviewsResponse> => {
-  const response = await instance.get(`/api/groups/${groupId}/reviews`);
+  const response = await authInstance.get(`/api/groups/${groupId}/reviews`);
 
   return await response.data;
 };
