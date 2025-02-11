@@ -2,6 +2,7 @@ import { Session } from "openvidu-browser";
 import { QuestionChangedData, QuestionSpeakingOrderType } from "../openviduTypes";
 import { useQuestionStore } from "@/stores/questionStore";
 import { startInitialTimer } from "./timer";
+import { startRecording, stopRecording } from "@/apis/openvidu/recordingApi";
 
 //질문 시작 시, 참가자 리스트 보내는 시그널
 export function sendSignalQuestionChanged({ data, session }: { data: QuestionChangedData; session: Session }) {
@@ -60,9 +61,23 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
       //답변 시작
       if (currentUserId === userId && !isSpeaking) {
         setIsSpeaking(true);
+        //녹음 시작 API 호출
+        startRecording({ sessionID: session.sessionId })
+          .then(() => console.log("녹음 시작 성공"))
+          .catch((error) => {
+            console.log("녹음 시작 실패", error);
+          });
+
         return;
       } else if (currentUserId === userId && isSpeaking) {
         setIsSpeaking(false);
+        //녹음 종료 API 호출
+        stopRecording({ sessionID: session.sessionId })
+          .then(() => console.log("녹음 종료 성공"))
+          .catch((error) => {
+            console.log("녹음 종료 실패", error);
+          });
+
         setCurrentUser(currentUser + 1);
         setCurrentUserId(speakingOrder[currentUser + 1].userId);
         return;
