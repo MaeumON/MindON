@@ -7,4 +7,5 @@ export const UPCOMING_EVENTS: EventDics | null = {
   meetingTime: 19,
   groupId: 6,
   title: "소아암 부모 모임 입니다",
+  meetingStatus: 0,
 };
