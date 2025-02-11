@@ -1,5 +1,7 @@
 package com.ssafy.mindon.video.service;
 
+import com.ssafy.mindon.common.error.ErrorCode;
+import com.ssafy.mindon.common.exception.VideoException;
 import com.ssafy.mindon.group.repository.GroupRepository;
 import com.ssafy.mindon.group.service.GroupService;
 import com.ssafy.mindon.stt.service.AudioConverterService;
@@ -55,7 +57,7 @@ public class VideoService {
         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
     }
 
-    public SessionResponse initializeSession(Map<String, Object> params) throws Exception {
+    public SessionResponse initializeSession(Map<String, Object> params) {
         try {
             SessionProperties properties = SessionProperties.fromJson(params).build();
             Session session = openvidu.createSession(properties);
@@ -67,15 +69,15 @@ public class VideoService {
 
             return new SessionResponse(sessionId, isHost);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
-            throw new Exception("Error initializing session: " + e.getMessage());
+            throw new VideoException(ErrorCode.VIDEO_SERVER_ERROR);
         }
     }
 
-    public String createConnection(String sessionId, Map<String, Object> params) throws Exception {
+    public String createConnection(String sessionId, Map<String, Object> params){
         try {
             Session session = openvidu.getActiveSession(sessionId);
             if (session == null) {
-                throw new Exception("Session not found");
+                throw new VideoException(ErrorCode.SESSION_NOT_FOUND);
             }
             ConnectionProperties properties = ConnectionProperties.fromJson(params).build();
             Connection connection = session.createConnection(properties);
@@ -89,7 +91,7 @@ public class VideoService {
 
             return connection.getToken();
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
-            throw new Exception("Error creating connection: " + e.getMessage());
+            throw new VideoException(ErrorCode.VIDEO_SERVER_ERROR);
         }
     }
 
@@ -173,7 +175,7 @@ public class VideoService {
 
             return openvidu.startRecording(sessionId, properties);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
-            throw new Exception("Error starting recording: " + e.getMessage());
+            throw new VideoException(ErrorCode.VIDEO_SERVER_ERROR);
         }
     }
 
@@ -181,7 +183,7 @@ public class VideoService {
         try {
             return openvidu.stopRecording(recordingId);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
-            throw new Exception("Error stopping recording: " + e.getMessage());
+            throw new VideoException(ErrorCode.VIDEO_SERVER_ERROR);
         }
     }
 
@@ -189,23 +191,7 @@ public class VideoService {
         try {
             openvidu.deleteRecording(recordingId);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
-            throw new Exception("Error deleting recording: " + e.getMessage());
-        }
-    }
-
-    public Recording getRecording(String recordingId) throws Exception {
-        try {
-            return openvidu.getRecording(recordingId);
-        } catch (OpenViduJavaClientException | OpenViduHttpException e) {
-            throw new Exception("Error getting recording: " + e.getMessage());
-        }
-    }
-
-    public List<Recording> listRecordings() throws Exception {
-        try {
-            return openvidu.listRecordings();
-        } catch (OpenViduJavaClientException | OpenViduHttpException e) {
-            throw new Exception("Error listing recordings: " + e.getMessage());
+            throw new VideoException(ErrorCode.VIDEO_SERVER_ERROR);
         }
     }
 
@@ -255,10 +241,10 @@ public class VideoService {
     }
 
     // 세션에 참여자를 추가하는 메소드
-    public void addParticipant(String sessionId, String userId) throws Exception {
-        Session session = mapSessions.get(sessionId);
+    public void addParticipant(String sessionId, String userId){
+        Session session = this.mapSessions.get(sessionId);
         if (session == null) {
-            throw new Exception("Session not found");
+            throw new VideoException(ErrorCode.SESSION_NOT_FOUND);
         }
 
         // 세션에 해당하는 참여자 목록을 가져오거나 새로 생성
