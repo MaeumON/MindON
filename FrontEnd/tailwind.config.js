@@ -11,6 +11,7 @@ export default {
       jamsilRegular: ["Jamsil-Regular", "sans-serif"],
       jamsilMedium: ["Jamsil-Medium", "sans-serif"],
       jamsilBold: ["Jamsil-Bold", "sans-serif"],
+      jamsilExtraBold: ["Jamsil-ExtraBold", "sans-serif"],
       suite: ["Suite", "sans-serif"],
     },
     extend: {

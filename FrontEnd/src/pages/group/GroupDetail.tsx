@@ -8,10 +8,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import groupDetailJoinApi from "@/apis/group/groupDetailJoinApi";
 import groupDetailLeaveApi from "@/apis/group/groupDetailLeaveApi";
+import GroupJoinModal from "@components/group/GroupJoinModal";
 
 function GroupDetail() {
   const { groupId } = useParams();
   const [isRegi, setIsRegi] = useState(false);
+  const [showJoinModal, setShowJoinModal] = useState(false);
 
   // React 쿼리로 그룹 상세 정보 가져오기
   // undefined일 경우 API 요청 안함(타입 가드)
@@ -52,6 +54,11 @@ function GroupDetail() {
         const result = await groupDetailJoinApi(groupId);
         if (result.message === "success") {
           setIsRegi(true);
+          //가입 성공 시, 2초간 성공 모달 띄우기
+          setShowJoinModal(true);
+          setTimeout(() => {
+            setShowJoinModal(false);
+          }, 2000);
         } else if (result.message === "GroupJoinSameTime") {
           alert("같은 시간대에 다른 모임이 있습니다");
         } else {
@@ -61,6 +68,11 @@ function GroupDetail() {
         //그룹 탈퇴 요청
         await groupDetailLeaveApi(groupId);
         setIsRegi(false);
+        //탈퇴 성공 시, 2초간 성공 모달 띄우기
+        setShowJoinModal(true);
+        setTimeout(() => {
+          setShowJoinModal(false);
+        }, 2000);
       }
     } catch (error) {
       console.error("API 요청 중 오류 발생:", error);
@@ -165,6 +177,7 @@ function GroupDetail() {
 
   return (
     <div className="pb-[74px]">
+      {showJoinModal && <GroupJoinModal isRegi={isRegi} />}
       <div className="flex flex-col gap-5">
         <Header title={"모임 상세보기"} isicon={true} className="bg-offWhite" />
 

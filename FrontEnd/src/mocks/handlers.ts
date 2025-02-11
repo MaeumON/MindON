@@ -7,7 +7,7 @@ import { FINDPWD } from "../data/FINDPWD";
 import { QUESTION_SPEAKING_ORDER } from "@/data/OPENVIDU";
 // import { TEMPERATURE } from "@/data/TEMPERTURE";
 // import { GROUPSDETAIL } from "@/data/GROUPDETAIL";
-import { MEETINGDETIAL } from "@/data/MEETINGDETAIL";
+// import { MEETINGDETIAL } from "@/data/MEETINGDETAIL";
 // import { UPCOMING_EVENTS } from "@/data/UPCOMING_EVENTS";
 // import { Group, RequestData } from "@/apis/group/groupListApi";
 // import { TOPFIVEGROUPS } from "@/data/TOPFIVEGROUPS";

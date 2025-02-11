@@ -21,6 +21,12 @@
 }
 
 @font-face {
+  font-family: Jamsil-ExtraBold;
+  font-weight: 300;
+  src: url("./assets/fonts/TheJamsil-ExtraBold.ttf") format("truetype");
+}
+
+@font-face {
   font-family: Suite;
   font-weight: 300 900;
   src: url("./assets/fonts/SUITE-Variable.ttf") format("truetype");
