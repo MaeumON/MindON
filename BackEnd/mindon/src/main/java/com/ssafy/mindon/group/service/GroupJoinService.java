@@ -2,6 +2,7 @@ package com.ssafy.mindon.group.service;
 
 import com.ssafy.mindon.group.entity.Group;
 import com.ssafy.mindon.group.repository.GroupRepository;
+import com.ssafy.mindon.meeting.repository.MeetingRepository;
 import com.ssafy.mindon.user.entity.User;
 import com.ssafy.mindon.user.repository.UserRepository;
 import com.ssafy.mindon.usergroup.entity.UserGroup;
@@ -11,18 +12,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class GroupJoinService {
 
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
     private final UserGroupRepository userGroupRepository;
+    private final MeetingRepository meetingRepository;
     private final JwtUtil jwtUtil;
 
-    public GroupJoinService(GroupRepository groupRepository, UserRepository userRepository, UserGroupRepository userGroupRepository, JwtUtil jwtUtil) {
+    public GroupJoinService(GroupRepository groupRepository, UserRepository userRepository, UserGroupRepository userGroupRepository, MeetingRepository meetingRepository, JwtUtil jwtUtil) {
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
         this.userGroupRepository = userGroupRepository;
+        this.meetingRepository = meetingRepository;
         this.jwtUtil = jwtUtil;
     }
 
@@ -52,9 +58,21 @@ public class GroupJoinService {
     }
 
     private boolean isGroupAtSameTime(String userId, Group group) {
-        return userGroupRepository.existsByUser_UserIdAndGroup_MeetingTimeAndGroup_DayOfWeek(
-                userId, group.getMeetingTime(), group.getDayOfWeek()
-        );
+        // 사용자가 가입한 모든 그룹 ID 조회
+        List<Integer> joinedGroupIds = userGroupRepository.findByUser_UserId(userId)
+                .stream()
+                .map(userGroup -> userGroup.getGroup().getGroupId())
+                .collect(Collectors.toList());
+
+        if (joinedGroupIds.isEmpty()) {
+            return false;
+        }
+
+        // 사용자가 가입한 그룹들의 미팅 중 새로 가입하려는 그룹의 startDate와 같은 날짜 및 시간의 미팅이 있는지 확인
+        return meetingRepository.findAllByGroup_GroupIdIn(joinedGroupIds)
+                .stream()
+                .anyMatch(meeting ->
+                        meeting.getDate().equals(group.getStartDate()));
     }
 
     private boolean isGroupFull(Group group) {
