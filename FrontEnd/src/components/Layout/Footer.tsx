@@ -9,7 +9,10 @@ function Footer() {
   const nav = useNavigate();
 
   return (
-    <footer className="flex justify-around items-center shadow-md fixed bottom-0 h-[74px] bg-white w-full max-w-[412px] mx-auto px-4">
+    <footer
+      className="flex justify-around items-center shadow-md fixed bottom-0 h-[74px] bg-white w-full max-w-[412px] mx-auto px-4"
+      style={{ zIndex: 99999 }}
+    >
       {/* 홈 버튼 */}
       <div
         className="flex flex-col items-center gap-1.5 cursor-pointer"
