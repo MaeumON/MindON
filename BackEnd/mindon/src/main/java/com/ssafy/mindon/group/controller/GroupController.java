@@ -30,24 +30,12 @@ public class GroupController {
     private final GroupCreateService groupCreateService;
     private final GroupJoinService groupJoinService;
     private final GroupListService groupListService;
-    private final GroupMyListService groupMyListService;
     private final GroupLeaveService groupLeaveService;
     private final GroupDetailService groupDetailService;
     private final GroupRecommendService groupRecommendService;
     private final GroupReviewService groupReviewService;
     private final JwtUtil jwtUtil;
     private final GroupService groupService;
-
-//    public GroupController(GroupCreateService groupCreateService, GroupJoinService groupJoinService, GroupListService groupListService, GroupMyListService groupMyListService, GroupLeaveService groupLeaveService, GroupDetailService groupDetailService, GroupRecommendService groupRecommendService, GroupReviewService groupReviewService) {
-//        this.groupCreateService = groupCreateService;
-//        this.groupJoinService = groupJoinService;
-//        this.groupListService = groupListService;
-//        this.groupMyListService = groupMyListService;
-//        this.groupLeaveService = groupLeaveService;
-//        this.groupDetailService = groupDetailService;
-//        this.groupRecommendService = groupRecommendService;
-//        this.groupReviewService = groupReviewService;
-//    }
 
     @PostMapping
     public ResponseEntity<String> createGroup(
@@ -87,9 +75,12 @@ public class GroupController {
     @PostMapping("/{groupStatus}/list")
     public ResponseEntity<List<GroupListResponse>> getGroupsByStatus(
             @RequestHeader("Authorization") String accessToken,
-            @PathVariable Byte groupStatus
+            @PathVariable Byte groupStatus,
+            @RequestBody GroupListRequest request
     ) {
-        List<GroupListResponse> groupList = groupMyListService.findGroupsByAccessTokenAndStatus(accessToken, groupStatus);
+        String keyword = request != null ? request.getKeyword() : null;
+
+        List<GroupListResponse> groupList = groupListService.findGroupsByAccessTokenAndStatus(accessToken, groupStatus, keyword);
 
         return ResponseEntity.ok(groupList);
     }
