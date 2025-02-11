@@ -65,6 +65,16 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
       console.log("!! speakingOrder.length", speakingOrder.length);
       //질문 완전 종료
       if (currentQuestionNumber === questions.length - 1 && currentUser === speakingOrder.length - 1) {
+        if (isSpeaking) {
+          setIsSpeaking(false);
+          //녹음 종료 API 호출
+          stopRecording({ sessionID: session.sessionId, questionId: questions[currentQuestionNumber].questionId })
+            .then(() => console.log("녹음 종료 성공"))
+            .catch((error) => {
+              console.log("녹음 종료 실패", error);
+            });
+          return;
+        }
         console.log("질문 완전 종료");
         setCurrentQuestionText("모임이\n종료되었습니다.");
         setIsQuestionStart(2);

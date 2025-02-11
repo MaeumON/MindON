@@ -37,7 +37,7 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
   //추후 로그인 기능과 연동 시, 사용
   const { userId } = useAuthStore();
   const [speakingOrder, setSpeakingOrder] = useState<QuestionSpeakingOrderType[]>([]);
-
+  const [btnDisabled, setBtnDisabled] = useState<boolean>(false);
   function stateChanger() {
     const signalData: QuestionChangedData = { userId: userId, speakingOrder: speakingOrder };
     if (isMeetingStart === 0) {
@@ -65,7 +65,6 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
       } else if (currentUserId === userId && isSpeaking) {
         return "답변 중단하기";
       }
-
       return `${speakingOrder[currentUser].userName}님이 발언 중이에요`;
     }
     return currentBtnText;
@@ -97,6 +96,14 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
     subscribeToStartMeeting({ session });
   }, []);
 
+  useEffect(() => {
+    if (isMeetingStart === 1 && isQuestionStart === 1 && currentUserId !== userId) {
+      setBtnDisabled(true);
+    } else {
+      setBtnDisabled(false);
+    }
+  }, [isMeetingStart, isQuestionStart, currentUserId, userId]);
+
   return (
     <div className="p-2 mb-[10px] w-full max-h-[300px] flex flex-col justify-center items-center bg-white rounded-[12px] gap-[15px]">
       <div className="relative mt-[5px] p-4 w-[95%] h-[130px] flex rounded-[12px] font-bold text-24px bg-offWhite">
@@ -106,7 +113,7 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
 
       <div className="mb-[5px] p-2 text-center">
         <button
-          disabled={isQuestionStart === 2 || (isMeetingStart === 1 && isQuestionStart === 0)}
+          disabled={isQuestionStart === 2 || (isMeetingStart === 1 && isQuestionStart === 0) || btnDisabled}
           onClick={stateChanger}
           className={`min-w-[120px] p-2 rounded-[12px] font-bold text-16px text-white
         ${
