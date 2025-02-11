@@ -1,16 +1,16 @@
-import { fetchQuestionSpeakingOrder } from "@/apis/openvidu/questionApi";
+import { Session } from "openvidu-browser";
+import { useEffect, useState } from "react";
+import { fetchQuestionSpeakingOrder } from "@apis/openvidu/questionApi";
 import { PARTICIPANT_LIST } from "@/data/OPENVIDU";
-import useAuthStore from "@/stores/authStore";
-import { useQuestionStore } from "@/stores/questionStore";
+import useAuthStore from "@stores/authStore";
+import { useQuestionStore } from "@stores/questionStore";
 import {
   sendSignalQuestionChanged,
   sendSignalStartMeeting,
   subscribeToQuestionChanged,
   subscribeToStartMeeting,
-} from "@/utils/openvidu/signal";
-import { QuestionChangedData, QuestionSpeakingOrderType } from "@/utils/openviduTypes";
-import { Session } from "openvidu-browser";
-import { useEffect, useState } from "react";
+} from "@utils/openvidu/signal";
+import { QuestionChangedData, QuestionSpeakingOrderType } from "@utils/openviduTypes";
 import IntroBear from "@assets/images/bear/introbear.png";
 
 interface QuestionProps {

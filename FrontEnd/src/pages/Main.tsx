@@ -22,7 +22,7 @@ function Main() {
   const { userName, diseaseId } = useAuthStore();
   const nav = useNavigate();
   function navToOnTalk() {
-    nav(`/groupslist?isHost=1`);
+    nav("/groupslist?isHost=1");
   }
   function navToFreeTalk() {
     nav("/groupslist?isHost=0");

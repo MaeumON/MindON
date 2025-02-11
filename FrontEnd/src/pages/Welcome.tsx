@@ -2,7 +2,6 @@ import { Wrapper } from "@components/common/DivName";
 import Button from "@components/common/Button";
 import { useNavigate } from "react-router-dom";
 import hellowbear from "@/assets/images/bear/hellowbear.png";
-import logo_mindon from "@/assets/images/logo_mindon.png";
 
 function Welcome() {
   const router = useNavigate();
@@ -14,7 +13,8 @@ function Welcome() {
         {/* 로고+곰 가로배치*/}
         <div className="flex">
           <div className="flex justify-center items-center pl-[100px]">
-            <img src={logo_mindon} alt="마음 ON" className="w-[151px] h-[46px]" />
+            {/* <img src={logo_mindon} alt="마음 ON" /> */}
+            <p className="font-jamsilExtraBold text-white text-[40px] [text-shadow:_4px_2px_0_#828282]">마음ON</p>
           </div>
           <img src={hellowbear} alt="온이가 환영해요" className="w-[120px] h-[100px] justify-end" />
         </div>
