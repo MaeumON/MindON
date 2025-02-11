@@ -1,4 +1,4 @@
-import Introbear from "@assets/images/introbear.png";
+import Introbear from "@assets/images/bear/introbear.png";
 import Header from "@components/Layout/Header";
 import Footer from "@components/Layout/Footer";
 import Button from "@components/common/Button";

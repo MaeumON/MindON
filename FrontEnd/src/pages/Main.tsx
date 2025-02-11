@@ -2,8 +2,8 @@ import { useEffect, useState } from "react"; // useState 추가
 import { useNavigate } from "react-router-dom";
 import IllCaption from "@components/common/IllCaption";
 import Button from "@components/common/Button";
-import HeartBear from "@assets/images/heartbear.png";
-import OkBear from "@assets/images/okbear.png";
+import HeartBear from "@assets/images/bear/heartbear.png";
+import OkBear from "@assets/images/bear/okbear.png";
 import IconSearch from "@assets/icons/IconSearch";
 import ShadowCard from "@components/common/ShadowCard";
 import FavGroupCard from "@components/Mainpage/FavGroupCard";

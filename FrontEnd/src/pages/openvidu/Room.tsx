@@ -82,7 +82,7 @@ function Room({
 
   return (
     <section className="w-full h-[calc(100vh-80px)] px-[20px] flex flex-col justify-center items-center bg-offWhite font-suite">
-      <Question meetingId={meetingId} session={session} mySessionId={mySessionId} subscribers={subscribers} />
+      <Question meetingId={meetingId} session={session} mySessionId={mySessionId} />
 
       <div className="w-full h-[80%] grid grid-cols-3 gap-4">
         {localUser && localUser.getStreamManager() && (

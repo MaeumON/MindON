@@ -1,6 +1,6 @@
 import Footer from "@/components/Layout/Footer";
 import Header from "@/components/Layout/Header";
-import JypBear from "@/assets/images/jypbear.png";
+import JypBear from "@/assets/images/bear/jypbear.png";
 import useAuthStore from "@/stores/authStore";
 import { useNavigate } from "react-router-dom";
 import Card from "@/components/common/ShadowCard";
