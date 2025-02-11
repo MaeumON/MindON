@@ -16,8 +16,9 @@ const TempertureChart = ({ username }: TempertureChartProps) => {
   useEffect(() => {
     const loadTemperature = async () => {
       try {
-        const temperturedata = await fetchTemperature();
-        setTemperture(temperturedata);
+        const temperaturedata = await fetchTemperature();
+        setTemperture(temperaturedata);
+        console.log(temperture);
       } catch (error) {
         console.log("온도 불러오기 실패", error);
       }
