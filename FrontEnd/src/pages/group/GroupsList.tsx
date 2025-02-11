@@ -12,12 +12,20 @@ import groupListApi from "@apis/group/groupListApi";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function GroupsList() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [groups, setGroups] = useState<Group[]>([]);
   const [keyword, setKeyword] = useState<string>("");
 
+<<<<<<< HEAD
+  const nav = useNavigate();
+  // 그룹 상세보기로 이동하는 함수
+  const onClickDetail = (groupId: number) => {
+    nav(`/groups/${groupId}`);
+  };
+=======
   // ✅ 메인페이지에서 그룹 연결
   // 파라미터 추출
   const location = useLocation();
@@ -44,6 +52,7 @@ function GroupsList() {
     fetchFilteredGroups();
   }, [isHost]);
 
+>>>>>>> 6f7603aa900395001087c6ad341e50658a12af3e
   // ✅ 마운트 API 요청
   // 첫 렌더링 시 accessToken만 보내서 그룹 목록 불러오기
   const fetchInitialGroups = async () => {
@@ -159,9 +168,15 @@ function GroupsList() {
       {/* 그룹 목록 */}
       <div className="flex flex-col gap-5 pb-20">
         {groups.length > 0 ? (
-          groups.map((group) => <GroupCard key={group.groupId} group={group} />)
+          groups.map((group) => (
+            <GroupCard
+              key={group.groupId}
+              group={group}
+              onClick={() => onClickDetail(group.groupId)} // onClick 전달
+            />
+          ))
         ) : (
-          <div className="flex m-6 justify-center items-center h-80 text-lg font-bold text-gray-500 leading-8">
+          <div className="flex m-6 justify-center items-center h-80 font-suite text-18px font-[600] text-cardLongContent leading-8">
             아직 그룹이 없어요
             <br />
             아래 + 버튼을 눌러
