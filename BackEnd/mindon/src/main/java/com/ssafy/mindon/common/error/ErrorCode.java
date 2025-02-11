@@ -17,7 +17,9 @@ public enum ErrorCode {
     INVALID_MEETING_ID(HttpStatus.BAD_REQUEST, "M1", "유효하지 않은 meetingId입니다."),
     MEETING_NOT_FOUND(HttpStatus.NOT_FOUND, "M2", "해당 미팅을 찾을 수 없습니다."),
     GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "G1", "해당 groupId가 존재하지 않습니다."),
-    ONGOING_MEETING_NOT_FOUND(HttpStatus.NOT_FOUND, "M3", "해당 groupId에 대한 진행 중인 미팅이 존재하지 않습니다.");
+    ONGOING_MEETING_NOT_FOUND(HttpStatus.NOT_FOUND, "M3", "해당 groupId에 대한 진행 중인 미팅이 존재하지 않습니다."),
+    VIDEO_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "O1", "OpenVidu 서버에서 오류가 발생했습니다."),
+    SESSION_NOT_FOUND(HttpStatus.NOT_FOUND, "O2", "해당 세션을 찾을 수 없습니다.");
 
 
     private final String message;

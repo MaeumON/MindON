@@ -1,5 +1,7 @@
 package com.ssafy.mindon.video.controller;
 
+import com.ssafy.mindon.common.error.ErrorCode;
+import com.ssafy.mindon.common.exception.AuthException;
 import com.ssafy.mindon.common.util.JwtUtil;
 import com.ssafy.mindon.video.dto.SessionResponse;
 import com.ssafy.mindon.video.service.VideoService;
@@ -33,15 +35,19 @@ public class VideoController {
     @PostMapping("/sessions")
     public ResponseEntity<SessionResponse> initializeSession(@RequestHeader("Authorization") String accessToken, @RequestBody(required = false) Map<String, Object> params) {
         try {
-            String customSessionId = (String) params.get("customSessionId");
-            String userId = jwtUtil.extractUserId(accessToken);
-            videoService.addParticipant(customSessionId, userId);
-            SessionResponse response = videoService.initializeSession(params);
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            if (jwtUtil.isTokenExpired(accessToken)) {
+                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
+            }
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN); // 원하는 예외 던지기
         }
+        String customSessionId = (String) params.get("customSessionId");
+        String userId = jwtUtil.extractUserId(accessToken);
+        SessionResponse response = videoService.initializeSession(params);
+        videoService.addParticipant(customSessionId, userId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
     }
 
     @PostMapping("/sessions/{sessionId}/connections")
@@ -112,26 +118,6 @@ public class VideoController {
         try {
             videoService.deleteRecording((String) params.get("recording"));
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @GetMapping("/recording/get/{recordingId}")
-    public ResponseEntity<?> getRecording(@PathVariable(value = "recordingId") String recordingId) {
-        try {
-            Recording recording = videoService.getRecording(recordingId);
-            return new ResponseEntity<>(recording, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @GetMapping("/recording/list")
-    public ResponseEntity<?> listRecordings() {
-        try {
-            List<Recording> recordings = videoService.listRecordings();
-            return new ResponseEntity<>(recordings, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

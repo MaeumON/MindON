@@ -1,6 +1,7 @@
 package com.ssafy.mindon.group.service;
 
 import com.ssafy.mindon.common.error.ErrorCode;
+import com.ssafy.mindon.common.exception.NotFoundException;
 import com.ssafy.mindon.group.entity.Group;
 import com.ssafy.mindon.group.repository.GroupRepository;
 import com.ssafy.mindon.usergroup.repository.UserGroupRepository;
@@ -14,6 +15,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.ssafy.mindon.common.error.ErrorCode.GROUP_NOT_FOUND;
 
 @Service
 public class GroupService {
@@ -32,8 +35,7 @@ public class GroupService {
             int groupId = Integer.parseInt(sessionId);
             // 그룹 조회
             Group group = groupRepository.findById(groupId)
-                    .orElseThrow(() -> new ResponseStatusException(ErrorCode.NOT_FOUND.getStatus(),
-                            ErrorCode.NOT_FOUND.getMessage() + ": " + groupId));
+                    .orElseThrow(() -> new NotFoundException(ErrorCode.GROUP_NOT_FOUND));
 
             return group.getIsHost();
         } catch (NumberFormatException e) {
