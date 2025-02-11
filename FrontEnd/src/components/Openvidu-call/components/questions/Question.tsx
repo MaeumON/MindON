@@ -20,6 +20,7 @@ interface QuestionProps {
 
 const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
   const {
+    questions,
     isMeetingStart,
     isQuestionStart,
     currentUser,
@@ -36,7 +37,7 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
   //추후 로그인 기능과 연동 시, 사용
   const { userId } = useAuthStore();
   const [speakingOrder, setSpeakingOrder] = useState<QuestionSpeakingOrderType[]>([]);
-
+  const [btnDisabled, setBtnDisabled] = useState<boolean>(false);
   function stateChanger() {
     const signalData: QuestionChangedData = { userId: userId, speakingOrder: speakingOrder };
     if (isMeetingStart === 0) {
@@ -59,17 +60,11 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
     }
 
     if (isMeetingStart === 1 && isQuestionStart === 1) {
-      console.log("currentUserId", currentUserId);
-      console.log("userId", userId);
-      console.log("isSpeaking", isSpeaking);
-      console.log("currentUser", currentUser);
-
       if (currentUserId === userId && !isSpeaking) {
         return "답변 시작하기";
       } else if (currentUserId === userId && isSpeaking) {
         return "답변 중단하기";
       }
-
       return `${speakingOrder[currentUser].userName}님이 발언 중이에요`;
     }
     return currentBtnText;
@@ -89,17 +84,25 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
 
     fetchQuestionsData(meetingId).then(() => fetchOrder());
 
+    console.log("questions", questions);
     console.log("speakingOrder", speakingOrder);
 
-    setCurrentQuestionText(`잠시 후, \n모임이 시작됩니다.`);
+    setCurrentQuestionText(`잠시 후,\n모임이 시작됩니다.`);
     setCurrentBtnText("모임 바로 시작하기");
 
-    // questionStore를 인자로 전달
     subscribeToQuestionChanged({
       session,
     });
     subscribeToStartMeeting({ session });
   }, []);
+
+  useEffect(() => {
+    if (isMeetingStart === 1 && isQuestionStart === 1 && currentUserId !== userId) {
+      setBtnDisabled(true);
+    } else {
+      setBtnDisabled(false);
+    }
+  }, [isMeetingStart, isQuestionStart, currentUserId, userId]);
 
   return (
     <div className="p-2 mb-[10px] w-full max-h-[300px] flex flex-col justify-center items-center bg-white rounded-[12px] gap-[15px]">
@@ -110,7 +113,7 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
 
       <div className="mb-[5px] p-2 text-center">
         <button
-          disabled={isQuestionStart === 2 || (isMeetingStart === 1 && isQuestionStart === 0)}
+          disabled={isQuestionStart === 2 || (isMeetingStart === 1 && isQuestionStart === 0) || btnDisabled}
           onClick={stateChanger}
           className={`min-w-[120px] p-2 rounded-[12px] font-bold text-16px text-white
         ${
