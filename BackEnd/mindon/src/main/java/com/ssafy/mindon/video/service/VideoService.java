@@ -16,9 +16,7 @@ import java.net.URL;
 import java.nio.file.*;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -39,8 +37,8 @@ public class VideoService {
     private Map<String, Session> mapSessions = new ConcurrentHashMap<>();
     // 세션 이름과 토큰 및 역할을 매핑하는 컬렉션
     private Map<String, Map<String, OpenViduRole>> mapSessionNamesTokens = new ConcurrentHashMap<>();
-    // 세션 이름과 녹화 상태를 매핑하는 컬렉션
-    private Map<String, Boolean> sessionRecordings = new ConcurrentHashMap<>();
+    // 세션 아이디와 참여자 유저 아이디 목록을 저장하는 컬렉션
+    private Map<String, Set<String>> sessionParticipants = new ConcurrentHashMap<>();
     // No-argument constructor is needed for Spring to instantiate the bean
     @Autowired
     public VideoService(AudioConverterService audioConverterService, SpeechToTextService speechToTextService, GroupService groupService) {
@@ -105,6 +103,16 @@ public class VideoService {
 
             // 토큰이 존재하는 경우
             if (this.mapSessionNamesTokens.get(sessionName).remove(token) != null) {
+
+                // 참여자 목록에서 유저 제거
+                Set<String> participants = sessionParticipants.get(sessionName);
+                if (participants != null) {
+                    participants.removeIf(userId -> userId.equals(token)); // 토큰과 일치하는 유저 제거
+                    if (participants.isEmpty()) {
+                        sessionParticipants.remove(sessionName); // 모든 유저가 나가면 목록 삭제
+                    }
+                }
+
                 List<Connection> activeConnections = session.getConnections();
                 for (Connection connection : activeConnections) {
                     if (connection.getToken().equals(token)) {
@@ -136,6 +144,8 @@ public class VideoService {
         // 세션이 존재하는 경우
         if (this.mapSessions.get(session) != null && this.mapSessionNamesTokens.get(session) != null) {
             Session s = this.mapSessions.get(session);
+            // 세션의 모든 참여자 정보 삭제
+            mapSessionNamesTokens.get(session).clear();
             s.close();
             this.mapSessions.remove(session);
             this.mapSessionNamesTokens.remove(session);
@@ -244,5 +254,27 @@ public class VideoService {
         }
     }
 
+    // 세션에 참여자를 추가하는 메소드
+    public void addParticipant(String sessionId, String userId) throws Exception {
+        Session session = mapSessions.get(sessionId);
+        if (session == null) {
+            throw new Exception("Session not found");
+        }
 
+        // 세션에 해당하는 참여자 목록을 가져오거나 새로 생성
+        Set<String> participants = sessionParticipants.getOrDefault(sessionId, new HashSet<>());
+        participants.add(userId);
+
+        // 세션 아이디에 해당하는 참여자 목록 저장
+        sessionParticipants.put(sessionId, participants);
+    }
+
+    // 세션의 참여자 명단을 반환하는 메소드
+    public Set<String> getParticipants(String sessionId) throws Exception {
+        Set<String> participants = sessionParticipants.get(sessionId);
+        if (participants == null) {
+            throw new Exception("No participants found for this session");
+        }
+        return participants;
+    }
 }
