@@ -16,7 +16,7 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     boolean existsByInviteCode(String inviteCode);
 
     // 특정 파라미터가 NULL이면 해당 조건을 무시하고 다른 조건들만 적용
-    @Query("SELECT g FROM Group g WHERE " +
+    @Query("SELECT g FROM Group g WHERE g.groupStatus = 0 AND " +
             "(:keyword IS NULL OR g.title LIKE %:keyword% OR g.inviteCode LIKE %:keyword%) AND " +
             "(:diseaseId IS NULL OR g.disease.diseaseId IN :diseaseId) AND " +
             "(:isHost IS NULL OR g.isHost = :isHost) AND " +
