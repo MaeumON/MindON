@@ -4,7 +4,7 @@ import Footer from "@components/Layout/Footer";
 import Button from "@components/common/Button";
 import groupDetailApi from "@apis/group/groupDetailApi";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import groupDetailJoinApi from "@/apis/group/groupDetailJoinApi";
 import groupDetailLeaveApi from "@/apis/group/groupDetailLeaveApi";
@@ -14,6 +14,7 @@ function GroupDetail() {
   const { groupId } = useParams();
   const [isRegi, setIsRegi] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const queryClient = useQueryClient();
 
   // React 쿼리로 그룹 상세 정보 가져오기
   // undefined일 경우 API 요청 안함(타입 가드)
@@ -47,14 +48,18 @@ function GroupDetail() {
   // 참여/취소 버튼 클릭 시 API 요청
   const onClickJoin = async () => {
     if (!groupId) {
-      return Promise.reject(new Error("groupId가 없습니다.")); // ✅ 예외 처리
+      return Promise.reject(new Error("groupId가 없습니다."));
     }
     try {
       if (!isRegi) {
         const result = await groupDetailJoinApi(groupId);
         if (result.message === "success") {
           setIsRegi(true);
-          //가입 성공 시, 2초간 성공 모달 띄우기
+          // 캐시 업데이트
+          queryClient.setQueryData(["groupDetail", groupId], (oldData: any) => ({
+            ...oldData,
+            registered: true,
+          }));
           setShowJoinModal(true);
           setTimeout(() => {
             setShowJoinModal(false);
@@ -65,10 +70,13 @@ function GroupDetail() {
           alert("그룹 참여 인원이 가득찼습니다");
         }
       } else {
-        //그룹 탈퇴 요청
         await groupDetailLeaveApi(groupId);
         setIsRegi(false);
-        //탈퇴 성공 시, 2초간 성공 모달 띄우기
+        // 캐시 업데이트
+        queryClient.setQueryData(["groupDetail", groupId], (oldData: any) => ({
+          ...oldData,
+          registered: false,
+        }));
         setShowJoinModal(true);
         setTimeout(() => {
           setShowJoinModal(false);
@@ -218,7 +226,7 @@ function GroupDetail() {
                 </div>
                 <div className="px-5 py-2.5 justify-start items-start gap-2.5 inline-flex leading-[35px] text-lg">
                   <div className="grow shrink basis-0 px-3">
-                    <span className="text-[#d98600] text-lg font-bold ">“{group?.diseaseName}”</span>
+                    <span className="text-[#d98600] text-lg font-bold ">"{group?.diseaseName}"</span>
                     <span className="text-cardLongContent text-lg font-medium">
                       라는 주제로 이야기해요
                       <br />
