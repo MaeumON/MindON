@@ -19,13 +19,11 @@ function GroupsList() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [keyword, setKeyword] = useState<string>("");
 
-<<<<<<< HEAD
   const nav = useNavigate();
   // 그룹 상세보기로 이동하는 함수
   const onClickDetail = (groupId: number) => {
     nav(`/groups/${groupId}`);
   };
-=======
   // ✅ 메인페이지에서 그룹 연결
   // 파라미터 추출
   const location = useLocation();
@@ -52,7 +50,6 @@ function GroupsList() {
     fetchFilteredGroups();
   }, [isHost]);
 
->>>>>>> 6f7603aa900395001087c6ad341e50658a12af3e
   // ✅ 마운트 API 요청
   // 첫 렌더링 시 accessToken만 보내서 그룹 목록 불러오기
   const fetchInitialGroups = async () => {
