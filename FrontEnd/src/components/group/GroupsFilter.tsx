@@ -9,43 +9,13 @@ interface GroupsFilterProps {
   isOpen: boolean;
   onClose: () => void;
   onApplyFilter: (selectedFilters: RequestData) => Promise<void>;
+  selectedFilters: RequestData;
 }
 
-function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
-  const [selectedDiseases, setSelectedDiseases] = useState<string[]>([]); // 질병 선택 상태
-  const [selectedPeriod, setSelectedPeriod] = useState<number>(1); // 기본값 1주
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
-  const [selectedDays, setSelectedDays] = useState<string[]>([]);
-  const [selectedStartTime, setSelectedStartTime] = useState<string>("00:00");
-  const [selectedEndTime, setSelectedEndTime] = useState<string>("23:00");
-  const [selectedHost, setSelectedHost] = useState<string>("관계없음");
+function GroupsFilter({ isOpen, onClose, onApplyFilter, selectedFilters }: GroupsFilterProps) {
   const [maxWidth, setMaxWidth] = useState(412);
 
-  // 반응형 화면 구현
-  useEffect(() => {
-    const updateMaxWidth = () => {
-      setMaxWidth(Math.min(412, window.innerWidth - 32)); // 화면 너비보다 커지지 않도록 제한
-    };
-
-    updateMaxWidth(); // 초기 실행
-    window.addEventListener("resize", updateMaxWidth); // 창 크기 변경 감지
-
-    return () => {
-      window.removeEventListener("resize", updateMaxWidth); // 클린업
-    };
-  }, []);
-
-  // 숫자 요일로 변환
-  const dayMap: Record<string, number> = {
-    월: 1,
-    화: 2,
-    수: 3,
-    목: 4,
-    금: 5,
-    토: 6,
-    일: 7,
-  };
-
+  // ✅ 카테고리 변환
   // 필터 표시용 질병
   const diseases = [
     "유전 및 희귀 질환",
@@ -74,21 +44,78 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
     기타: 10,
   } as Record<string, number>;
 
-  // 질병 선택 시 토글
-  const toggleDisease = (disease: string) => {
-    setSelectedDiseases((prev) => (prev.includes(disease) ? prev.filter((d) => d !== disease) : [...prev, disease]));
+  // 숫자 요일로 변환
+  const dayMap: Record<string, number> = {
+    월: 1,
+    화: 2,
+    수: 3,
+    목: 4,
+    금: 5,
+    토: 6,
+    일: 7,
   };
 
-  // 요일 선택 시 토글
-  const toggleDay = (day: string) => {
-    setSelectedDays((prev) => (prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]));
-  };
+  // ✅ 초기값을 부모에서 받은 selectedFilters로 설정
+  const [selectedDiseases, setSelectedDiseases] = useState<string[]>(
+    selectedFilters.diseaseId
+      ? selectedFilters.diseaseId.map((id) => Object.keys(diseaseMap).find((key) => diseaseMap[key] === id) || "")
+      : []
+  );
+  const [selectedPeriod, setSelectedPeriod] = useState<number>(selectedFilters.period ?? 0);
+  const [startDate, setStartDate] = useState<Date | null>(
+    selectedFilters.startDate ? new Date(selectedFilters.startDate) : new Date()
+  );
+  const [selectedDays, setSelectedDays] = useState<string[]>(
+    selectedFilters.dayOfWeek
+      ? selectedFilters.dayOfWeek.map((day) => Object.keys(dayMap).find((key) => dayMap[key] === day) || "")
+      : []
+  );
+  const [selectedStartTime, setSelectedStartTime] = useState<string>(
+    selectedFilters.startTime ? `${selectedFilters.startTime}:00` : "00:00"
+  );
+  const [selectedEndTime, setSelectedEndTime] = useState<string>(
+    selectedFilters.endTime ? `${selectedFilters.endTime}:00` : "23:00"
+  );
+  const [selectedHost, setSelectedHost] = useState<string | null>(
+    selectedFilters.isHost === true ? "유" : selectedFilters.isHost === false ? "무" : null
+  );
 
-  //  진행자 선택 (라디오 버튼처럼 동작)
-  const toggleHost = (host: string) => {
-    setSelectedHost(host);
-  };
+  // ✅ 반응형 화면 구현
+  useEffect(() => {
+    const updateMaxWidth = () => {
+      setMaxWidth(Math.min(412, window.innerWidth - 32)); // 화면 너비보다 커지지 않도록 제한
+    };
 
+    updateMaxWidth(); // 초기 실행
+    window.addEventListener("resize", updateMaxWidth); // 창 크기 변경 감지
+
+    return () => {
+      window.removeEventListener("resize", updateMaxWidth); // 클린업
+    };
+  }, []);
+
+  // ✅ 모달이 열릴 때 기존 필터 값을 반영
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedDiseases(
+        selectedFilters.diseaseId
+          ? selectedFilters.diseaseId.map((id) => Object.keys(diseaseMap).find((key) => diseaseMap[key] === id) || "")
+          : []
+      );
+      setSelectedPeriod(selectedFilters.period ?? 0);
+      setStartDate(selectedFilters.startDate ? new Date(selectedFilters.startDate) : new Date());
+      setSelectedDays(
+        selectedFilters.dayOfWeek
+          ? selectedFilters.dayOfWeek.map((day) => Object.keys(dayMap).find((key) => dayMap[key] === day) || "")
+          : []
+      );
+      setSelectedStartTime(selectedFilters.startTime ? `${selectedFilters.startTime}:00` : "00:00");
+      setSelectedEndTime(selectedFilters.endTime ? `${selectedFilters.endTime}:00` : "23:00");
+      setSelectedHost(selectedFilters.isHost === true ? "유" : selectedFilters.isHost === false ? "무" : null);
+    }
+  }, [isOpen, selectedFilters]);
+
+  // ✅버튼
   // 필터 적용하기 버튼 클릭 시 실행
   const applyFilter = () => {
     // 현재 날짜 이용하여 시간 변환
@@ -105,10 +132,9 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
     );
 
     const formattedStartDateString = formattedStartDate.toISOString().split("T")[0] + "T00:00:00Z";
-
     const filterData: RequestData = {
       diseaseId: selectedDiseases.map((disease) => diseaseMap[disease] || null).filter((id) => id !== null),
-      isHost: selectedHost === "관계 없음" ? null : selectedHost === "유" ? true : false,
+      isHost: selectedHost === "유" ? true : selectedHost === "무" ? false : null,
       startDate: formattedStartDateString,
       period: selectedPeriod,
       startTime: Number(selectedStartTime.split(":")[0]),
@@ -119,25 +145,41 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
     onApplyFilter(filterData);
     onClose();
   };
+
   // 필터 초기화하기 버튼 클릭시 실행
-  const resetFilter = () => {
+  function resetFilter() {
     setSelectedDays([]);
-    setSelectedHost("관계 없음");
+    setSelectedHost(null);
     setSelectedDiseases([]);
     setStartDate(new Date());
-    setSelectedPeriod(8);
+    setSelectedPeriod(0);
     setSelectedStartTime("00:00");
     setSelectedEndTime("23:00");
-  };
+  }
+
+  // 질병 토글
+  function toggleDisease(disease: string) {
+    setSelectedDiseases((prev) => (prev.includes(disease) ? prev.filter((d) => d !== disease) : [...prev, disease]));
+  }
+
+  // 요일 토글
+  function toggleDay(day: string) {
+    setSelectedDays((prev) => (prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]));
+  }
+
+  //  진행자 토글 (라디오 버튼처럼 동작)
+  function toggleHost(host: string) {
+    setSelectedHost(host);
+  }
 
   return (
-    <Dialog open={isOpen} onClose={onClose} className="fixed inset-0 z-50">
+    <Dialog open={isOpen} onClose={onClose} className="fixed inset-0" style={{ zIndex: 99999 }}>
       {/* 배경 블러 처리 */}
       <div className="fixed inset-0 bg-black bg-opacity-50" onClick={onClose} />
 
       {/* 모달창 (부모 목록과 크기 동기화) */}
       <div
-        className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[calc(100vw-32px)] md:max-w-md bg-white rounded-t-xl shadow-lg p-5 max-h-[90vh] overflow-y-auto"
+        className="fixed bottom-0 inset-x-0 mx-auto w-full max-w-[412px] bg-white rounded-t-xl shadow-lg p-5 max-h-[90vh] overflow-y-auto"
         style={{ maxWidth: `${maxWidth}px` }} // 동적으로 설정된 너비 적용
       >
         {/* 닫기 버튼 */}
@@ -174,9 +216,10 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
             <span className="text-lg font-bold text-cardTitle">기간</span>
             <select
               value={selectedPeriod}
-              onChange={(e) => setSelectedPeriod(Number(e.target.value))}
-              className="px-3 py-2 border border-cardSubcontent rounded-xl text-lg"
+              onChange={(e) => setSelectedPeriod(e.target.value === "1~8주" ? 0 : Number(e.target.value))}
+              className="px-3 py-2 border border-cardSubcontent rounded-xl text-md text-suite"
             >
+              <option value="1~8주">{"1~8주"}</option>
               {[...Array(8)].map((_, i) => (
                 <option key={i + 1} value={i + 1}>
                   {i + 1}주

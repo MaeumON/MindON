@@ -17,9 +17,10 @@ function GroupsList() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [keyword, setKeyword] = useState<string>("");
 
+  // ✅ 마운트 API 요청
   const fetchInitialGroups = async () => {
     try {
-      const result = await groupListApi({});
+      const result = await groupListApi();
       console.log("📌 API 응답 데이터:", result);
       setGroups(result);
       console.log("📌 setGroup 이후 :", groups);
@@ -38,18 +39,31 @@ function GroupsList() {
     // console.log("📌 groups 상태 변경됨:", groups);
   }, [groups]);
 
+  // ✅ 필터
+  // 필터 상태 관리를 위한 변수들
+  const [selectedFilters, setSelectedFilters] = useState<RequestData>({
+    diseaseId: [],
+    isHost: null,
+    startDate: new Date().toISOString().split("T")[0] + "T00:00:00Z",
+    period: 0,
+    startTime: 0,
+    endTime: 23,
+    dayOfWeek: [],
+  });
+
   // 필터가 적용된 API 요청을 받으면 실행됨
-  const handleApplyFilter = async (selectedFilters: Partial<RequestData>) => {
+  const handleApplyFilter = async (filters: Partial<RequestData>) => {
     try {
-      const result = await groupListApi({ ...selectedFilters });
-      console.log("📌 필터 적용 API 응답:", result);
+      setSelectedFilters(filters); // 필터 상태 저장
+      const result = await groupListApi(filters);
       setGroups(result); // 기존 그룹 목록을 새로운 목록으로 갱신
-      console.log("📌 Filter setGroup 이후 :", groups);
+      // console.log("📌 필터 적용 API 응답:", result);
     } catch (error) {
       console.error("필터 적용 후 그룹 목록 요청 실패:", error);
     }
   };
 
+  // ✅검색창
   // 검색 기능 API 호출
   const fetchSearchGroups = async () => {
     if (!keyword.trim()) {
@@ -131,7 +145,12 @@ function GroupsList() {
 
       {/* 모달 */}
       {isFilterOpen && (
-        <GroupsFilter isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} onApplyFilter={handleApplyFilter} />
+        <GroupsFilter
+          isOpen={isFilterOpen}
+          onClose={() => setIsFilterOpen(false)}
+          onApplyFilter={handleApplyFilter}
+          selectedFilters={selectedFilters}
+        />
       )}
 
       <Footer />

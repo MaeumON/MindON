@@ -8,10 +8,11 @@ import Peace from "@/assets/images/feeling/feelingPeace.png";
 import Proud from "@/assets/images/feeling/feelingProud.png";
 import Sad from "@/assets/images/feeling/feelingSad.png";
 import Tired from "@/assets/images/feeling/feelingTired.png";
-import thinkingbear from "@/assets/images/thinkingbear.png";
+import thinkingbear from "@/assets/images/bear/thinkingbear.png";
 import loudspeaker from "@/assets/icons/loudspeaker.png";
 import chat from "@/assets/icons/chat.png";
 import NoneEmotion from "@/assets/images/feeling/noneEmotion.png";
+import SpeechAmountChart from "@/components/Mydata/SpeechAmountChart";
 
 import useAuthStore from "@/stores/authStore";
 import { useEffect, useState } from "react";
@@ -24,7 +25,9 @@ function MyDataDetail() {
   const [reviews, setReviews] = useState<ReviewType[]>([]);
   const [emotionAvg, setEmotionAvg] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
-  // const [weekNum, setWeekNum] = useState<number>(1);
+  const [weekNum, setWeekNum] = useState<number>(1);
+  const [eachReview, setEachReview] = useState<ReviewType | null>(null); // weeknum과 일치하는 리뷰 저장장
+  const [speechAmount, setSpeechAmount] = useState<number>(0); // speechAmount 상태 추가
 
   // 리뷰 불러오고 안되면 로딩중
   useEffect(() => {
@@ -33,11 +36,22 @@ function MyDataDetail() {
       if (data) {
         setReviews(data.data);
         setEmotionAvg(data.emotionAvg);
+        const filteredReviews = data.data.filter((review) => review.progressWeeks === weekNum);
+        if (filteredReviews.length > 0) {
+          setEachReview(filteredReviews[0]);
+          setSpeechAmount(filteredReviews[0].speechAmount); // 필터된 값의 첫 번째 인덱스를 저장
+        } else {
+          setEachReview(null);
+        }
       }
       setLoading(false);
     };
     loadReviews();
-  }, []);
+  }, [weekNum]); // weeknum 변경되면 다시 필터링
+
+  const handleWeekChange = (week: number) => {
+    setWeekNum(week); // 클릭한 인덱스로 weekNum 변경
+  };
 
   if (loading)
     return (
@@ -58,6 +72,7 @@ function MyDataDetail() {
 
   // 감정에 따른 이미지 매핑
   const emotionImages: { [key: number]: string } = {
+    0: NoneEmotion,
     1: Delight,
     2: Happy,
     3: Proud,
@@ -133,43 +148,43 @@ function MyDataDetail() {
           </div>
         </div>
         {/* 인덱스 */}
-        <div className="flex gap-1">
-          {/* 활성화 된 버튼은 w-15 h-12 mt-8  */}
-          <div className="w-15 h-12 mt-8 px-5 bg-[#f8d893] rounded-tl-xl rounded-tr-xl shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)] justify-center items-center gap-2.5 inline-flex">
-            <div className="text-center text-white text-2xl font-medium font-['The Jamsil']">1</div>
-          </div>
-          <div className="w-10 h-10 mt-10  bg-[#dddddd]/50 rounded-tl-lg rounded-tr-lg shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)] justify-center items-center gap-2.5 inline-flex">
-            <div className="text-center text-white text-2xl font-medium font-['The Jamsil']">2</div>
-          </div>
-          <div className="w-10 h-10 mt-10  bg-[#dddddd]/50 rounded-tl-lg rounded-tr-lg shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)] justify-center items-center gap-2.5 inline-flex">
-            <div className="text-center text-white text-2xl font-medium font-['The Jamsil']">3</div>
-          </div>
-          <div className="w-10 h-10 mt-10  bg-[#dddddd]/50 rounded-tl-lg rounded-tr-lg shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)] justify-center items-center gap-2.5 inline-flex">
-            <div className="text-center text-white text-2xl font-medium font-['The Jamsil']">4</div>
-          </div>
-          <div className="w-10 h-10 mt-10  bg-[#dddddd]/50 rounded-tl-lg rounded-tr-lg shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)] justify-center items-center gap-2.5 inline-flex">
-            <div className="text-center text-white text-2xl font-medium font-['The Jamsil']">5</div>
-          </div>
-          <div className="w-10 h-10 mt-10  bg-[#dddddd]/50 rounded-tl-lg rounded-tr-lg shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)] justify-center items-center gap-2.5 inline-flex">
-            <div className="text-center text-white text-2xl font-medium font-['The Jamsil']">6</div>
-          </div>
-          <div className="w-10 h-10 mt-10  bg-[#dddddd]/50 rounded-tl-lg rounded-tr-lg shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)] justify-center items-center gap-2.5 inline-flex">
-            <div className="text-center text-white text-2xl font-medium font-['The Jamsil']">7</div>
-          </div>
-          <div className="w-10 h-10 mt-10  bg-[#dddddd]/50 rounded-tl-lg rounded-tr-lg shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)] justify-center items-center gap-2.5 inline-flex">
-            <div className="text-center text-white text-2xl font-medium font-['The Jamsil']">8</div>
-          </div>
+        <div className="flex gap-1 ms-1">
+          {Array.from({ length: reviews.length || 0 }).map((_, index) => (
+            <div
+              key={index}
+              className={` bg-[#dddddd]/50 rounded-tl-lg rounded-tr-lg shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)] justify-center items-center inline-flex ${
+                weekNum === index + 1
+                  ? "w-13 sm:w-[50px] h-10 sm:h-[50px] mt-8 sm:mt-6 px-4 bg-[#f8d893]"
+                  : "w-8 sm:w-[40px] h-8 sm:h-[35px] mt-10 sm:mt-9"
+              }`}
+              onClick={() => handleWeekChange(index + 1)}
+              style={{
+                zIndex: weekNum === index + 1 ? 2 : 1,
+              }}
+            >
+              <div
+                className={`text-center text-white ${weekNum === index + 1 ? "text-24px font-jamsilMedium" : "text-18px font-jamsilRegular"}`}
+              >
+                {index + 1}
+              </div>
+            </div>
+          ))}
         </div>
         {/* 내용부분 */}
-        <div className="p-4 bg-white rounded-xl shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)]">
+        <div
+          className="p-4 my-[-2px] bg-white rounded-xl shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)]"
+          style={{ zIndex: 3, position: "relative" }}
+        >
           <div className="flex gap-2 mb-5">
             <div className="flex flex-col justify-end basis-2/5">
+              {/* 온이 위치가 어디있어야할까요 */}
               <img src={thinkingbear} alt="" className="scale-x-[-1] w-[100px] h-[100px] object-contain" />
             </div>
             <div className="flex flex-col basis-3/5">
               <div className="font-jamsilMedium text-20px">온이의 한 마디</div>
-              <div className="font-suite">
-                혼자서 모든 것을 해결하지 않고 사람들과 함께 어려움을 나누는 것도 중요해요. 함께 힘내요 💪
+              <div className="font-suite text-16px break-keep">
+                {eachReview?.cheeringMessage}
+                {/* 혼자서 모든 것을 해결하지 않고 사람들과 함께 어려움을 나누는 것도 중요해요. 함께 힘내요 💪 */}
               </div>
             </div>
           </div>
@@ -178,16 +193,17 @@ function MyDataDetail() {
               <div className="flex gap-1 items-center">
                 <img src={loudspeaker} alt="" className="w-[40px] h-[40px]" />
                 <div className="whitespace-nowrap first-line:text-center-text-cardTitle text-16px sm:text-18px font-jamsilRegular">
-                  3회차에는 이런 얘기를 했어요.
+                  {weekNum}회차에는 이런 얘기를 했어요.
                 </div>
               </div>
               <div className="flex justify-center py-3">
                 <div className="p-4 w-[95%] bg-white rounded-lg">
                   <div className=" text-cardLongContent font-suite leading-normal">
-                    1회차 모임은 하영님이 경청을 한 날이었어요. 많은 사람들이 따뜻해졌대요.
+                    {eachReview?.summation}
+                    {/* 1회차 모임은 하영님이 경청을 한 날이었어요. 많은 사람들이 따뜻해졌대요.
                     <br /> 트라우마에 대한 이야기를 털어놓고, 감정을 마주보는 시간을 가졌습니다.
                     <br /> 수연님의 질문은 “그 날을 떠올렸을때 가장 먼저 드는 감정은 무엇인가요?”였습니다. 수연님은
-                    “아쉬움”이라고 대답했어요. 어머니를 더 이해하고 싶어해요.
+                    “아쉬움”이라고 대답했어요. 어머니를 더 이해하고 싶어해요. */}
                   </div>
                 </div>
               </div>
@@ -200,7 +216,10 @@ function MyDataDetail() {
                 </div>
               </div>
               <div className="flex justify-center py-3">
-                <div className="p-4 w-[95%] bg-white rounded-lg">발화량 차트</div>
+                <div className="p-4 w-[95%] bg-white rounded-lg">
+                  {/* {eachReview?.speechAmount} */}
+                  <SpeechAmountChart percentage={speechAmount} />
+                </div>
               </div>
             </div>
           </div>
