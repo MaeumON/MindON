@@ -38,4 +38,7 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
 
     @Query("SELECT g FROM Group g WHERE g.disease.diseaseId = :diseaseId AND g.groupStatus = 0 ORDER BY g.createdDate DESC")
     List<Group> findTop5ByDiseaseIdAndGroupStatusOrderByCreatedDateDesc(@Param("diseaseId") Byte diseaseId);
+
+    long countByGroupIdInAndGroupStatus(List<Integer> groupIds, byte groupStatus);
+
 }

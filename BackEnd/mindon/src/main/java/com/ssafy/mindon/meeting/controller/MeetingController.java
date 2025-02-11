@@ -43,10 +43,14 @@ public class MeetingController {
 
     @GetMapping("/upcoming")
     public ResponseEntity<?> getUpcomingMeeting(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
-
-        if (jwtUtil.isTokenExpired(accessToken)) {
-            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
+        try {
+            if (jwtUtil.isTokenExpired(accessToken)) {
+                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
+            }
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN); // 원하는 예외 던지기
         }
+
         String userId = jwtUtil.extractUserId(accessToken);
         UpcomingMeetingResponseDto upcomingMeetingDto = meetingService.getUpcomingMeetingDto(userId);
         return ResponseEntity.ok(upcomingMeetingDto);
