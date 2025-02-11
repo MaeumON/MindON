@@ -13,7 +13,7 @@ interface GroupsFilterProps {
 
 function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
   const [selectedDiseases, setSelectedDiseases] = useState<string[]>([]); // 질병 선택 상태
-  const [selectedPeriod, setSelectedPeriod] = useState<number>(); // 기본값 1주
+  const [selectedPeriod, setSelectedPeriod] = useState<number>(0); // 기본값 1주
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [selectedStartTime, setSelectedStartTime] = useState<string>("00:00");
@@ -74,6 +74,9 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
     기타: 10,
   } as Record<string, number>;
 
+  // const periodMap = {
+  //   "1~8주": 0,
+  // };
   // 질병 선택 시 토글
   const toggleDisease = (disease: string) => {
     setSelectedDiseases((prev) => (prev.includes(disease) ? prev.filter((d) => d !== disease) : [...prev, disease]));
@@ -86,7 +89,7 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
 
   //  진행자 선택 (라디오 버튼처럼 동작)
   const toggleHost = (host: string) => {
-    setSelectedHost(host === "관계 없음" ? null : host);
+    setSelectedHost(host);
   };
 
   // 필터 적용하기 버튼 클릭 시 실행
@@ -105,12 +108,11 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
     );
 
     const formattedStartDateString = formattedStartDate.toISOString().split("T")[0] + "T00:00:00Z";
-
     const filterData: RequestData = {
       diseaseId: selectedDiseases.map((disease) => diseaseMap[disease] || null).filter((id) => id !== null),
       isHost: selectedHost === "유" ? true : selectedHost === "무" ? false : null,
       startDate: formattedStartDateString,
-      period: selectedPeriod,
+      period: selectedPeriod ? 0 : selectedPeriod,
       startTime: Number(selectedStartTime.split(":")[0]),
       endTime: Number(selectedEndTime.split(":")[0]),
       dayOfWeek: selectedDays.map((day) => dayMap[day] ?? null).filter((id) => id !== null),
@@ -125,7 +127,7 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
     setSelectedHost(null);
     setSelectedDiseases([]);
     setStartDate(new Date());
-    setSelectedPeriod(1);
+    setSelectedPeriod(0);
     setSelectedStartTime("00:00");
     setSelectedEndTime("23:00");
   };
@@ -175,8 +177,9 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
             <select
               value={selectedPeriod}
               onChange={(e) => setSelectedPeriod(Number(e.target.value))}
-              className="px-3 py-2 border border-cardSubcontent rounded-xl text-lg"
+              className="px-3 py-2 border border-cardSubcontent rounded-xl text-md text-suite"
             >
+              <option>{"1~8주"}</option>
               {[...Array(8)].map((_, i) => (
                 <option key={i + 1} value={i + 1}>
                   {i + 1}주
