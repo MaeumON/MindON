@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -62,5 +63,16 @@ public class GroupService {
                 "startingGroup", statusCountMap.getOrDefault((byte) 1, 0L).intValue(),
                 "endGroup", statusCountMap.getOrDefault((byte) 2, 0L).intValue()
         );
+    }
+    @Transactional
+    public int updateGroupStatusToOngoing() {
+        LocalDateTime now = LocalDateTime.now();
+        return groupRepository.updateGroupStatusToOngoing(now);
+    }
+
+    @Transactional
+    public int updateGroupStatusToEnded() {
+        LocalDateTime now = LocalDateTime.now();
+        return groupRepository.updateGroupStatusToEnded(now);
     }
 }

@@ -2,9 +2,11 @@ package com.ssafy.mindon.group.repository;
 
 import com.ssafy.mindon.group.entity.Group;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,4 +44,14 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     long countByGroupIdInAndGroupStatus(List<Integer> groupIds, byte groupStatus);
     List<Group> findAllByGroupIdIn(List<Integer> groupIds);
     Group findByGroupId(Integer groupId);
+
+    @Modifying(clearAutomatically = true)  // 변경 사항을 영속성 컨텍스트에 즉시 반영
+    @Transactional
+    @Query("UPDATE Group g SET g.groupStatus = 1 WHERE g.startDate <= :now AND g.groupStatus = 0")
+    int updateGroupStatusToOngoing(@Param("now") LocalDateTime now);
+
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query("UPDATE Group g SET g.groupStatus = 2 WHERE g.endDate < :now AND g.groupStatus = 1")
+    int updateGroupStatusToEnded(@Param("now") LocalDateTime now);
 }

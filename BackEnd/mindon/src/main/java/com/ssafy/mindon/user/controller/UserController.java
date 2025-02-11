@@ -1,8 +1,8 @@
 package com.ssafy.mindon.user.controller;
 
+import com.ssafy.mindon.auth.service.AuthService;
 import com.ssafy.mindon.common.error.ErrorCode;
 import com.ssafy.mindon.common.exception.AuthException;
-import com.ssafy.mindon.meeting.dto.UpcomingMeetingResponseDto;
 import com.ssafy.mindon.user.UserEmotionResponseDto;
 import com.ssafy.mindon.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/users")
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final JwtUtil jwtUtil;
     private final UserService userService;
+    private final AuthService authService;
 
     @GetMapping("/temparature")
     public ResponseEntity<?> getTemparature(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
@@ -52,6 +55,5 @@ public class UserController {
 
         return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
-
 
 }
