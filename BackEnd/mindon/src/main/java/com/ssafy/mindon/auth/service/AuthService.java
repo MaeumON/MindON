@@ -127,4 +127,22 @@ public class AuthService {
     public boolean isUserExists(String userId, String phone) {
         return userRepository.findByUserIdAndPhone(userId, phone).isPresent();
     }
+
+    // 비밀번호 재설정
+    public void resetPassword(String userId, String newPassword) {
+        // userId로 사용자 조회
+        User user = userRepository.findByUserId(userId);
+
+        if (user == null) {
+            throw new AuthException(ErrorCode.USER_NOT_FOUND); // 사용자가 존재하지 않으면 예외 발생
+        }
+
+        // 새 비밀번호 암호화
+        String encodedPassword = passwordUtil.encode(newPassword);
+
+        // 비밀번호 업데이트
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
+    }
+
 }
