@@ -31,7 +31,6 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
       setCurrentUser,
       setCurrentUserId,
       setCurrentQuestionText,
-
       setIsSpeaking,
     } = store;
 
@@ -72,7 +71,7 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
       } else if (currentUserId === userId && isSpeaking) {
         setIsSpeaking(false);
         //녹음 종료 API 호출
-        stopRecording({ sessionID: session.sessionId })
+        stopRecording({ sessionID: session.sessionId, questionId: questions[currentQuestionNumber].questionId })
           .then(() => console.log("녹음 종료 성공"))
           .catch((error) => {
             console.log("녹음 종료 실패", error);
