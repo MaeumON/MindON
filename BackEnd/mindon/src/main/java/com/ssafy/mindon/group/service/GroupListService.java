@@ -20,16 +20,16 @@ public class GroupListService {
                                                         Byte endTime, List<Byte> dayOfWeek) {
 
         // 빈 리스트 처리
-        if (diseaseId.isEmpty()) {
+        if (diseaseId == null || diseaseId.isEmpty()) {
              diseaseId = null;
         }
 
-        if (dayOfWeek.isEmpty()) {
+        if (dayOfWeek == null || dayOfWeek.isEmpty()) {
             dayOfWeek = null;
         }
 
         // period 기본값 -> 전체 조회
-        if (period==0) {
+        if (period == null || period==0) {
             period = null;
         }
 
