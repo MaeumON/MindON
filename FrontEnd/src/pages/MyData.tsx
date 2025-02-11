@@ -62,7 +62,7 @@ function MyData() {
           <div className="font-suite font-[700] text-20px text-cardLongContent">온이와 함께한 모임 분석 및 요약</div>
           <div className="flex flex-col gap-5">
             {/* nav 주소 수정 예정 */}
-            <Card onClick={() => nav("/ongoinggroups")} className="items-center">
+            <Card onClick={() => nav("/mydata/grouplist/1")} className="items-center">
               <div className="ps-[10px] py-[5px]">
                 <div className="flex justify-between">
                   <div className="text-24px font-suite font-[700] text-cardLongContent">참여중인 모임</div>
@@ -73,7 +73,7 @@ function MyData() {
                 </div>
               </div>
             </Card>
-            <Card onClick={() => nav("/endgroups")} className="items-center">
+            <Card onClick={() => nav("/mydata/grouplist/2")} className="items-center">
               <div className="ps-[10px] py-[5px]">
                 <div className="flex justify-between">
                   <div className="text-24px font-suite font-[700]  text-cardLongContent ">종료된 모임</div>
