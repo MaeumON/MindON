@@ -26,7 +26,7 @@ const localUser = new UserModel();
 const Prejoin = () => {
   const navigate = useNavigate();
   const { groupId, groupName } = useParams();
-  const SESSION_ID = String(groupId);
+  const SESSION_ID = String(2);
   const GROUP_NAME = groupName;
 
   const { userName } = useAuthStore();

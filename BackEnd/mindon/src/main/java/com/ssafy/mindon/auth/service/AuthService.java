@@ -117,4 +117,11 @@ public class AuthService {
         tokens.put("refreshToken", newRefreshToken);
         return tokens;
     }
+
+    public String findUserId(String userName, String phone) {
+        return userRepository.findByUserNameAndPhone(userName, phone)
+                .map(User::getUserId)
+                .orElseThrow(() -> new AuthException(ErrorCode.USER_NOT_FOUND));
+    }
+
 }
