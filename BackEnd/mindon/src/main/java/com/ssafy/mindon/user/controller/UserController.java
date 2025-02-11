@@ -37,7 +37,5 @@ public class UserController {
 
         UserEmotionResponseDto responseDto  = userService.calculateUserEmotionScore(userId);
         return ResponseEntity.ok(responseDto );
-
     }
-
 }
