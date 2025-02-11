@@ -62,12 +62,12 @@ function Footer() {
       </div>
 
       {/* 프로필 버튼 */}
-      <div className="flex flex-col items-center gap-1.5 cursor-pointer" onClick={() => handleFooterClick("/profile")}>
+      <div className="flex flex-col items-center gap-1.5 cursor-pointer" onClick={() => handleFooterClick("/mypage")}>
         <IconProfile width={28} height={28} fillColor={currentPath === "/profile" ? "orange100" : "cardContent2"} />
         <span
           className={`text-14px font-bold font-suite ${currentPath === "/profile" ? "text-orange100" : "text-cardContent2"}`}
         >
-          프로필
+          마이페이지
         </span>
       </div>
     </footer>
