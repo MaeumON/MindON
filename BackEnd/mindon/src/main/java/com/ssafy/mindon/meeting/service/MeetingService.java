@@ -44,9 +44,9 @@ public class MeetingService {
         }
 
         Meeting upcomingMeeting = meetingRepository
-                .findFirstByGroup_GroupIdInAndMeetingStatusAndDateGreaterThanEqualOrderByDate(
+                .findFirstByGroup_GroupIdInAndMeetingStatusInAndDateGreaterThanEqualOrderByDate(
                         groupIds,
-                        (byte) 0,
+                        List.of((byte) 0, (byte) 1),  // meetingStatus 0 또는 1
                         LocalDateTime.now()
                 )
                 .orElse(null);
@@ -67,6 +67,7 @@ public class MeetingService {
                 .diseaseId(disease.getDiseaseId().intValue())
                 .diseaseName(disease.getDiseaseName())
                 .meetingDate(upcomingMeeting.getDate())
+                .meetingStatus(upcomingMeeting.getMeetingStatus())
                 .build();
     }
 
