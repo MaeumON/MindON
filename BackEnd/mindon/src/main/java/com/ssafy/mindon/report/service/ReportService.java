@@ -51,5 +51,13 @@ public class ReportService {
                 .build();
 
         reportRepository.save(report);
+
+        // 신고당한 유저 신고 횟수 증가
+        reportedUser.setReportedCnt(reportedUser.getReportedCnt() + 1);
+
+        // 신고 횟수가 3 이상이면 정지 처리
+        if (reportedUser.getReportedCnt() >= 1) {
+            reportedUser.setUserStatus((byte) 2); // 정지 상태
+        }
     }
 }

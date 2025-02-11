@@ -40,5 +40,6 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     List<Group> findTop5ByDiseaseIdAndGroupStatusOrderByCreatedDateDesc(@Param("diseaseId") Byte diseaseId);
 
     long countByGroupIdInAndGroupStatus(List<Integer> groupIds, byte groupStatus);
-
+    List<Group> findAllByGroupIdIn(List<Integer> groupIds);
+    Group findByGroupId(Integer groupId);
 }
