@@ -8,7 +8,7 @@ import Peace from "@/assets/images/feeling/feelingPeace.png";
 import Proud from "@/assets/images/feeling/feelingProud.png";
 import Sad from "@/assets/images/feeling/feelingSad.png";
 import Tired from "@/assets/images/feeling/feelingTired.png";
-import thinkingbear from "@/assets/images/thinkingbear.png";
+import thinkingbear from "@/assets/images/bear/thinkingbear.png";
 import loudspeaker from "@/assets/icons/loudspeaker.png";
 import chat from "@/assets/icons/chat.png";
 import NoneEmotion from "@/assets/images/feeling/noneEmotion.png";
