@@ -16,8 +16,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class GroupCreateService {
@@ -56,14 +58,23 @@ public class GroupCreateService {
         User user = userOpt.get();
         Disease disease = diseaseOpt.get();
 
-        // 미팅 시간 및 요일 충돌 여부 확인
-        boolean hasConflictingGroup = userGroupRepository.existsByUser_UserIdAndGroup_MeetingTimeAndGroup_DayOfWeek(
-                user.getUserId(), request.getMeetingTime().byteValue(), request.getDayOfWeek().byteValue()
+
+        // 사용자가 가입된 그룹 ID 조회
+        List<Integer> joinedGroupIds = userGroupRepository.findByUser_UserId(user.getUserId())
+                .stream().map(userGroup -> userGroup.getGroup().getGroupId()).collect(Collectors.toList());
+
+        // 해당 그룹들의 미팅 일정 조회
+        List<Meeting> userMeetings = meetingRepository.findAllByGroup_GroupIdIn(joinedGroupIds);
+
+        // 새로운 그룹의 미팅 일정과 충돌 여부 확인
+        boolean hasConflict = userMeetings.stream().anyMatch(meeting ->
+                meeting.getDate().equals(request.getStartDate())
         );
 
-        if (hasConflictingGroup) {
+        if (hasConflict) {
             return false;
         }
+
 
         Group group = new Group();
         group.setTitle(request.getTitle());

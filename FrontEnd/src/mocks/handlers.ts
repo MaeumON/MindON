@@ -10,7 +10,7 @@ import { TEMPERATURE } from "@/data/TEMPERTURE";
 import { MEETINGDETIAL } from "@/data/MEETINGDETAIL";
 // import { UPCOMING_EVENTS } from "@/data/UPCOMING_EVENTS";
 // import { Group, RequestData } from "@/apis/group/groupListApi";
-import { TOPFIVEGROUPS } from "@/data/TOPFIVEGROUPS";
+// import { TOPFIVEGROUPS } from "@/data/TOPFIVEGROUPS";
 // import { RequestData, Group } from "@/utils/groups";
 
 const { VITE_APP_API_URL } = import.meta.env;
@@ -111,10 +111,10 @@ const handlers = [
   //   return HttpResponse.json(filteredGroup);
   // }),
 
-  // TopFiveGroups 리스트트
-  http.get(VITE_APP_API_URL + "/api/groups/:diseaseId/new", () => {
-    return HttpResponse.json(TOPFIVEGROUPS);
-  }),
+  // // TopFiveGroups 리스트트
+  // http.get(VITE_APP_API_URL + "/api/groups/:diseaseId/new", () => {
+  //   return HttpResponse.json(TOPFIVEGROUPS);
+  // }),
 
   // // 그룹 목록 조회 (GET 요청)
   // http.get(VITE_APP_API_URL + "/api/groups/list", ({ request }) => {
@@ -151,6 +151,7 @@ const handlers = [
     return HttpResponse.json({ temperture: TEMPERATURE.temperture });
   }),
 
+  // 마이데이터 리뷰조회
   http.get(VITE_APP_API_URL + "/api/groups/:groupId/reviews", (req) => {
     const { groupId } = req.params;
     console.log(groupId);

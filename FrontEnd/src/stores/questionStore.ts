@@ -12,6 +12,7 @@ interface QuestionState {
   currentQuestionText: string;
   currentBtnText: string;
   isSpeaking: boolean;
+  remainingTime: number;
 }
 
 interface QuestionActions {
@@ -24,6 +25,7 @@ interface QuestionActions {
   setCurrentQuestionText: (currentQuestionText: string) => void;
   setCurrentBtnText: (currentBtnText: string) => void;
   setIsSpeaking: (isSpeaking: boolean) => void;
+  setRemainingTime: (remainingTime: number) => void;
 }
 
 const initialState: QuestionState = {
@@ -36,6 +38,7 @@ const initialState: QuestionState = {
   currentQuestionText: "", //현재 질문 텍스트
   currentBtnText: "", //현재 버튼 텍스트
   isSpeaking: false, //현재 발언 중인지 여부
+  remainingTime: 0,
 };
 
 export const useQuestionStore = create<QuestionState & QuestionActions>()((set) => ({
@@ -56,4 +59,5 @@ export const useQuestionStore = create<QuestionState & QuestionActions>()((set) 
   setCurrentQuestionText: (currentQuestionText) => set({ currentQuestionText }),
   setCurrentBtnText: (currentBtnText) => set({ currentBtnText }),
   setIsSpeaking: (isSpeaking) => set({ isSpeaking }),
+  setRemainingTime: (remainingTime) => set({ remainingTime }),
 }));

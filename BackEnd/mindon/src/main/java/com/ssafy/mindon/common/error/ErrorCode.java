@@ -11,7 +11,13 @@ public enum ErrorCode {
     NOT_FOUND(HttpStatus.NOT_FOUND, "E4", "존재하지 않는 엔티티입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "U1", "존재하지 않는 아이디입니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "U2", "비밀번호가 일치하지 않습니다."),
-    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "U3", "유효하지 않은 리프레시 토큰입니다.");
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "U3", "유효하지 않은 리프레시 토큰입니다."),
+    EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "U4", "엑세스 토큰이 만료되었습니다."),
+    ACCOUNT_SUSPENDED(HttpStatus.FORBIDDEN, "U5", "계정이 정지되었습니다."),
+    INVALID_MEETING_ID(HttpStatus.BAD_REQUEST, "M1", "유효하지 않은 meetingId입니다."),
+    MEETING_NOT_FOUND(HttpStatus.NOT_FOUND, "M2", "해당 미팅을 찾을 수 없습니다."),
+    GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "G1", "해당 groupId가 존재하지 않습니다."),
+    ONGOING_MEETING_NOT_FOUND(HttpStatus.NOT_FOUND, "M3", "해당 groupId에 대한 진행 중인 미팅이 존재하지 않습니다.");
 
 
     private final String message;

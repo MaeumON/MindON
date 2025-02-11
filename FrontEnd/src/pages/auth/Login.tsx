@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
+import axios, { AxiosError } from "axios";
 
 import InputForm from "@components/common/InputForm";
 import Button from "@components/common/Button";
@@ -32,11 +33,28 @@ function Login() {
       setAuth({ accessToken, refreshToken, userId, userName, diseaseId, diseaseName });
       router("/main");
     } catch (error) {
-      console.error("로그인 실패:", error);
-      alert("회원 정보를 찾을 수 없습니다.");
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<{ message: string; code: string }>;
+
+        if (axiosError.response) {
+          const { status, data } = axiosError.response;
+
+          if (status === 401 && data.code === "U2") {
+            alert("비밀번호가 일치하지 않습니다.");
+          } else if (status === 404 && data.code === "U1") {
+            alert("존재하지 않는 아이디입니다.");
+          } else if (status === 403 && data.code === "U5") {
+            alert("계정이 정지되었습니다.");
+          } else {
+            alert("로그인 중 알 수 없는 오류가 발생했습니다.");
+          }
+        } else {
+          console.error("로그인 요청 실패:", error);
+          alert("네트워크 오류 또는 서버 문제가 발생했습니다.");
+        }
+      }
     }
   }
-
   return (
     <Wrapper className="px-[20px] gap-[30px]">
       <div className="flex flex-col font-bold gap-[60px] w-full">

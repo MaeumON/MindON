@@ -61,6 +61,10 @@ public class AuthService {
             throw new AuthException(ErrorCode.INVALID_PASSWORD);
         }
 
+        if (user.getUserStatus() == 2) { // 정지된 계정이면 에러 반환
+            throw new AuthException(ErrorCode.ACCOUNT_SUSPENDED);
+        }
+
         // 유저 정보 저장
         String userId = user.getUserId();
         String userName = user.getUserName();
