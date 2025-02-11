@@ -1,7 +1,7 @@
 import { Wrapper } from "@components/common/DivName";
 import Button from "@components/common/Button";
 import { useNavigate } from "react-router-dom";
-import hellowbear from "@/assets/images/hellowbear.png";
+import hellowbear from "@/assets/images/bear/hellowbear.png";
 import logo_mindon from "@/assets/images/logo_mindon.png";
 
 function Welcome() {

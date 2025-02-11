@@ -1,7 +1,7 @@
 import { Session } from "openvidu-browser";
 import { QuestionChangedData, QuestionSpeakingOrderType } from "../openviduTypes";
 import { useQuestionStore } from "@/stores/questionStore";
-// import { startInitialTimer } from "./timer";
+import { startInitialTimer } from "./timer";
 
 //질문 시작 시, 참가자 리스트 보내는 시그널
 export function sendSignalQuestionChanged({ data, session }: { data: QuestionChangedData; session: Session }) {
@@ -43,17 +43,8 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
     if (isMeetingStart === 0) {
       setIsMeetingStart(1);
       setIsQuestionStart(0);
-      setCurrentQuestionText("잠시 후 질문이 시작됩니다.");
+      setCurrentQuestionText("잠시 후,\n질문이 시작됩니다.");
 
-      return;
-    }
-
-    //질문 시작 전
-    if (isMeetingStart === 1 && isQuestionStart === 0) {
-      setIsQuestionStart(1);
-      setCurrentQuestionText(questions[0].detail);
-      setCurrentUser(0);
-      setCurrentUserId(speakingOrder[0].userId);
       return;
     }
 
@@ -61,7 +52,7 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
     if (isMeetingStart === 1 && isQuestionStart === 1) {
       //질문 완전 종료
       if (currentQuestionNumber === questions.length - 1) {
-        setCurrentQuestionText("모임이 종료되었습니다.");
+        setCurrentQuestionText("모임이\n종료되었습니다.");
         setIsQuestionStart(2);
         return;
       }
@@ -79,9 +70,10 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
 
       //하나의 질문 종료
       if (currentUser === speakingOrder.length - 1) {
+        console.log("currentQuestionNumber", currentQuestionNumber);
         setCurrentQuestionNumber(currentQuestionNumber + 1);
         setCurrentUser(0);
-        setCurrentQuestionText(questions[currentQuestionNumber + 1].detail);
+        setCurrentQuestionText(`Q${currentQuestionNumber + 1}.\n${questions[currentQuestionNumber + 1].detail}`);
       } else {
         setCurrentUser(currentUser + 1);
         setCurrentUserId(speakingOrder[currentUser + 1].userId);
@@ -101,33 +93,39 @@ export function sendSignalStartMeeting({ data, session }: { data: QuestionSpeaki
 
 export function subscribeToStartMeeting({ session }: { session: Session }) {
   session.on("signal:startMeeting", async (event) => {
-    // 매번 최신 store 상태를 가져오도록 수정
-    const store = useQuestionStore.getState();
-    const {
-      isMeetingStart,
-      setIsMeetingStart,
-      setIsQuestionStart,
-      setCurrentQuestionText,
-      questions,
-      setCurrentUser,
-      setCurrentUserId,
-    } = store;
+    try {
+      const store = useQuestionStore.getState();
+      const {
+        questions,
+        isMeetingStart,
+        currentQuestionNumber,
+        setCurrentUser,
+        setCurrentQuestionNumber,
+        setCurrentUserId,
+        setIsQuestionStart,
+        setCurrentQuestionText,
+      } = store;
 
-    const data = JSON.parse(event.data || "");
+      const data = JSON.parse(event.data || "");
+      const speakingOrder = data.speakingOrder;
 
-    // 미팅이 시작되지 않은 상태일 때만 실행
-    if (isMeetingStart === 0) {
-      setIsMeetingStart(1);
-      setCurrentQuestionText("5초 후에 질문이 시작됩니다.");
+      console.log("startMeeting signal subscribe", event);
 
-      // 5초 타이머 시작
-      // await startInitialTimer();
+      if (isMeetingStart === 0) {
+        console.log("Before startInitialTimer");
+        await startInitialTimer();
+        console.log("After startInitialTimer");
 
-      // 5초 후 질문 시작 전 상태로 변경
-      setIsQuestionStart(1);
-      setCurrentQuestionText(questions[0].detail);
-      setCurrentUser(0);
-      setCurrentUserId(data.speakingOrder[0].userId);
+        console.log("Updating states...");
+        setIsQuestionStart(1);
+        setCurrentQuestionText(`Q1.\n${questions[0].detail}`);
+        setCurrentUser(0);
+        setCurrentUserId(speakingOrder[0].userId);
+        setCurrentQuestionNumber(1);
+        console.log("States updated, currentQuestionNumber:", currentQuestionNumber);
+      }
+    } catch (error) {
+      console.error("Error in subscribeToStartMeeting:", error);
     }
   });
 }
