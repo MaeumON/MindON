@@ -26,6 +26,7 @@ export default groupListApi;
 export const groupStatusApi = async (groupStatus: number): Promise<Group[]> => {
   try {
     const result = await authInstance.post<Group[]>(`/api/groups/${groupStatus}/list`);
+    console.log("result data : ", result.data);
     return result.data;
   } catch (error) {
     console.error("마이페이지/마이데이터용 grouplist axios 오류 : ", error);

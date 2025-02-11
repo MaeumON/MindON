@@ -1,14 +1,16 @@
 import { Group } from "@/utils/groups";
-import { useNavigate } from "react-router-dom";
+import Button from "@components/common/Button";
+// import { useNavigate } from "react-router-dom";
 
 interface GroupCardProps {
   group: Group;
+  onClick?: () => void;
 }
 
-const GroupCard = ({ group }: GroupCardProps) => {
+const GroupCard = ({ group, onClick }: GroupCardProps) => {
   // console.log("📌 GroupCard Props:", group);
 
-  const router = useNavigate();
+  // const router = useNavigate();
   console.log(group);
 
   // 12시간제로 변경해주는 함수
@@ -41,9 +43,6 @@ const GroupCard = ({ group }: GroupCardProps) => {
     return weekDays[group.dayOfWeek] || "요일 미정"; // 유효하지 않은 값 예외 처리
   }
 
-  const onClickDetail = () => {
-    router(`/groups/${group.groupId}`);
-  };
   return (
     <div className="flex justify-center items-center w-full px-4">
       <div className="font-suite h-auto p-5 bg-white rounded-xl shadow-md flex flex-col justify-center items-start gap-3 w-full max-w-[600px]">
@@ -74,12 +73,14 @@ const GroupCard = ({ group }: GroupCardProps) => {
         </div>
 
         {/* 상세보기 버튼 */}
-        <div
+        <Button
           className="w-full h-[40px] bg-[#6bb07c] rounded-xl flex justify-center items-center"
-          onClick={onClickDetail}
-        >
-          <div className="text-white text-sm md:text-base font-bold">상세보기</div>
-        </div>
+          onClick={onClick}
+          text={"상세보기"}
+          type={"GREEN"}
+        />
+
+        {/* <div className="text-white text-sm md:text-base font-bold">{text}</div> */}
       </div>
     </div>
   );

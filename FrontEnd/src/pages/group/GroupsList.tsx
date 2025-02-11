@@ -11,12 +11,18 @@ import groupListApi from "@apis/group/groupListApi";
 
 import { useState, useEffect } from "react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function GroupsList() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [groups, setGroups] = useState<Group[]>([]);
   const [keyword, setKeyword] = useState<string>("");
 
+  const nav = useNavigate();
+  // 그룹 상세보기로 이동하는 함수
+  const onClickDetail = (groupId: number) => {
+    nav(`/groups/${groupId}`);
+  };
   // ✅ 마운트 API 요청
   const fetchInitialGroups = async () => {
     try {
@@ -131,9 +137,15 @@ function GroupsList() {
       {/* 그룹 목록 */}
       <div className="flex flex-col gap-5 pb-20">
         {groups.length > 0 ? (
-          groups.map((group) => <GroupCard key={group.groupId} group={group} />)
+          groups.map((group) => (
+            <GroupCard
+              key={group.groupId}
+              group={group}
+              onClick={() => onClickDetail(group.groupId)} // onClick 전달
+            />
+          ))
         ) : (
-          <div className="flex m-6 justify-center items-center h-80 text-lg font-bold text-gray-500 leading-8">
+          <div className="flex m-6 justify-center items-center h-80 font-suite text-18px font-[600] text-cardLongContent leading-8">
             아직 그룹이 없어요
             <br />
             아래 + 버튼을 눌러
