@@ -1,6 +1,6 @@
 import { fetchQuestionSpeakingOrder } from "@/apis/openvidu/questionApi";
 import { PARTICIPANT_LIST } from "@/data/OPENVIDU";
-// import useAuthStore from "@/stores/authStore";
+import useAuthStore from "@/stores/authStore";
 import { useQuestionStore } from "@/stores/questionStore";
 import {
   sendSignalQuestionChanged,
@@ -19,8 +19,6 @@ interface QuestionProps {
   mySessionId: string;
 }
 
-const userId = "4";
-
 const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
   const {
     isMeetingStart,
@@ -37,9 +35,7 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
   } = useQuestionStore();
 
   //추후 로그인 기능과 연동 시, 사용
-  // const { data } = useAuthStore();
-  // const userId = data?.userId;
-
+  const { userId } = useAuthStore();
   const [speakingOrder, setSpeakingOrder] = useState<QuestionSpeakingOrderType[]>([]);
 
   function stateChanger() {
