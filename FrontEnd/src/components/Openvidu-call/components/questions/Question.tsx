@@ -20,6 +20,7 @@ interface QuestionProps {
 
 const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
   const {
+    questions,
     isMeetingStart,
     isQuestionStart,
     currentUser,
@@ -59,11 +60,6 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
     }
 
     if (isMeetingStart === 1 && isQuestionStart === 1) {
-      console.log("currentUserId", currentUserId);
-      console.log("userId", userId);
-      console.log("isSpeaking", isSpeaking);
-      console.log("currentUser", currentUser);
-
       if (currentUserId === userId && !isSpeaking) {
         return "답변 시작하기";
       } else if (currentUserId === userId && isSpeaking) {
@@ -89,12 +85,12 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
 
     fetchQuestionsData(meetingId).then(() => fetchOrder());
 
+    console.log("questions", questions);
     console.log("speakingOrder", speakingOrder);
 
-    setCurrentQuestionText(`잠시 후, \n모임이 시작됩니다.`);
+    setCurrentQuestionText(`잠시 후,\n모임이 시작됩니다.`);
     setCurrentBtnText("모임 바로 시작하기");
 
-    // questionStore를 인자로 전달
     subscribeToQuestionChanged({
       session,
     });
