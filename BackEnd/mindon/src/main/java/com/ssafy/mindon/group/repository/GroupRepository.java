@@ -42,7 +42,9 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     List<Group> findTop5ByDiseaseIdAndGroupStatusOrderByCreatedDateDesc(@Param("diseaseId") Byte diseaseId);
 
     long countByGroupIdInAndGroupStatus(List<Integer> groupIds, byte groupStatus);
+
     List<Group> findAllByGroupIdIn(List<Integer> groupIds);
+
     Group findByGroupId(Integer groupId);
 
     @Modifying(clearAutomatically = true)  // 변경 사항을 영속성 컨텍스트에 즉시 반영
@@ -54,4 +56,11 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     @Transactional
     @Query("UPDATE Group g SET g.groupStatus = 2 WHERE g.endDate < :now AND g.groupStatus = 1")
     int updateGroupStatusToEnded(@Param("now") LocalDateTime now);
+
+    @Query("SELECT g FROM Group g WHERE g.groupId IN :groupIds " +
+            "AND g.groupStatus = :groupStatus " +
+            "AND (:keyword IS NULL OR g.title LIKE %:keyword% OR g.inviteCode LIKE %:keyword%)")
+    List<Group> findGroupsByKeywordAndStatus(@Param("groupIds") List<Integer> groupIds,
+                                             @Param("groupStatus") Byte groupStatus,
+                                             @Param("keyword") String keyword);
 }
