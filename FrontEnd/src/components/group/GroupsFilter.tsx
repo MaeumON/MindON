@@ -112,7 +112,7 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
       diseaseId: selectedDiseases.map((disease) => diseaseMap[disease] || null).filter((id) => id !== null),
       isHost: selectedHost === "유" ? true : selectedHost === "무" ? false : null,
       startDate: formattedStartDateString,
-      period: selectedPeriod ? 0 : selectedPeriod,
+      period: selectedPeriod,
       startTime: Number(selectedStartTime.split(":")[0]),
       endTime: Number(selectedEndTime.split(":")[0]),
       dayOfWeek: selectedDays.map((day) => dayMap[day] ?? null).filter((id) => id !== null),
@@ -176,10 +176,10 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
             <span className="text-lg font-bold text-cardTitle">기간</span>
             <select
               value={selectedPeriod}
-              onChange={(e) => setSelectedPeriod(Number(e.target.value))}
+              onChange={(e) => setSelectedPeriod(e.target.value === "1~8주" ? 0 : Number(e.target.value))}
               className="px-3 py-2 border border-cardSubcontent rounded-xl text-md text-suite"
             >
-              <option>{"1~8주"}</option>
+              <option value="1~8주">{"1~8주"}</option>
               {[...Array(8)].map((_, i) => (
                 <option key={i + 1} value={i + 1}>
                   {i + 1}주
