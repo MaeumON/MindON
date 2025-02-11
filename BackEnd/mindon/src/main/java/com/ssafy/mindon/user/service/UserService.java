@@ -5,6 +5,7 @@ import com.ssafy.mindon.common.exception.BusinessBaseException;
 import com.ssafy.mindon.group.repository.GroupRepository;
 import com.ssafy.mindon.meeting.entity.Meeting;
 import com.ssafy.mindon.meeting.repository.MeetingRepository;
+import com.ssafy.mindon.user.UserEmotionResponseDto;
 import com.ssafy.mindon.usergroup.entity.UserGroup;
 import com.ssafy.mindon.usergroup.repository.UserGroupRepository;
 import com.ssafy.mindon.userreview.entity.UserReview;
@@ -29,7 +30,7 @@ public class UserService {
     private static final int NEGATIVE_DECREMENT = -2; // 부정 감정 가중치
 
     @Transactional(readOnly = true)
-    public int calculateUserEmotionScore(String userId){
+    public UserEmotionResponseDto  calculateUserEmotionScore(String userId){
         List<UserGroup> userGroups = userGroupRepository.findByUser_UserId(userId);
         if(userGroups.isEmpty()){
             throw new BusinessBaseException(ErrorCode.USER_NOT_FOUND);
@@ -74,8 +75,11 @@ public class UserService {
         double totalEmotionScore = groupEmotionScores.values().stream()
                 .mapToDouble(groupScores -> groupScores.stream().mapToInt(Integer::intValue).average().orElse(0))
                 .sum();
+        int exitGroup = (int) finishedGroupsCount;
+        int avgEmotion = BASE_SCORE + (int) totalEmotionScore + (int) finishedGroupsCount;
 
-        return BASE_SCORE + (int) totalEmotionScore + (int) finishedGroupsCount;
+        return new UserEmotionResponseDto(avgEmotion, exitGroup);
+
 
     }
 }

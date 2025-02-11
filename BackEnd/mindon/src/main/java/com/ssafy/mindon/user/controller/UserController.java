@@ -3,6 +3,7 @@ package com.ssafy.mindon.user.controller;
 import com.ssafy.mindon.common.error.ErrorCode;
 import com.ssafy.mindon.common.exception.AuthException;
 import com.ssafy.mindon.meeting.dto.UpcomingMeetingResponseDto;
+import com.ssafy.mindon.user.UserEmotionResponseDto;
 import com.ssafy.mindon.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,8 +35,8 @@ public class UserController {
 
         String userId = jwtUtil.extractUserId(accessToken);
 
-        int score = userService.calculateUserEmotionScore(userId);
-        return ResponseEntity.ok(score);
+        UserEmotionResponseDto responseDto  = userService.calculateUserEmotionScore(userId);
+        return ResponseEntity.ok(responseDto );
 
     }
 
