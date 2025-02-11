@@ -6,7 +6,7 @@ import com.ssafy.mindon.common.exception.NotFoundException;
 import com.ssafy.mindon.group.repository.GroupRepository;
 import com.ssafy.mindon.meeting.entity.Meeting;
 import com.ssafy.mindon.meeting.repository.MeetingRepository;
-import com.ssafy.mindon.user.UserEmotionResponseDto;
+import com.ssafy.mindon.user.dto.UserEmotionResponseDto;
 import com.ssafy.mindon.user.entity.User;
 import com.ssafy.mindon.user.repository.UserRepository;
 import com.ssafy.mindon.usergroup.entity.UserGroup;
@@ -15,7 +15,6 @@ import com.ssafy.mindon.userreview.entity.UserReview;
 import com.ssafy.mindon.userreview.repository.UserReviewRepository;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -79,10 +78,10 @@ public class UserService {
         double totalEmotionScore = groupEmotionScores.values().stream()
                 .mapToDouble(groupScores -> groupScores.stream().mapToInt(Integer::intValue).average().orElse(0))
                 .sum();
-        int exitGroup = (int) finishedGroupsCount;
-        int avgEmotion = BASE_SCORE + (int) totalEmotionScore + (int) finishedGroupsCount;
 
-        return new UserEmotionResponseDto(avgEmotion, exitGroup);
+        int temperature = BASE_SCORE + (int) totalEmotionScore + (int) finishedGroupsCount;
+
+        return new UserEmotionResponseDto(temperature);
 
 
     }
