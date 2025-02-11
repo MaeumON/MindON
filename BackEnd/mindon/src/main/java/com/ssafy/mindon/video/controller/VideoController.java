@@ -1,8 +1,10 @@
 package com.ssafy.mindon.video.controller;
 
+import com.ssafy.mindon.common.util.JwtUtil;
 import com.ssafy.mindon.video.dto.SessionResponse;
 import com.ssafy.mindon.video.service.VideoService;
 import io.openvidu.java.client.Recording;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/video")
@@ -18,16 +21,21 @@ import java.util.Map;
 public class VideoController {
 
     private final VideoService videoService;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public VideoController(VideoService videoService) {
+    public VideoController(VideoService videoService, JwtUtil jwtUtil) {
         this.videoService = videoService;
+        this.jwtUtil = jwtUtil;
     }
 
     // 세션 API
     @PostMapping("/sessions")
-    public ResponseEntity<SessionResponse> initializeSession(@RequestBody(required = false) Map<String, Object> params) {
+    public ResponseEntity<SessionResponse> initializeSession(@RequestHeader("Authorization") String accessToken, @RequestBody(required = false) Map<String, Object> params) {
         try {
+            String customSessionId = (String) params.get("customSessionId");
+            String userId = jwtUtil.extractUserId(accessToken);
+            videoService.addParticipant(customSessionId, userId);
             SessionResponse response = videoService.initializeSession(params);
 
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -126,6 +134,16 @@ public class VideoController {
             return new ResponseEntity<>(recordings, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/sessions/{sessionId}/participants")
+    public ResponseEntity<Set<String>> getParticipants(@PathVariable("sessionId") String sessionId) {
+        try {
+            Set<String> participants = videoService.getParticipants(sessionId);
+            return new ResponseEntity<>(participants, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
 
