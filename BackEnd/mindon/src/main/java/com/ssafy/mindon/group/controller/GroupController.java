@@ -5,6 +5,8 @@ import com.ssafy.mindon.group.dto.GroupDetailResponse;
 import com.ssafy.mindon.group.dto.GroupListRequest;
 import com.ssafy.mindon.group.dto.GroupListResponse;
 import com.ssafy.mindon.group.service.*;
+import com.ssafy.mindon.userreview.dto.GroupReviewResponse;
+import com.ssafy.mindon.userreview.service.GroupReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +26,9 @@ public class GroupController {
     private final GroupLeaveService groupLeaveService;
     private final GroupDetailService groupDetailService;
     private final GroupRecommendService groupRecommendService;
+    private final GroupReviewService groupReviewService;
 
-    public GroupController(GroupCreateService groupCreateService, GroupJoinService groupJoinService, GroupListService groupListService, GroupMyListService groupMyListService, GroupLeaveService groupLeaveService, GroupDetailService groupDetailService, GroupRecommendService groupRecommendService) {
+    public GroupController(GroupCreateService groupCreateService, GroupJoinService groupJoinService, GroupListService groupListService, GroupMyListService groupMyListService, GroupLeaveService groupLeaveService, GroupDetailService groupDetailService, GroupRecommendService groupRecommendService, GroupReviewService groupReviewService) {
         this.groupCreateService = groupCreateService;
         this.groupJoinService = groupJoinService;
         this.groupListService = groupListService;
@@ -33,6 +36,7 @@ public class GroupController {
         this.groupLeaveService = groupLeaveService;
         this.groupDetailService = groupDetailService;
         this.groupRecommendService = groupRecommendService;
+        this.groupReviewService = groupReviewService;
     }
 
     @PostMapping
@@ -122,5 +126,12 @@ public class GroupController {
 
         List<GroupListResponse> response = groupRecommendService.getRecommendedGroups(diseaseId);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{groupId}/reviews")
+    public ResponseEntity<GroupReviewResponse> getGroupReviews(
+            @RequestHeader("Authorization") String accessToken,
+            @PathVariable Integer groupId) {
+        return ResponseEntity.ok(groupReviewService.getGroupReviews(accessToken, groupId));
     }
 }
