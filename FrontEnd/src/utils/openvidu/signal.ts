@@ -1,6 +1,7 @@
 import { Session } from "openvidu-browser";
-import { QuestionChangedData } from "../openviduTypes";
+import { QuestionChangedData, QuestionSpeakingOrderType } from "../openviduTypes";
 import { useQuestionStore } from "@/stores/questionStore";
+// import { startInitialTimer } from "./timer";
 
 //질문 시작 시, 참가자 리스트 보내는 시그널
 export function sendSignalQuestionChanged({ data, session }: { data: QuestionChangedData; session: Session }) {
@@ -38,7 +39,6 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
     const speakingOrder = data.speakingOrder;
     const userId = data.userId;
 
-    //질문 교체
     //미팅 시작 전
     if (isMeetingStart === 0) {
       setIsMeetingStart(1);
@@ -90,40 +90,44 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
   });
 }
 
-// //모임 바로 시작하기 버튼 누르면 모임 시작 시그널 보내기
-// export function sendSignalStartMeeting({ data, session }: { data: QuestionChangedData; session: Session }) {
-//   const signalOptions = {
-//     data: JSON.stringify(data),
-//     type: "startMeeting",
-//   };
-//   session?.signal(signalOptions);
-// }
+//모임 바로 시작하기 버튼 누르면 모임 시작 시그널 보내기
+export function sendSignalStartMeeting({ data, session }: { data: QuestionSpeakingOrderType[]; session: Session }) {
+  const signalOptions = {
+    data: JSON.stringify(data),
+    type: "startMeeting",
+  };
+  session?.signal(signalOptions);
+}
 
-// export function subscribeToStartMeeting({ session }: { session: Session }) {
-//   session.on("signal:startMeeting", (event) => {
-//     // 매번 최신 store 상태를 가져오도록 수정
-//     const store = useQuestionStore.getState();
-//     const {
-//       questions,
-//       isMeetingStart,
-//       isQuestionStart,
-//       currentQuestionNumber,
-//       currentUser,
-//       currentUserId,
-//       isSpeaking,
-//       setIsMeetingStart,
-//       setIsQuestionStart,
-//       setCurrentQuestionNumber,
-//       setCurrentUser,
-//       setCurrentUserId,
-//       setCurrentQuestionText,
+export function subscribeToStartMeeting({ session }: { session: Session }) {
+  session.on("signal:startMeeting", async (event) => {
+    // 매번 최신 store 상태를 가져오도록 수정
+    const store = useQuestionStore.getState();
+    const {
+      isMeetingStart,
+      setIsMeetingStart,
+      setIsQuestionStart,
+      setCurrentQuestionText,
+      questions,
+      setCurrentUser,
+      setCurrentUserId,
+    } = store;
 
-//       setIsSpeaking,
-//     } = store;
+    const data = JSON.parse(event.data || "");
 
-//     const data = JSON.parse(event.data || "");
+    // 미팅이 시작되지 않은 상태일 때만 실행
+    if (isMeetingStart === 0) {
+      setIsMeetingStart(1);
+      setCurrentQuestionText("5초 후에 질문이 시작됩니다.");
 
-//     const speakingOrder = data.speakingOrder;
-//     const userId = data.userId;
-//   });
-// }
+      // 5초 타이머 시작
+      // await startInitialTimer();
+
+      // 5초 후 질문 시작 전 상태로 변경
+      setIsQuestionStart(1);
+      setCurrentQuestionText(questions[0].detail);
+      setCurrentUser(0);
+      setCurrentUserId(data.speakingOrder[0].userId);
+    }
+  });
+}

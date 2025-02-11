@@ -4,11 +4,11 @@ import { PARTICIPANT_LIST } from "@/data/OPENVIDU";
 import { useQuestionStore } from "@/stores/questionStore";
 import {
   sendSignalQuestionChanged,
-  // sendSignalStartMeeting,
+  sendSignalStartMeeting,
   subscribeToQuestionChanged,
-  // subscribeToStartMeeting,
+  subscribeToStartMeeting,
 } from "@/utils/openvidu/signal";
-import { QuestionChangedData, QuestionSpeakingOrderType, UserModelType } from "@/utils/openviduTypes";
+import { QuestionChangedData, QuestionSpeakingOrderType } from "@/utils/openviduTypes";
 import { Session } from "openvidu-browser";
 import { useEffect, useState } from "react";
 
@@ -16,7 +16,6 @@ interface QuestionProps {
   meetingId: number;
   session: Session;
   mySessionId: string;
-  subscribers: UserModelType[];
 }
 
 const userId = "4";
@@ -43,9 +42,9 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
 
   function stateChanger() {
     const signalData: QuestionChangedData = { userId: userId, speakingOrder: speakingOrder };
-    // if (isMeetingStart === 0) {
-    //   sendSignalStartMeeting({ session });
-    // }
+    if (isMeetingStart === 0) {
+      sendSignalStartMeeting({ data: speakingOrder, session });
+    }
     sendSignalQuestionChanged({ data: signalData, session });
   }
 
@@ -55,6 +54,7 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
     }
 
     if (isMeetingStart === 1 && isQuestionStart === 0) {
+      //여기에 타이머 띄우기
       return "질문 시작하기";
     }
 
@@ -96,7 +96,7 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
     subscribeToQuestionChanged({
       session,
     });
-    // subscribeToStartMeeting({ session });
+    subscribeToStartMeeting({ session });
   }, []);
 
   return (

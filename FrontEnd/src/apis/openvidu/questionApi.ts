@@ -9,8 +9,6 @@ export const fetchMeetingId = async (groupId: string): Promise<number> => {
 };
 
 //meetingID에 맞는 질문 받아오기
-
-//meetingID에 맞는 질문 받아오기
 export const fetchQuestions = async (meetingId: number): Promise<questionType[]> => {
   console.log("fetch Questions meetingId", meetingId);
   const response = await instance.get(`/api/meetings/${meetingId}/questions`);
