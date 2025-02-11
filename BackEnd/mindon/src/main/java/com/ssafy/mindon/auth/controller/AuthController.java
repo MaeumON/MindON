@@ -57,4 +57,14 @@ public class AuthController {
 
         return ResponseEntity.ok(Map.of("userId", userId));
     }
+
+    @PostMapping("/password")
+    public ResponseEntity<Map<String, Boolean>> findUser(@RequestBody Map<String, String> request) {
+        String userId = request.get("userId");
+        String phone = request.get("phone");
+
+        boolean status = authService.isUserExists(userId, phone); // 회원 ID 조회
+
+        return ResponseEntity.ok(Map.of("status", status));
+    }
 }

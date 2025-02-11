@@ -124,4 +124,7 @@ public class AuthService {
                 .orElseThrow(() -> new AuthException(ErrorCode.USER_NOT_FOUND));
     }
 
+    public boolean isUserExists(String userId, String phone) {
+        return userRepository.findByUserIdAndPhone(userId, phone).isPresent();
+    }
 }
