@@ -1,5 +1,7 @@
 package com.ssafy.mindon.meeting.service;
 
+import com.ssafy.mindon.common.error.ErrorCode;
+import com.ssafy.mindon.common.exception.MeetingException;
 import com.ssafy.mindon.disease.entity.Disease;
 import com.ssafy.mindon.group.entity.Group;
 import com.ssafy.mindon.group.repository.GroupRepository;
@@ -132,6 +134,7 @@ public class MeetingService {
 
         return meeting.get().getMeetingId();
     }
+
 
 
 }
