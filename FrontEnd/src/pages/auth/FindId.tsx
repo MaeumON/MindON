@@ -6,7 +6,7 @@ import FindIdInform from "@/components/auth/FindIdInform";
 
 function FindId() {
   const [userName, setUserName] = useState("");
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [check, setCheck] = useState(false);
   const [userId, setUserId] = useState<string | null>(null); // userId가 없는 경우 구분 위해 null 사용
 
@@ -14,13 +14,13 @@ function FindId() {
     setUserName(e.target.value);
   }
 
-  function onChangeEmail(e: React.ChangeEvent<HTMLInputElement>) {
-    setEmail(e.target.value);
+  function onChangePhone(e: React.ChangeEvent<HTMLInputElement>) {
+    setPhone(e.target.value);
   }
 
   async function onClickFindId() {
     try {
-      const result = await findIdApi(userName, email);
+      const result = await findIdApi(userName, phone);
       console.log("result:", result);
 
       // userId가 null 값이면 알림
@@ -39,9 +39,9 @@ function FindId() {
 
   const checkProps = {
     userName,
-    email,
+    phone,
     onChangeName,
-    onChangeEmail,
+    onChangePhone,
     onClickFindId,
   };
 
