@@ -5,4 +5,5 @@ export interface EventDics {
   meetingTime?: number;
   groupId?: number;
   title?: string;
+  meetingStatus?: number;
 }

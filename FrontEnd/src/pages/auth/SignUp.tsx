@@ -8,7 +8,6 @@ import signUpApi from "@/apis/auth/signUpApi";
 
 function SignUp() {
   const [userName, setUserName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
   const [userId, setUserId] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [diseaseId, setDiseaseId] = useState<number | null>(null); // 질병 선택 전 null 값
@@ -33,14 +32,13 @@ function SignUp() {
 
   const router = useNavigate();
   async function handleSignUp() {
-    if (!userId || !email || !userName || !password || !phone || diseaseId === null) {
+    if (!userId || !userName || !password || !phone || diseaseId === null) {
       alert("모든 필드를 입력하세요.");
       return;
     }
 
     const requestData = {
       userId,
-      email,
       userName,
       password,
       phone,
@@ -61,11 +59,6 @@ function SignUp() {
   // 이름
   const onChangeUserName = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setUserName(e.target.value);
-  }, []);
-
-  // 이메일
-  const onChangeEmail = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
   }, []);
 
   // 아이디
@@ -121,8 +114,8 @@ function SignUp() {
   }, []);
 
   return (
-    <Wrapper className="p-[30px]  gap-[30px] pb-[50px]">
-      <Form className="font-bold  gap-[20px] w-full">
+    <Wrapper className="p-[30px]  gap-[30px] pb-[80px]">
+      <Form className="font-bold  gap-[20px] pb-[20px] w-full">
         <InputForm
           title={"이름"}
           titleClassName="text-xl"
@@ -130,13 +123,7 @@ function SignUp() {
           value={userName}
           onChange={onChangeUserName}
         />
-        <InputForm
-          title={"이메일"}
-          titleClassName="text-xl"
-          holder={"mindion@mindon.com"}
-          value={email}
-          onChange={onChangeEmail}
-        />
+        <span></span>
         <InputForm
           title={"아이디"}
           titleClassName="text-xl"
@@ -144,6 +131,7 @@ function SignUp() {
           value={userId}
           onChange={onChangeUserId}
         />
+        <span></span>
         <InputForm
           title={"비밀번호"}
           type="password"

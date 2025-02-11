@@ -5,7 +5,6 @@ import instance from "../instance";
 
 interface SignupData {
   userId: string;
-  email: string;
   userName: string;
   password: string;
   phone: string;
