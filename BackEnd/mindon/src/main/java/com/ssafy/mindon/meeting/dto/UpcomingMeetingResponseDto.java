@@ -17,4 +17,5 @@ public class UpcomingMeetingResponseDto {
     private Integer diseaseId;
     private String diseaseName;
     private LocalDateTime meetingDate;
+    private Byte meetingStatus;
 }
