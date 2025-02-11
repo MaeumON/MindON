@@ -51,7 +51,7 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
     //질문 중
     if (isMeetingStart === 1 && isQuestionStart === 1) {
       //질문 완전 종료
-      if (currentQuestionNumber === questions.length - 1) {
+      if (currentQuestionNumber === questions.length - 1 && currentUser === speakingOrder.length - 1) {
         setCurrentQuestionText("모임이\n종료되었습니다.");
         setIsQuestionStart(2);
         return;
@@ -77,27 +77,35 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
             console.log("녹음 종료 실패", error);
           });
 
-        setCurrentUser(currentUser + 1);
-        setCurrentUserId(speakingOrder[currentUser + 1].userId);
+        const nextUser = (currentUser + 1) % speakingOrder.length;
+        setCurrentUser(nextUser);
+        setCurrentUserId(speakingOrder[nextUser].userId);
         return;
       }
 
       //하나의 질문 종료
       if (currentUser === speakingOrder.length - 1) {
-        console.log("currentQuestionNumber", currentQuestionNumber);
         setCurrentQuestionNumber(currentQuestionNumber + 1);
         setCurrentUser(0);
+        setCurrentUserId(speakingOrder[0].userId);
         setCurrentQuestionText(`Q${currentQuestionNumber + 1}.\n${questions[currentQuestionNumber + 1].detail}`);
       } else {
-        setCurrentUser(currentUser + 1);
-        setCurrentUserId(speakingOrder[currentUser + 1].userId);
+        const nextUser = (currentUser + 1) % speakingOrder.length;
+        setCurrentUser(nextUser);
+        setCurrentUserId(speakingOrder[nextUser].userId);
       }
     }
   });
 }
 
 //모임 바로 시작하기 버튼 누르면 모임 시작 시그널 보내기
-export function sendSignalStartMeeting({ data, session }: { data: QuestionSpeakingOrderType[]; session: Session }) {
+export function sendSignalStartMeeting({
+  data,
+  session,
+}: {
+  data: { speakingOrder: QuestionSpeakingOrderType[] };
+  session: Session;
+}) {
   const signalOptions = {
     data: JSON.stringify(data),
     type: "startMeeting",
@@ -124,13 +132,10 @@ export function subscribeToStartMeeting({ session }: { session: Session }) {
       const speakingOrder = data.speakingOrder;
 
       console.log("startMeeting signal subscribe", event);
+      console.log("speakingOrder", speakingOrder);
 
       if (isMeetingStart === 0) {
-        console.log("Before startInitialTimer");
         await startInitialTimer();
-        console.log("After startInitialTimer");
-
-        console.log("Updating states...");
         setIsQuestionStart(1);
         setCurrentQuestionText(`Q1.\n${questions[0].detail}`);
         setCurrentUser(0);
