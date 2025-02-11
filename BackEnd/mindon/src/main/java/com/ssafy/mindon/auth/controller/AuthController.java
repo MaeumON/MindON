@@ -48,4 +48,13 @@ public class AuthController {
         authService.logout(userId); // 로그아웃 처리 (Redis에서 리프레시 토큰 삭제)
         return ResponseEntity.ok().build();
     }
+    @PostMapping("/userid")
+    public ResponseEntity<Map<String, String>> findUserId(@RequestBody Map<String, String> request) {
+        String userName = request.get("userName");
+        String phone = request.get("phone");
+
+        String userId = authService.findUserId(userName, phone); // 회원 ID 조회
+
+        return ResponseEntity.ok(Map.of("userId", userId));
+    }
 }
