@@ -11,6 +11,7 @@ export const fetchMeetingId = async (groupId: string): Promise<number> => {
 export const fetchQuestions = async (meetingId: number): Promise<questionType[]> => {
   console.log("fetch Questions meetingId", meetingId);
   const response = await instance.get(`/api/meetings/${meetingId}/questions`);
+  console.log("response", response);
   return await response.data.data;
 };
 
@@ -28,5 +29,5 @@ export const fetchQuestionSpeakingOrder = async ({
 }): Promise<QuestionSpeakingOrderType[]> => {
   const response = await instance.get(`/api/users/${groupId}/list`);
 
-  return await response.data;
+  return await response.data.data;
 };

@@ -55,6 +55,14 @@ function Login() {
       }
     }
   }
+
+  // 검색 실행(엔터키)
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    if (e.key === "Enter") {
+      onClickLogin();
+    }
+  };
+
   return (
     <Wrapper className="px-[20px] gap-[30px]">
       <div className="flex flex-col font-bold gap-[60px] w-full">
@@ -73,7 +81,7 @@ function Login() {
             onChange={onChangePwd}
           />
         </Form>
-        <Button text={"로그인"} type={"GREEN"} onClick={onClickLogin} />
+        <Button text={"로그인"} type={"GREEN"} onClick={onClickLogin} onKeyDown={handleKeyDown} />
       </div>
 
       <section className="flex flex-col text-center  text-[16px] gap-2 text-cardContent font-medium">

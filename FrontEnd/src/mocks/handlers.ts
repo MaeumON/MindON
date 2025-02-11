@@ -4,7 +4,7 @@ import { http, HttpResponse } from "msw";
 // import { LOGINUSER } from "../data/LOGINUSER";
 import { FINDID } from "../data/FINDID";
 import { FINDPWD } from "../data/FINDPWD";
-import { QUESTION_SPEAKING_ORDER } from "@/data/OPENVIDU";
+// import { QUESTION_SPEAKING_ORDER } from "@/data/OPENVIDU";
 // import { TEMPERATURE } from "@/data/TEMPERTURE";
 // import { GROUPSDETAIL } from "@/data/GROUPDETAIL";
 // import { MEETINGDETIAL } from "@/data/MEETINGDETAIL";
@@ -128,14 +128,14 @@ const handlers = [
   // }),
 
   //질문 발언 순서 받아오기
-  http.get(VITE_APP_API_URL + "/api/users/:groupId/list", (req) => {
-    const { groupId } = req.params; // groupId 파라미터 접근
+  // http.get(VITE_APP_API_URL + "/api/users/:groupId/list", (req) => {
+  //   const { groupId } = req.params; // groupId 파라미터 접근
 
-    //쓰지 않는 변수 처리용
-    console.log(groupId);
+  //   //쓰지 않는 변수 처리용
+  //   console.log(groupId);
 
-    return HttpResponse.json(QUESTION_SPEAKING_ORDER);
-  }),
+  //   return HttpResponse.json(QUESTION_SPEAKING_ORDER);
+  // }),
 
   // upcoming 이벤트 조회
   // http.get(VITE_APP_API_URL + "/api/meetings/upcoming", () => {
