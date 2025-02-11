@@ -32,7 +32,7 @@ function MyDataDetail() {
   // 리뷰 불러오고 안되면 로딩중
   useEffect(() => {
     const loadReviews = async () => {
-      const data = await fetchReviews("1");
+      const data = await fetchReviews(1);
       if (data) {
         setReviews(data.data);
         setEmotionAvg(data.emotionAvg);

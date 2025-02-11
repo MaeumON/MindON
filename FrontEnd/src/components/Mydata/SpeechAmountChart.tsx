@@ -28,6 +28,11 @@ const CircularChart: React.FC<CircularChartProps> = ({ percentage }) => {
 
   // 차트 옵션 설정
   const options = {
+    animation: {
+      animateRotate: true, // 회전 애니메이션
+      animateScale: true, // 스케일 애니메이션
+      duration: 1500, // 애니메이션 지속 시간
+    },
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
