@@ -2,10 +2,13 @@ package com.ssafy.mindon.user.service;
 
 import com.ssafy.mindon.common.error.ErrorCode;
 import com.ssafy.mindon.common.exception.BusinessBaseException;
+import com.ssafy.mindon.common.exception.NotFoundException;
 import com.ssafy.mindon.group.repository.GroupRepository;
 import com.ssafy.mindon.meeting.entity.Meeting;
 import com.ssafy.mindon.meeting.repository.MeetingRepository;
 import com.ssafy.mindon.user.UserEmotionResponseDto;
+import com.ssafy.mindon.user.entity.User;
+import com.ssafy.mindon.user.repository.UserRepository;
 import com.ssafy.mindon.usergroup.entity.UserGroup;
 import com.ssafy.mindon.usergroup.repository.UserGroupRepository;
 import com.ssafy.mindon.userreview.entity.UserReview;
@@ -24,6 +27,7 @@ public class UserService {
     private final GroupRepository groupRepository;
     private final MeetingRepository meetingRepository;
     private final UserReviewRepository userReviewRepository;
+    private final UserRepository userRepository;
 
     private static final int BASE_SCORE = 40;  // 기본 점수
     private static final int POSITIVE_INCREMENT = 2; // 긍정 감정 가중치
@@ -82,4 +86,13 @@ public class UserService {
 
 
     }
+
+    @Transactional
+    public void deleteUser(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        user.setUserStatus((byte) 1);
+    }
+
 }

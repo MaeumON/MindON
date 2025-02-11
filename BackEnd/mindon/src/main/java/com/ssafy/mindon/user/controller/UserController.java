@@ -10,10 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import com.ssafy.mindon.common.util.JwtUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -37,5 +34,24 @@ public class UserController {
 
         UserEmotionResponseDto responseDto  = userService.calculateUserEmotionScore(userId);
         return ResponseEntity.ok(responseDto );
+
     }
+
+    @PatchMapping()
+    public ResponseEntity<?> deleteUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
+        try {
+            if (jwtUtil.isTokenExpired(accessToken)) {
+                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
+            }
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
+        }
+
+        String userId = jwtUtil.extractUserId(accessToken);
+        userService.deleteUser(userId);
+
+        return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
+    }
+
+
 }
