@@ -19,9 +19,9 @@ public interface MeetingRepository extends JpaRepository<Meeting, Integer> {
     Optional<Meeting> findByGroup_GroupIdAndMeetingStatus(int groupId, int meetingStatus);
 
     @EntityGraph(attributePaths = {"group", "group.disease"})
-    Optional<Meeting> findFirstByGroup_GroupIdInAndMeetingStatusAndDateGreaterThanEqualOrderByDate(
+    Optional<Meeting> findFirstByGroup_GroupIdInAndMeetingStatusInAndDateGreaterThanEqualOrderByDate(
             List<Integer> groupIds,
-            byte meetingStatus,
+            List<Byte> meetingStatus,
             LocalDateTime currentDate
     );
 
