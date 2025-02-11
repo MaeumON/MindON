@@ -1,5 +1,8 @@
 package com.ssafy.mindon.group.controller;
 
+import com.ssafy.mindon.common.error.ErrorCode;
+import com.ssafy.mindon.common.exception.AuthException;
+import com.ssafy.mindon.common.util.JwtUtil;
 import com.ssafy.mindon.group.dto.CreateGroupRequest;
 import com.ssafy.mindon.group.dto.GroupDetailResponse;
 import com.ssafy.mindon.group.dto.GroupListRequest;
@@ -7,6 +10,9 @@ import com.ssafy.mindon.group.dto.GroupListResponse;
 import com.ssafy.mindon.group.service.*;
 import com.ssafy.mindon.userreview.dto.GroupReviewResponse;
 import com.ssafy.mindon.userreview.service.GroupReviewService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,9 +20,11 @@ import jakarta.validation.Valid;
 
 import java.util.Collections;
 import java.util.List;
-
+import java.util.Map;
+@Slf4j
 @RestController
 @RequestMapping("/api/groups")
+@RequiredArgsConstructor
 public class GroupController {
 
     private final GroupCreateService groupCreateService;
@@ -27,17 +35,19 @@ public class GroupController {
     private final GroupDetailService groupDetailService;
     private final GroupRecommendService groupRecommendService;
     private final GroupReviewService groupReviewService;
+    private final JwtUtil jwtUtil;
+    private final GroupService groupService;
 
-    public GroupController(GroupCreateService groupCreateService, GroupJoinService groupJoinService, GroupListService groupListService, GroupMyListService groupMyListService, GroupLeaveService groupLeaveService, GroupDetailService groupDetailService, GroupRecommendService groupRecommendService, GroupReviewService groupReviewService) {
-        this.groupCreateService = groupCreateService;
-        this.groupJoinService = groupJoinService;
-        this.groupListService = groupListService;
-        this.groupMyListService = groupMyListService;
-        this.groupLeaveService = groupLeaveService;
-        this.groupDetailService = groupDetailService;
-        this.groupRecommendService = groupRecommendService;
-        this.groupReviewService = groupReviewService;
-    }
+//    public GroupController(GroupCreateService groupCreateService, GroupJoinService groupJoinService, GroupListService groupListService, GroupMyListService groupMyListService, GroupLeaveService groupLeaveService, GroupDetailService groupDetailService, GroupRecommendService groupRecommendService, GroupReviewService groupReviewService) {
+//        this.groupCreateService = groupCreateService;
+//        this.groupJoinService = groupJoinService;
+//        this.groupListService = groupListService;
+//        this.groupMyListService = groupMyListService;
+//        this.groupLeaveService = groupLeaveService;
+//        this.groupDetailService = groupDetailService;
+//        this.groupRecommendService = groupRecommendService;
+//        this.groupReviewService = groupReviewService;
+//    }
 
     @PostMapping
     public ResponseEntity<String> createGroup(
@@ -58,7 +68,7 @@ public class GroupController {
             @PathVariable Integer groupId) {
 
         if (accessToken == null || accessToken.isEmpty()) {
-            return ResponseEntity.status(400).body("{\"message\": \"Missing accessToken\"}");
+            return ResponseEntity.status(401).body("{\"message\": \"Missing accessToken\"}");
         }
         return groupJoinService.joinGroup(accessToken, groupId);
     }
@@ -90,7 +100,7 @@ public class GroupController {
             @PathVariable Integer groupId) {
 
         if (accessToken == null || accessToken.isEmpty()) {
-            return ResponseEntity.status(400).body("{\"message\": \"Missing accessToken\"}");
+            return ResponseEntity.status(401).body("{\"message\": \"Missing accessToken\"}");
         }
 
         boolean isLeft = groupLeaveService.leaveGroup(groupId, accessToken);
@@ -108,7 +118,7 @@ public class GroupController {
             @PathVariable Integer groupId) {
 
         if (accessToken == null || accessToken.isEmpty()) {
-            return ResponseEntity.status(400).body(null);
+            return ResponseEntity.status(401).body(null);
         }
 
         GroupDetailResponse response = groupDetailService.findGroupDetailById(accessToken, groupId);
@@ -121,7 +131,7 @@ public class GroupController {
             @PathVariable Byte diseaseId) {
 
         if (accessToken == null || accessToken.isEmpty()) {
-            return ResponseEntity.status(400).body("{\"message\": \"Missing accessToken\"}");
+            return ResponseEntity.status(401).body("{\"message\": \"Missing accessToken\"}");
         }
 
         List<GroupListResponse> response = groupRecommendService.getRecommendedGroups(diseaseId);
@@ -133,5 +143,20 @@ public class GroupController {
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Integer groupId) {
         return ResponseEntity.ok(groupReviewService.getGroupReviews(accessToken, groupId));
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Map<String, Integer>> getUserGroupStatusCount(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
+        try {
+            if (jwtUtil.isTokenExpired(accessToken)) {
+                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
+            }
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN); // 원하는 예외 던지기
+        }
+        String userId = jwtUtil.extractUserId(accessToken);
+
+        Map<String, Integer> result = groupService.getUserGroupStatusCount(userId);
+        return ResponseEntity.ok(result);
     }
 }
