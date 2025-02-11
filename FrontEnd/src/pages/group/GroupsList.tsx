@@ -10,6 +10,7 @@ import SeachFilter from "@assets/images/SeachFilter.png";
 import groupListApi from "@apis/group/groupListApi";
 
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import React from "react";
 
 function GroupsList() {
@@ -17,7 +18,34 @@ function GroupsList() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [keyword, setKeyword] = useState<string>("");
 
+  // ✅ 메인페이지에서 그룹 연결
+  // 파라미터 추출
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const isHostParam = queryParams.get("isHost");
+  // 파라미터 boolean 타입으로 변환
+  const isHost: boolean | null = isHostParam === "1" ? true : isHostParam === "0" ? false : null;
+
+  useEffect(() => {
+    const fetchFilteredGroups = async () => {
+      try {
+        const filters: Partial<RequestData> = {};
+        if (isHost !== null) {
+          filters.isHost = isHost; // ✅ 명확하게 false도 포함하여 전달
+        }
+        const result = await groupListApi(filters);
+        setGroups(result);
+      } catch (error) {
+        console.error("그룹 목록 요청 실패 : ", error);
+        setGroups([]);
+      }
+    };
+
+    fetchFilteredGroups();
+  }, [isHost]);
+
   // ✅ 마운트 API 요청
+  // 첫 렌더링 시 accessToken만 보내서 그룹 목록 불러오기
   const fetchInitialGroups = async () => {
     try {
       const result = await groupListApi();
@@ -43,7 +71,7 @@ function GroupsList() {
   // 필터 상태 관리를 위한 변수들
   const [selectedFilters, setSelectedFilters] = useState<RequestData>({
     diseaseId: [],
-    isHost: null,
+    isHost: isHost,
     startDate: new Date().toISOString().split("T")[0] + "T00:00:00Z",
     period: 0,
     startTime: 0,
