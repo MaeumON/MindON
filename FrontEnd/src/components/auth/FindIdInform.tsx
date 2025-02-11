@@ -1,5 +1,6 @@
 import Button from "@components/common/Button";
 import { Wrapper, TextSection } from "@/components/common/DivName";
+import { useNavigate } from "react-router-dom";
 
 interface InformProps {
   userId: string;
@@ -12,6 +13,7 @@ function maskUserId(userId: string): string {
 }
 
 function FindIdInform({ userId }: InformProps) {
+  const router = useNavigate();
   return (
     <Wrapper className="px-[20px] gap-3">
       <div className="flex flex-col font-bold gap-[60px] w-full ">
@@ -23,10 +25,14 @@ function FindIdInform({ userId }: InformProps) {
         <Button text={"로그인하기"} type={"GREEN"} />
       </div>
       <section className="flex justify-center text-[16px] text-cardContent font-medium">
-        <p>비밀번호를 잊어버리셨나요?</p>
+        <div
+          className="cursor-pointer underline text-semibold decoration-cardContent2"
+          onClick={() => router("/findpwd")}
+        >
+          비밀번호를 잊어버리셨나요?
+        </div>
       </section>
     </Wrapper>
   );
 }
-
 export default FindIdInform;

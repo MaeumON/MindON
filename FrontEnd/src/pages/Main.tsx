@@ -86,7 +86,12 @@ function Main() {
               <div className="font-suite font-extrabold text-24px text-cardLongContent">
                 {upcomingEvent["title"] ?? "제목없음"}
               </div>
-              <Button text={"입장하기"} type={"GREEN"} onClick={enterVideoCall} />
+              <Button
+                text={"입장하기"}
+                type={upcomingEvent.meetingStatus === 0 ? "GRAY" : "GREEN"}
+                onClick={enterVideoCall}
+                disabled={upcomingEvent.meetingStatus === 0}
+              />
             </>
           ) : (
             <>

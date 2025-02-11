@@ -11,7 +11,7 @@ import {
 import { QuestionChangedData, QuestionSpeakingOrderType } from "@/utils/openviduTypes";
 import { Session } from "openvidu-browser";
 import { useEffect, useState } from "react";
-import IntroBear from "@assets/images/bear/introBear.png";
+import IntroBear from "@assets/images/bear/introbear.png";
 
 interface QuestionProps {
   meetingId: number;
