@@ -32,42 +32,66 @@ function GroupsList() {
   // 파라미터 boolean 타입으로 변환
   const isHost: boolean | null = isHostParam === "1" ? true : isHostParam === "0" ? false : null;
 
-  useEffect(() => {
-    const fetchFilteredGroups = async () => {
-      try {
-        const filters: Partial<RequestData> = {};
-        if (isHost !== null) {
-          filters.isHost = isHost; // ✅ 명확하게 false도 포함하여 전달
-        }
+  // ✅ 그룹 목록을 가져오는 API 함수
+  const fetchGroups = async () => {
+    try {
+      if (isHost !== null) {
+        // isHost가 true 또는 false일 경우 필터링된 목록 요청
+        const filters: Partial<RequestData> = { isHost };
         const result = await groupListApi(filters);
         setGroups(result);
-      } catch (error) {
-        console.error("그룹 목록 요청 실패 : ", error);
-        setGroups([]);
+      } else {
+        // isHost가 null이면 전체 목록 요청
+        const result = await groupListApi();
+        setGroups(result);
       }
-    };
-
-    fetchFilteredGroups();
-  }, [isHost]);
-
-  // ✅ 마운트 API 요청
-  // 첫 렌더링 시 accessToken만 보내서 그룹 목록 불러오기
-  const fetchInitialGroups = async () => {
-    try {
-      const result = await groupListApi();
-      console.log("📌 API 응답 데이터:", result);
-      setGroups(result);
-      console.log("📌 setGroup 이후 :", groups);
     } catch (error) {
-      console.error("초기 그룹 목록 요청 실패:", error);
-      setGroups([]); // 에러 발생 시 빈 배열 설정
+      console.error("그룹 목록 요청 실패:", error);
+      setGroups([]);
     }
   };
 
-  // 첫 렌더링 시 accessToken만 보내서 그룹 목록 불러오기
+  // ✅ useEffect에서 fetchGroups() 호출
   useEffect(() => {
-    fetchInitialGroups();
-  }, []);
+    fetchGroups();
+  }, [isHost]);
+
+  // useEffect(() => {
+  //   const fetchFilteredGroups = async () => {
+  //     try {
+  //       const filters: Partial<RequestData> = {};
+  //       if (isHost !== null) {
+  //         filters.isHost = isHost; // ✅ 명확하게 false도 포함하여 전달
+  //       }
+  //       const result = await groupListApi(filters);
+  //       setGroups(result);
+  //     } catch (error) {
+  //       console.error("그룹 목록 요청 실패 : ", error);
+  //       setGroups([]);
+  //     }
+  //   };
+
+  //   fetchFilteredGroups();
+  // }, [isHost]);
+
+  // // ✅ 마운트 API 요청
+  // // 첫 렌더링 시 accessToken만 보내서 그룹 목록 불러오기
+  // const fetchInitialGroups = async () => {
+  //   try {
+  //     const result = await groupListApi();
+  //     console.log("📌 API 응답 데이터:", result);
+  //     setGroups(result);
+  //     console.log("📌 setGroup 이후 :", groups);
+  //   } catch (error) {
+  //     console.error("초기 그룹 목록 요청 실패:", error);
+  //     setGroups([]); // 에러 발생 시 빈 배열 설정
+  //   }
+  // };
+
+  // // 첫 렌더링 시 accessToken만 보내서 그룹 목록 불러오기
+  // useEffect(() => {
+  //   fetchInitialGroups();
+  // }, []);
 
   useEffect(() => {
     // console.log("📌 groups 상태 변경됨:", groups);
@@ -102,7 +126,7 @@ function GroupsList() {
   const fetchSearchGroups = async () => {
     if (!keyword.trim()) {
       // 빈 값으로 검색하면 전체 목록 조회
-      fetchInitialGroups();
+      fetchGroups();
       return;
     }
 
