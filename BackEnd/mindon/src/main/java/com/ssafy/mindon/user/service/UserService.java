@@ -1,6 +1,7 @@
 package com.ssafy.mindon.user.service;
 
 import com.ssafy.mindon.common.error.ErrorCode;
+import com.ssafy.mindon.common.exception.AuthException;
 import com.ssafy.mindon.common.exception.BusinessBaseException;
 import com.ssafy.mindon.common.exception.NotFoundException;
 import com.ssafy.mindon.group.repository.GroupRepository;
@@ -9,6 +10,7 @@ import com.ssafy.mindon.meeting.repository.MeetingRepository;
 import com.ssafy.mindon.user.dto.SpeakerDto;
 import com.ssafy.mindon.user.dto.SpeakerListDto;
 import com.ssafy.mindon.user.dto.UserEmotionResponseDto;
+import com.ssafy.mindon.user.dto.UserProfileResponseDto;
 import com.ssafy.mindon.user.entity.User;
 import com.ssafy.mindon.user.repository.UserRepository;
 import com.ssafy.mindon.usergroup.entity.UserGroup;
@@ -111,4 +113,18 @@ public class UserService {
         return new SpeakerListDto(speakerDtos);
     }
 
+    public UserProfileResponseDto getUserProfile(String userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND); // 사용자가 존재하지 않으면 예외 발생
+        }
+
+        return new UserProfileResponseDto(
+                user.getUserId(),
+                user.getUserName(),
+                user.getPhone(),
+                user.getDisease() != null ? user.getDisease().getDiseaseId() : null,
+                user.getDisease() != null ? user.getDisease().getDiseaseName() : null
+        );
+    }
 }
