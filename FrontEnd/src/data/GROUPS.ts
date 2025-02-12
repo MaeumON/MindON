@@ -15,7 +15,7 @@ export const GROUPS = [
     minMembers: 3,
     maxiMembers: 8,
     totalMembers: 6,
-    groupStatus: 0,
+    groupStatus: 1,
   },
   {
     groupId: 2,
