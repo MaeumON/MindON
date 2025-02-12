@@ -45,7 +45,7 @@ function MyDataDetail() {
         console.log("결과", data);
         setReviews(result);
         setEmotionAvg(data.emotionAvg);
-        const filteredReviews = result.filter((review) => review.period === weekNum);
+        const filteredReviews = result.filter((review) => review.progressWeeks === weekNum);
         if (filteredReviews.length > 0) {
           console.log("필터리뷰", filteredReviews);
           setEachReview(filteredReviews[0]);
