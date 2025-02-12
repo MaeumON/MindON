@@ -9,53 +9,33 @@ export const OPENVIDU_SESSION = {
 export const QUESTION_SPEAKING_ORDER = [
   {
     no: 0,
-    userId: 1,
+    userId: "user01",
     userName: "1번유저",
   },
   {
     no: 1,
-    userId: 2,
+    userId: "user02",
     userName: "2번유저",
   },
 
   {
     no: 2,
-    userId: 3,
+    userId: "user03",
     userName: "3번유저",
-  },
-
-  {
-    no: 3,
-    userId: 4,
-    userName: "4번유저",
-  },
-
-  {
-    no: 4,
-    userId: 5,
-    userName: "5번유저",
   },
 ];
 
 export const PARTICIPANT_LIST: ParticipantType[] = [
   {
-    userId: "1",
+    userId: "user01",
     userName: "1번유저",
   },
   {
-    userId: "2",
+    userId: "user02",
     userName: "2번유저",
   },
   {
-    userId: "3",
+    userId: "user03",
     userName: "3번유저",
-  },
-  {
-    userId: "4",
-    userName: "4번유저",
-  },
-  {
-    userId: "5",
-    userName: "5번유저",
   },
 ];
