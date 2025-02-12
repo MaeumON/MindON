@@ -30,13 +30,15 @@ function MyDataDetail() {
   const [eachReview, setEachReview] = useState<ReviewType | null>(null); // weeknum과 일치하는 리뷰 저장장
   const [speechAmount, setSpeechAmount] = useState<number>(0); // speechAmount 상태 추가
 
-  const { param } = useParams();
-  const groupId = Number(param);
+  const { groupId } = useParams();
+  const numberGroupId = Number(groupId);
+  console.log("groupId", groupId);
+  console.log("numberGroupId", numberGroupId);
 
   // 리뷰 불러오고 안되면 로딩중
   useEffect(() => {
     const loadReviews = async () => {
-      const data = await fetchReviews(groupId);
+      const data = await fetchReviews(numberGroupId);
       console.log(groupId);
       if (data) {
         const result = data.data;
