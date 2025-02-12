@@ -49,7 +49,7 @@ function Footer() {
       {/* 중앙 버튼 */}
       <div
         className="flex items-center justify-center w-[65px] h-[65px] bg-orange100 rounded-full shadow-md -translate-y-2 cursor-pointer"
-        onClick={() => handleFooterClick("/createroom")}
+        onClick={() => handleFooterClick("/creategroup")}
       >
         <IconPlus width={120} height={120} />
       </div>
