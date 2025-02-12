@@ -45,6 +45,7 @@ const Button = ({ text, type, onClick, className, disabled, onKeyDown }: ButtonP
       <button
         className={`bg-cardContent2 font-suite rounded-xl py-3 px-4 text-cardLongContent text-lg font-bold whitespace-nowrap w-full ${className}`}
         disabled={disabled}
+        onClick={onClick}
         onKeyDown={onKeyDown}
       >
         {text}
