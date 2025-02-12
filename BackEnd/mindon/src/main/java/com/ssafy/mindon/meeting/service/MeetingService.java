@@ -43,13 +43,30 @@ public class MeetingService {
             return null;
         }
 
-        Meeting upcomingMeeting = meetingRepository
-                .findFirstByGroup_GroupIdInAndMeetingStatusInAndDateGreaterThanEqualOrderByDate(
-                        groupIds,
-                        List.of((byte) 0, (byte) 1),  // meetingStatus 0 또는 1
-                        LocalDateTime.now()
-                )
-                .orElse(null);
+        // meetingStatus = 1
+        Optional<Meeting> activeMeeting = meetingRepository
+                .findFirstByGroup_GroupIdInAndMeetingStatusOrderByDate(groupIds, (byte) 1);
+//        Optional<Meeting> activeMeeting = meetingRepository
+//                .findFirstByGroup_GroupIdInAndMeetingStatusAndDateGreaterThanEqualOrderByDate(
+//                        groupIds,
+//                        (byte) 1,  // 진행 중인 회의
+//                        LocalDateTime.now()
+//                );
+
+        System.out.println("Active meeting found: " + activeMeeting.isPresent());
+        activeMeeting.ifPresent(meeting ->
+                System.out.println("Meeting ID: " + meeting.getMeetingId() + ", Date: " + meeting.getDate())
+        );
+
+        // meetingStatus = 1 인 회의가 없으면 meetingStatus = 0
+        Meeting upcomingMeeting = activeMeeting.orElseGet(() ->
+                meetingRepository
+                        .findFirstByGroup_GroupIdInAndMeetingStatusAndDateGreaterThanEqualOrderByDate(
+                                groupIds,
+                                (byte) 0,  // 예정된 회의
+                                LocalDateTime.now()
+                        ).orElse(null)
+        );
 
         if (upcomingMeeting == null) {
             return null; // ✅ 데이터가 없으면 null 반환
@@ -57,8 +74,6 @@ public class MeetingService {
 
         Group group = upcomingMeeting.getGroup();
         Disease disease = group.getDisease();
-        System.out.println("Meeting Date: " + upcomingMeeting.getDate());
-
 
         return UpcomingMeetingResponseDto.builder()
                 .title(group.getTitle())
