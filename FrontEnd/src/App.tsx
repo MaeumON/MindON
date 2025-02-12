@@ -28,12 +28,12 @@ function App() {
         <Route path="/findpwd" element={<FindPwd />} />
         <Route path="/main" element={<Main />} />
         <Route path="/mydata" element={<MyData />} />
-        <Route path="/mydata/grouplist/:status" element={<MyDataList />} />
+        <Route path="/mydata/grouplist/:groupStatus" element={<MyDataList />} />
         <Route
           path="/mydata/grouplist"
           element={<div className="font-jamsilMedium text-32px flex justify-center my-10">잘못된 주소입니다!</div>}
         />
-        <Route path="/mydata/:groupid" element={<MyDataDetail />} />
+        <Route path="/mydata/:groupId" element={<MyDataDetail />} />
         <Route path="/groupslist" element={<GroupsList />} />
         <Route path="/groups/:groupId" element={<GroupDetail />} />
         <Route path="/mypage" element={<MyPage />} />

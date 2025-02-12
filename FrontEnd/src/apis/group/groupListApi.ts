@@ -6,6 +6,11 @@ import { RequestData, Group } from "@utils/groups";
 //   data: Group[]; // 그룹 목록이므로 배열 형태
 // }
 
+interface GroupStatusRequest {
+  groupStatus: string | undefined;
+  keyword?: string;
+}
+
 const groupListApi = async (requestData: Partial<RequestData> = {}): Promise<Group[]> => {
   try {
     //pagination 처리 후 추가
@@ -23,9 +28,10 @@ const groupListApi = async (requestData: Partial<RequestData> = {}): Promise<Gro
 
 export default groupListApi;
 
-export const groupStatusApi = async (groupStatus: number): Promise<Group[]> => {
+export const groupStatusApi = async ({ groupStatus, keyword }: GroupStatusRequest): Promise<Group[]> => {
   try {
-    const result = await authInstance.post<Group[]>(`/api/groups/${groupStatus}/list`);
+    const result = await authInstance.post<Group[]>(`/api/groups/${groupStatus}/list`, { keyword: keyword });
+
     console.log("result data : ", result.data);
     return result.data;
   } catch (error) {

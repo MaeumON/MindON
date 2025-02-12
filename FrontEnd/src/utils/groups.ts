@@ -7,6 +7,7 @@ export interface RequestData {
   startTime?: number; // 시작 시간 (HH)
   endTime?: number; // 종료 시간 (HH)
   dayOfWeek?: number[]; // 요일 (1~7)
+  // groupStatus?: string;
 }
 
 export interface Group {
