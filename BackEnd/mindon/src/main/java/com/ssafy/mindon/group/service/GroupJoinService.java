@@ -1,5 +1,9 @@
 package com.ssafy.mindon.group.service;
 
+import com.ssafy.mindon.common.error.ErrorCode;
+import com.ssafy.mindon.common.exception.AuthException;
+import com.ssafy.mindon.common.exception.GroupException;
+import com.ssafy.mindon.common.exception.NotFoundException;
 import com.ssafy.mindon.group.entity.Group;
 import com.ssafy.mindon.group.repository.GroupRepository;
 import com.ssafy.mindon.meeting.repository.MeetingRepository;
@@ -8,6 +12,7 @@ import com.ssafy.mindon.user.repository.UserRepository;
 import com.ssafy.mindon.usergroup.entity.UserGroup;
 import com.ssafy.mindon.usergroup.repository.UserGroupRepository;
 import com.ssafy.mindon.common.util.JwtUtil;
+import jdk.jshell.spi.ExecutionControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,28 +38,28 @@ public class GroupJoinService {
     }
 
     @Transactional
-    public ResponseEntity<String> joinGroup(String accessToken, Integer groupId) {
+    public void joinGroup(String accessToken, Integer groupId) {
         String userId = jwtUtil.extractUserId(accessToken);
 
         // 사용자와 그룹 조회
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("{\"message\": \"User not found\"}"));
-        Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new IllegalArgumentException("{\"message\": \"Group not found\"}"));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        // 조건 검사
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new GroupException(ErrorCode.GROUP_NOT_FOUND));
+
+        // 같은 시간대 그룹 가입 여부 체크
         if (isGroupAtSameTime(userId, group)) {
-            return ResponseEntity.badRequest().body("{\"message\": \"GroupJoinSameTime\"}");
+            throw new GroupException(ErrorCode.GROUP_JOIN_SAME_TIME);
         }
 
+        // 그룹 정원 초과 여부 체크
         if (isGroupFull(group)) {
-            return ResponseEntity.badRequest().body("{\"message\": \"GroupFull\"}");
+            throw new GroupException(ErrorCode.GROUP_FULL);
         }
 
         // 그룹 가입 로직
         addUserToGroup(user, group);
-
-        return ResponseEntity.ok("{\"message\": \"success\"}");
     }
 
     private boolean isGroupAtSameTime(String userId, Group group) {

@@ -1,6 +1,9 @@
 package com.ssafy.mindon.common.error;
 
+import com.ssafy.mindon.common.exception.AuthException;
 import com.ssafy.mindon.common.exception.BusinessBaseException;
+import com.ssafy.mindon.common.exception.GroupException;
+import com.ssafy.mindon.common.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -24,9 +27,26 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handle(Exception e) {
-        e.printStackTrace();
         log.error("Exception", e);
         return createErrorResponseEntity(ErrorCode.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AuthException.class)
+    protected ResponseEntity<ErrorResponse> handle(AuthException e) {
+        log.error("AuthException", e);
+        return createErrorResponseEntity(e.getErrorCode());
+    }
+
+    @ExceptionHandler(GroupException.class)
+    protected ResponseEntity<ErrorResponse> handle(GroupException e) {
+        log.error("GroupException", e);
+        return createErrorResponseEntity(e.getErrorCode());
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    protected ResponseEntity<ErrorResponse> handle(NotFoundException e) {
+        log.error("NotFoundException", e);
+        return createErrorResponseEntity(e.getErrorCode());
     }
 
     private ResponseEntity<ErrorResponse> createErrorResponseEntity(ErrorCode errorCode) {

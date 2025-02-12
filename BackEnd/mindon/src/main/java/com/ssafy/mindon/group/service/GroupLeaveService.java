@@ -1,5 +1,8 @@
 package com.ssafy.mindon.group.service;
 
+import com.ssafy.mindon.common.error.ErrorCode;
+import com.ssafy.mindon.common.exception.GroupException;
+import com.ssafy.mindon.common.exception.NotFoundException;
 import com.ssafy.mindon.common.util.JwtUtil;
 import com.ssafy.mindon.group.entity.Group;
 import com.ssafy.mindon.user.entity.User;
@@ -29,41 +32,34 @@ public class GroupLeaveService {
     }
 
     @Transactional
-    public boolean leaveGroup(int groupId, String accessToken) {
-        // 1. 인증된 사용자 정보를 추출 (토큰을 이용한 인증)
+    public void leaveGroup(int groupId, String accessToken) {
+        // 1. 인증된 사용자 정보 추출
         String userId = jwtUtil.extractUserId(accessToken);
 
         // 2. 사용자 정보 가져오기
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isEmpty()) {
-            return false; // 사용자가 존재하지 않으면 실패
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        // 3. 그룹 정보 가져오기
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new GroupException(ErrorCode.GROUP_NOT_FOUND));
+
+        // 4. 사용자가 그룹에 속해 있는지 확인
+        UserGroup userGroup = userGroupRepository.findByUser_UserIdAndGroup_GroupId(user.getUserId(), groupId)
+                .orElseThrow(() -> new GroupException(ErrorCode.USER_NOT_IN_GROUP));
+
+        // 5. 사용자 그룹 탈퇴 처리
+        userGroupRepository.delete(userGroup);
+
+        // 6. 그룹 total_member 감소
+        if (group.getTotalMember() > 0) {
+            group.setTotalMember((byte) (group.getTotalMember() - 1));
+            groupRepository.save(group);
         }
-        User user = userOptional.get();
 
-        // 3. 그룹에서 해당 사용자 탈퇴 처리
-        Optional<UserGroup> userGroupOptional = userGroupRepository.findByUser_UserIdAndGroup_GroupId(user.getUserId(), groupId);
-        if (userGroupOptional.isPresent()) {
-            UserGroup userGroup = userGroupOptional.get();
-            userGroupRepository.delete(userGroup); // 탈퇴 처리
-
-            // 4. 그룹의 total_member를 감소
-            Optional<Group> groupOptional = groupRepository.findById(groupId);
-            if (groupOptional.isPresent()) {
-                Group group = groupOptional.get();
-                byte totalMember = group.getTotalMember();
-                if (totalMember > 0) {
-                    group.setTotalMember((byte) (totalMember - 1));
-                }
-                groupRepository.save(group); // 그룹 업데이트
-
-                // 5. 만약 total_member가 0이면 meetings와 user_groups에서 해당 group_id 삭제, groups에서도 삭제
-                // - 제약조건으로 group삭제 시 연관된 테이블 자동 삭제됨
-                if (group.getTotalMember() == 0) {
-                    groupRepository.deleteByGroupId(groupId);
-                }
-                return true; // 탈퇴 완료
-            }
+        // 7. 그룹 인원이 0명이면 그룹 삭제 -> meetings는 자동삭제
+        if (group.getTotalMember() == 0) {
+            groupRepository.delete(group);
         }
-        return false; // 그룹에 해당 사용자가 없거나 처리 실패
     }
 }

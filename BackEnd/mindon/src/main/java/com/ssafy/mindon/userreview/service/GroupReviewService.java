@@ -1,5 +1,8 @@
 package com.ssafy.mindon.userreview.service;
 
+import com.ssafy.mindon.common.error.ErrorCode;
+import com.ssafy.mindon.common.exception.NotFoundException;
+import com.ssafy.mindon.common.exception.GroupException;
 import com.ssafy.mindon.userreview.dto.GroupReviewResponse;
 import com.ssafy.mindon.group.entity.Group;
 import com.ssafy.mindon.group.repository.GroupRepository;
@@ -38,9 +41,16 @@ public class GroupReviewService {
 
         // 그룹 정보 조회 (period, progressWeeks)
         Group group = groupRepository.findByGroupId(groupId);
+        if (group == null) {
+            throw new NotFoundException(ErrorCode.GROUP_NOT_FOUND);
+        }
 
         // 해당 그룹의 모든 미팅 데이터 가져오기
         List<Meeting> meetings = meetingRepository.findByGroup_GroupId(groupId);
+        if (meetings.isEmpty()) {
+            throw new GroupException(ErrorCode.MEETING_NOT_FOUND);
+        }
+
         List<Integer> meetingIds = meetings.stream()
                 .map(Meeting::getMeetingId)
                 .collect(Collectors.toList());

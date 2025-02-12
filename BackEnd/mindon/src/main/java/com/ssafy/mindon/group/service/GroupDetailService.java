@@ -1,5 +1,8 @@
 package com.ssafy.mindon.group.service;
 
+import com.ssafy.mindon.common.error.ErrorCode;
+import com.ssafy.mindon.common.exception.NotFoundException;
+import com.ssafy.mindon.common.exception.GroupException;
 import com.ssafy.mindon.common.util.JwtUtil;
 import com.ssafy.mindon.group.dto.GroupDetailResponse;
 import com.ssafy.mindon.group.entity.Group;
@@ -22,7 +25,7 @@ public class GroupDetailService {
 
         // 그룹 정보 조회
         Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new RuntimeException("그룹을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.GROUP_NOT_FOUND));
 
         // 사용자의 그룹 가입 여부 확인
         boolean isRegistered = userGroupRepository.existsByUser_UserIdAndGroup_GroupId(userId, groupId);
