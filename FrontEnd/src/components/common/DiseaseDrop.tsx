@@ -2,6 +2,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { Form } from "@components/common/DivName";
 import { memo } from "react";
+import { useState, useEffect } from "react";
 
 type DropdownProps = {
   title: string;
@@ -23,7 +24,16 @@ const diseaseData: { [key: number]: string } = {
 };
 
 function DiseaseDrop({ title, value = null, onSelect }: DropdownProps) {
-  const selectedText = value !== null ? diseaseData[value] : "";
+  const [selectedText, setSelectedText] = useState<string>("");
+  // const selectedText = value !== null ? diseaseData[value] : "";
+
+  useEffect(() => {
+    if (value !== null && diseaseData[value]) {
+      setSelectedText(diseaseData[value]);
+    } else {
+      setSelectedText("");
+    }
+  }, [value]);
 
   return (
     <Menu as="div" className="relative inline-block text-left w-full">
