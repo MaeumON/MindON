@@ -17,12 +17,15 @@ function Footer() {
 
   return (
     <footer
-      className="flex justify-around items-center shadow-md fixed bottom-0 h-[74px] bg-white w-full max-w-[412px] mx-auto px-4"
+      className="flex justify-center gap-7 items-center shadow-md fixed bottom-0 h-[74px] bg-white w-full max-w-[412px] mx-auto pt-1"
       style={{ zIndex: 99999 }}
     >
       {/* 홈 버튼 */}
-      <div className="flex flex-col items-center gap-1.5 cursor-pointer" onClick={() => handleFooterClick("/main")}>
-        <IconHome width={28} height={28} fillColor={currentPath === "/main" ? "#DA8600" : "#828282"} />
+      <div
+        className="flex flex-col items-center gap-1.5 cursor-pointer w-[50px]"
+        onClick={() => handleFooterClick("/main")}
+      >
+        <IconHome width={30} height={30} fillColor={currentPath === "/main" ? "#DA8600" : "#9D9D9D"} />
         <span
           className={`text-14px font-bold font-suite ${currentPath === "/main" ? "text-orange100" : "text-cardContent2"}`}
         >
@@ -32,10 +35,10 @@ function Footer() {
 
       {/* 모임 버튼 */}
       <div
-        className="flex flex-col items-center gap-1.5 cursor-pointer"
+        className="flex flex-col items-center gap-1.5 cursor-pointer w-[50px]"
         onClick={() => handleFooterClick("/groupslist")}
       >
-        <IconPeople width={32} height={32} fillColor={currentPath === "/groupslist" ? "orange100" : "cardContent2"} />
+        <IconPeople width={40} height={30} fillColor={currentPath === "/groupslist" ? "orange100" : "cardContent2"} />
         <span
           className={`text-14px font-bold font-suite ${currentPath === "/groupslist" ? "text-orange100" : "text-cardContent2"}`}
         >
@@ -45,27 +48,33 @@ function Footer() {
 
       {/* 중앙 버튼 */}
       <div
-        className="flex items-center justify-center w-[60px] h-[60px] bg-orange100 rounded-full shadow-md -translate-y-2 cursor-pointer"
+        className="flex items-center justify-center w-[65px] h-[65px] bg-orange100 rounded-full shadow-md -translate-y-2 cursor-pointer"
         onClick={() => handleFooterClick("/createroom")}
       >
-        <IconPlus width={100} height={100} />
+        <IconPlus width={120} height={120} />
       </div>
 
       {/* 마이데이터 버튼 */}
-      <div className="flex flex-col items-center gap-1.5 cursor-pointer" onClick={() => handleFooterClick("/mydata")}>
-        <IconChart width={28} height={28} fillColor={currentPath === "/mydata" ? "orange100" : "cardContent2"} />
+      <div
+        className="flex flex-col items-center gap-1.5 cursor-pointer w-[50px]"
+        onClick={() => handleFooterClick("/mydata")}
+      >
+        <IconChart width={30} height={30} fillColor={currentPath === "/mydata" ? "orange100" : "cardContent2"} />
         <span
-          className={`text-14px font-bold font-suite ${currentPath === "/mydata" ? "text-orange100" : "text-cardContent2"}`}
+          className={`whitespace-nowrap text-14px font-bold font-suite ${currentPath === "/mydata" ? "text-orange100" : "text-cardContent2"}`}
         >
-          마음 리포트
+          마음리포트
         </span>
       </div>
 
       {/* 프로필 버튼 */}
-      <div className="flex flex-col items-center gap-1.5 cursor-pointer" onClick={() => handleFooterClick("/mypage")}>
-        <IconProfile width={28} height={28} fillColor={currentPath === "/profile" ? "orange100" : "cardContent2"} />
+      <div
+        className="flex flex-col items-center gap-1.5 cursor-pointer w-[50px] whitespace-nowrap"
+        onClick={() => handleFooterClick("/mypage")}
+      >
+        <IconProfile width={30} height={30} fillColor={currentPath === "/mypage" ? "orange100" : "cardContent2"} />
         <span
-          className={`text-14px font-bold font-suite ${currentPath === "/profile" ? "text-orange100" : "text-cardContent2"}`}
+          className={`text-14px font-bold font-suite ${currentPath === "/mypage" ? "text-orange100" : "text-cardContent2"}`}
         >
           마이페이지
         </span>
