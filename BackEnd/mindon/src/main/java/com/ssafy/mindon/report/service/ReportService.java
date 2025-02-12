@@ -56,7 +56,7 @@ public class ReportService {
         reportedUser.setReportedCnt(reportedUser.getReportedCnt() + 1);
 
         // 신고 횟수가 3 이상이면 정지 처리
-        if (reportedUser.getReportedCnt() >= 1) {
+        if (reportedUser.getReportedCnt() >= 3) {
             reportedUser.setUserStatus((byte) 2); // 정지 상태
         }
     }
