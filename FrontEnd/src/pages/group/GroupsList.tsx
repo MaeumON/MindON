@@ -13,16 +13,26 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import PasswordModal from "@/components/group/PasswordModal";
 
 function GroupsList() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [groups, setGroups] = useState<Group[]>([]);
   const [keyword, setKeyword] = useState<string>("");
+  const [passwordModal, setPasswordModal] = useState(false);
+  const [selectedGroupId, setSelectedGroupId] = useState<number>(0);
 
   const nav = useNavigate();
   // 그룹 상세보기로 이동하는 함수
   const onClickDetail = (groupId: number) => {
-    nav(`/groups/${groupId}`);
+    //isPrivate 확인
+    const isPrivate = groups.find((group) => group.groupId === groupId)?.isPrivate;
+    if (isPrivate) {
+      setPasswordModal(true);
+      setSelectedGroupId(groupId);
+    } else {
+      nav(`/groups/${groupId}`);
+    }
   };
   // ✅ 메인페이지에서 그룹 연결
   // 파라미터 추출
@@ -216,6 +226,9 @@ function GroupsList() {
           selectedFilters={selectedFilters}
         />
       )}
+
+      {/* 비밀번호 모달 */}
+      {passwordModal && <PasswordModal selectedGroupId={selectedGroupId} setPasswordModal={setPasswordModal} />}
 
       <Footer />
     </div>

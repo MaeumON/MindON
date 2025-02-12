@@ -33,7 +33,7 @@ const Button = ({ text, type, onClick, className, disabled, onKeyDown }: ButtonP
   } else if (type === "ORANGE") {
     return (
       <button
-        className={`bg-[#EF945B] font-suite rounded-xl py-3 px-4 text-cardLongContent text-lg font-bold whitespace-nowrap w-full ${className}`}
+        className={`bg-[#EF945B] font-suite rounded-xl py-3 px-4 text-white text-lg font-bold whitespace-nowrap w-full ${className}`}
         onClick={onClick}
         onKeyDown={onKeyDown}
       >
@@ -45,6 +45,7 @@ const Button = ({ text, type, onClick, className, disabled, onKeyDown }: ButtonP
       <button
         className={`bg-cardContent2 font-suite rounded-xl py-3 px-4 text-cardLongContent text-lg font-bold whitespace-nowrap w-full ${className}`}
         disabled={disabled}
+        onClick={onClick}
         onKeyDown={onKeyDown}
       >
         {text}

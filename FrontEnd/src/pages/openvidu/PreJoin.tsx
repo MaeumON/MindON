@@ -11,6 +11,7 @@ import IconCheck from "@assets/icons/IconCheck";
 import NoHostRoom from "./NoHostRoom";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchMeetingId } from "@/apis/openvidu/questionApi";
+import { useQuestionStore } from "@stores/questionStore";
 
 /*
 실제 화상채팅으로 진입하기 전에,
@@ -30,6 +31,7 @@ const Prejoin = () => {
   const GROUP_NAME = groupName;
 
   const { userName } = useAuthStore();
+  const { reset: resetQuestionStore } = useQuestionStore();
 
   const [state, setState] = useState<VideoRoomState>({
     sessionId: SESSION_ID, //meetingID
@@ -331,8 +333,9 @@ const Prejoin = () => {
       if (state.subscribers.length === 0 && !state.localUser) {
         console.log("마지막 참가자가 나갔습니다. 세션을 종료합니다.");
         handleCloseSession();
+        console.log("questionStore 초기화");
+        resetQuestionStore();
       }
-      console.log("unMount, and remaining users", state.subscribers);
     };
   }, []);
 
