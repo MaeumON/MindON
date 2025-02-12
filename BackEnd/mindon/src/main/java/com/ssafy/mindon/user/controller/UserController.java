@@ -66,8 +66,8 @@ public class UserController {
     public ResponseEntity<?> getSpeakerList(@PathVariable Integer groupId) {
         String id = String.valueOf(groupId);
         try {
-            //Set<String> speakerIds = videoService.getParticipants(id);
-            Set<String> speakerIds = Set.of("user02", "user03");
+            Set<String> speakerIds = videoService.getParticipants(id);
+            //Set<String> speakerIds = Set.of("user02", "user03");
             SpeakerListDto speakerListDto = userService.getSpeakerList(groupId,speakerIds);
 
             return ResponseEntity.ok(speakerListDto);
