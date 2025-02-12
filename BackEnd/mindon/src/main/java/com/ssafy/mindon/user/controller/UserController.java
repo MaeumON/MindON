@@ -6,6 +6,7 @@ import com.ssafy.mindon.common.exception.AuthException;
 import com.ssafy.mindon.user.dto.SpeakerListDto;
 import com.ssafy.mindon.user.dto.UserEmotionResponseDto;
 import com.ssafy.mindon.user.dto.UserProfileResponseDto;
+import com.ssafy.mindon.user.dto.UserProfileUpdateRequest;
 import com.ssafy.mindon.user.service.UserService;
 import com.ssafy.mindon.video.service.VideoService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Set;
 
 @Slf4j
@@ -91,4 +93,24 @@ public class UserController {
 
         return ResponseEntity.ok(userProfile);
     }
+
+    @PatchMapping("/profile")
+    public ResponseEntity<?> updateUserProfile(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken,
+            @RequestBody UserProfileUpdateRequest request) {
+        try {
+            if (jwtUtil.isTokenExpired(accessToken)) {
+                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
+            }
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
+        }
+
+        String userId = jwtUtil.extractUserId(accessToken);
+
+        userService.updateUserProfile(userId, request);
+
+        return ResponseEntity.ok("회원 정보가 수정되었습니다.");
+    }
+
 }
