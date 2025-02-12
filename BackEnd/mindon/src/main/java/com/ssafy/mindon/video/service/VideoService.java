@@ -147,6 +147,7 @@ public class VideoService {
         if (this.mapSessions.get(session) != null && this.mapSessionNamesTokens.get(session) != null) {
             Session s = this.mapSessions.get(session);
             // 세션의 모든 참여자 정보 삭제
+            sessionParticipants.remove(session);
             mapSessionNamesTokens.get(session).clear();
             s.close();
             this.mapSessions.remove(session);
