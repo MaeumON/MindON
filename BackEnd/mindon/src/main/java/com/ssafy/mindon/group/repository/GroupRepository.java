@@ -1,6 +1,8 @@
 package com.ssafy.mindon.group.repository;
 
 import com.ssafy.mindon.group.entity.Group;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,7 +27,7 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
             "(:startTime IS NULL OR g.meetingTime >= :startTime) AND " +
             "(:endTime IS NULL OR g.meetingTime <= :endTime) AND " +
             "(:dayOfWeek IS NULL OR g.dayOfWeek IN :dayOfWeek)")
-    List<Group> findGroupsByCriteria(
+    Page<Group> findGroupsByCriteria(
             @Param("keyword") String keyword,
             @Param("diseaseId") List<Byte> diseaseId,
             @Param("isHost") Boolean isHost,
@@ -33,7 +35,8 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
             @Param("period") Byte period,
             @Param("startTime") Byte startTime,
             @Param("endTime") Byte endTime,
-            @Param("dayOfWeek") List<Byte> dayOfWeek
+            @Param("dayOfWeek") List<Byte> dayOfWeek,
+            Pageable pageable
     );
 
     void deleteByGroupId(int groupId);

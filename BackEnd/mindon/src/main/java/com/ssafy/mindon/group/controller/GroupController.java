@@ -2,22 +2,31 @@ package com.ssafy.mindon.group.controller;
 
 import com.ssafy.mindon.common.error.ErrorCode;
 import com.ssafy.mindon.common.exception.AuthException;
+import com.ssafy.mindon.common.exception.BusinessBaseException;
+import com.ssafy.mindon.common.exception.GroupException;
+import com.ssafy.mindon.common.exception.NotFoundException;
 import com.ssafy.mindon.common.util.JwtUtil;
 import com.ssafy.mindon.group.dto.*;
 import com.ssafy.mindon.group.service.*;
 import com.ssafy.mindon.userreview.dto.GroupReviewResponse;
 import com.ssafy.mindon.userreview.service.GroupReviewService;
+import io.jsonwebtoken.JwtException;
+import jdk.jshell.spi.ExecutionControl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/groups")
@@ -39,12 +48,14 @@ public class GroupController {
             @RequestHeader("Authorization") String accessToken,
             @RequestBody @Valid CreateGroupRequest request) {
 
+        jwtUtil.validateToken(accessToken);  // 토큰 검증
         boolean isCreated = groupCreateService.createGroup(accessToken, request);
         if (isCreated) {
             return ResponseEntity.status(201).body("{\"message\": \"success\"}");
         } else {
-            return ResponseEntity.badRequest().body("{\"message\": \"fail\"}");
+            throw new GroupException(ErrorCode.GROUP_CREATION_FAILED);
         }
+
     }
 
     @PostMapping("/{groupId}/members")
@@ -52,18 +63,22 @@ public class GroupController {
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Integer groupId) {
 
-        if (accessToken == null || accessToken.isEmpty()) {
-            return ResponseEntity.status(401).body("{\"message\": \"Missing accessToken\"}");
-        }
-        return groupJoinService.joinGroup(accessToken, groupId);
+        jwtUtil.validateToken(accessToken);
+        groupJoinService.joinGroup(accessToken, groupId);
+        return ResponseEntity.ok("{\"message\": \"success\"}");
     }
 
     @PostMapping("/list")
-    public ResponseEntity<?> getGroupList(@RequestBody GroupListRequest request) {
-        List<GroupListResponse> response = groupListService.findGroupsByCriteria(
+    public ResponseEntity<?> getGroupList(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody GroupListRequest request,
+            Pageable pageable) {
+
+        jwtUtil.validateToken(accessToken);
+        Page<GroupListResponse> response = groupListService.findGroupsByCriteria(
                 request.getKeyword(), request.getDiseaseId(), request.getIsHost(),
                 request.getStartDate(), request.getPeriod(), request.getStartTime(),
-                request.getEndTime(), request.getDayOfWeek()
+                request.getEndTime(), request.getDayOfWeek(), pageable
         );
 
         return ResponseEntity.ok(response);
@@ -73,42 +88,33 @@ public class GroupController {
     public ResponseEntity<List<GroupListResponse>> getGroupsByStatus(
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Byte groupStatus,
-            @RequestBody GroupListRequest request
+            @RequestBody(required = false) GroupListRequest request
     ) {
-        String keyword = request != null ? request.getKeyword() : null;
+        jwtUtil.validateToken(accessToken);
+        String keyword = (request != null) ? request.getKeyword() : null;
 
         List<GroupListResponse> groupList = groupListService.findGroupsByAccessTokenAndStatus(accessToken, groupStatus, keyword);
-
         return ResponseEntity.ok(groupList);
     }
+
     // 그룹 탈퇴
     @DeleteMapping("/{groupId}/members")
     public ResponseEntity<String> leaveGroup(
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Integer groupId) {
 
-        if (accessToken == null || accessToken.isEmpty()) {
-            return ResponseEntity.status(401).body("{\"message\": \"Missing accessToken\"}");
-        }
-
-        boolean isLeft = groupLeaveService.leaveGroup(groupId, accessToken);
-
-        if (isLeft) {
-            return ResponseEntity.ok("{\"message\": \"탈퇴 완료\"}");
-        } else {
-            return ResponseEntity.status(400).body("{\"message\": \"탈퇴 실패\"}");
-        }
+        jwtUtil.validateToken(accessToken);
+        groupLeaveService.leaveGroup(groupId, accessToken);
+        return ResponseEntity.ok("{\"message\": \"탈퇴 완료\"}");
     }
+
 
     @GetMapping("/{groupId}")
     public ResponseEntity<GroupDetailResponse> getGroupDetail(
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Integer groupId) {
 
-        if (accessToken == null || accessToken.isEmpty()) {
-            return ResponseEntity.status(401).body(null);
-        }
-
+        jwtUtil.validateToken(accessToken);
         GroupDetailResponse response = groupDetailService.findGroupDetailById(accessToken, groupId);
         return ResponseEntity.ok(response);
     }
@@ -118,10 +124,7 @@ public class GroupController {
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Byte diseaseId) {
 
-        if (accessToken == null || accessToken.isEmpty()) {
-            return ResponseEntity.status(401).body("{\"message\": \"Missing accessToken\"}");
-        }
-
+        jwtUtil.validateToken(accessToken);
         List<GroupListResponse> response = groupRecommendService.getRecommendedGroups(diseaseId);
         return ResponseEntity.ok(response);
     }
@@ -130,18 +133,15 @@ public class GroupController {
     public ResponseEntity<GroupReviewResponse> getGroupReviews(
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Integer groupId) {
+
+        jwtUtil.validateToken(accessToken);
         return ResponseEntity.ok(groupReviewService.getGroupReviews(accessToken, groupId));
     }
 
     @GetMapping("/count")
-    public ResponseEntity<Map<String, Integer>> getUserGroupStatusCount(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
-        try {
-            if (jwtUtil.isTokenExpired(accessToken)) {
-                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-            }
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN); // 원하는 예외 던지기
-        }
+    public ResponseEntity<Map<String, Integer>> getUserGroupStatusCount(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
+
+        jwtUtil.validateToken(accessToken);
         String userId = jwtUtil.extractUserId(accessToken);
 
         Map<String, Integer> result = groupService.getUserGroupStatusCount(userId);
@@ -150,7 +150,7 @@ public class GroupController {
 
     @PostMapping("/password")
     public ResponseEntity<Boolean> checkGroupPassword(@RequestBody GroupPasswordRequest request) {
-        System.out.println(request.getGroupId() + "con" +  request.getPrivatePassword());
+        System.out.println(request.getGroupId() + "con" + request.getPrivatePassword());
         boolean isCorrect = groupService.checkGroupPassword(request.getGroupId(), request.getPrivatePassword());
         return ResponseEntity.ok(isCorrect);
     }
