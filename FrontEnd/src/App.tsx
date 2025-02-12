@@ -13,6 +13,7 @@ import GroupsList from "@pages/group/GroupsList";
 import GroupDetail from "@pages/group/GroupDetail";
 import MyDataList from "@pages/MyDataList";
 import MyPage from "@pages/mypage/MyPage";
+import CreateGroup from "./pages/group/CreateGroup";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ function App() {
         <Route path="/groupslist" element={<GroupsList />} />
         <Route path="/groups/:groupId" element={<GroupDetail />} />
         <Route path="/mypage" element={<MyPage />} />
+        <Route path="/creategroup" element={<CreateGroup />} />
       </Routes>
     </QueryClientProvider>
   );
