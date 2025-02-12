@@ -8,25 +8,26 @@ import React from "react";
 import IconSearch from "@assets/icons/IconSearch";
 // import SeachFilter from "@assets/images/SeachFilter.png";
 
-import groupListApi, { groupStatusApi } from "@/apis/group/groupListApi";
-
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { groupStatusApi } from "@/apis/group/groupListApi";
 
 function MyDataList() {
-  // return <div>안녕</div>;
   // const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [groups, setGroups] = useState<Group[]>([]);
   const [keyword, setKeyword] = useState<string>("");
   const { groupStatus } = useParams();
-  const groupStatusNumber = parseInt(groupStatus || "0", 10);
+
+  console.log(groupStatus);
   const nav = useNavigate();
 
   // ✅ 마운트 API 요청
-  const fetchInitialGroups = async (groupStatusNumber: number) => {
+  const fetchInitialGroups = async (groupStatus: string | undefined, keyword: string) => {
     try {
-      const result = await groupStatusApi(groupStatusNumber);
-      console.log("group status : ", groupStatusNumber);
+      console.log("마운트 api 요청중");
+
+      const result = await groupStatusApi({ groupStatus, keyword });
+      console.log("group status : ", groupStatus);
       console.log("📌 API 응답 데이터:", result);
       setGroups(result);
       console.log("📌 setGroup 이후 :", groups);
@@ -37,8 +38,9 @@ function MyDataList() {
   };
   // 첫 렌더링 시 accessToken만 보내서 그룹 목록 불러오기
   useEffect(() => {
-    fetchInitialGroups(groupStatusNumber);
+    fetchInitialGroups(groupStatus, "");
   }, []);
+
   useEffect(() => {
     console.log("📌 groups 상태 변경됨:", groups);
   }, [groups]);
@@ -69,11 +71,11 @@ function MyDataList() {
   const fetchSearchGroups = async () => {
     if (!keyword.trim()) {
       // 빈 값으로 검색하면 전체 목록 조회
-      fetchInitialGroups(groupStatusNumber);
+      fetchInitialGroups(groupStatus, "");
       return;
     }
     try {
-      const result = await groupListApi({ keyword });
+      const result = await groupStatusApi({ groupStatus, keyword });
       console.log("📌 검색 API 응답:", result);
       setGroups(result);
     } catch (error) {
@@ -95,9 +97,9 @@ function MyDataList() {
     }
   };
 
-  // 마이데이터 상세세로 이동하는 함수
+  // 마이데이터 상세로 이동하는 함수
   const onClickReviewDetail = (groupId: number) => {
-    nav(`/groups/${groupId}`);
+    nav(`/mydata/${groupId}`);
   };
 
   return (
@@ -128,7 +130,6 @@ function MyDataList() {
         </div>
       </button> */}
       <br />
-      {/* 그룹 목록 */}
       {/* 그룹 목록 */}
       <div className="flex flex-col gap-5 pb-20">
         {groups.length > 0 ? (
