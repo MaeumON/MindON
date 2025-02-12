@@ -8,12 +8,14 @@ import IconGrayCalendar from "@assets/icons/IconGrayCalendar.png";
 import IconArrowRight from "@/assets/icons/IconArrowRight";
 import useAuthStore from "@stores/authStore";
 import myPageApi from "@apis/mypage/myPageApi";
+import useLogoutApi from "@/apis/auth/logoutApi";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 function MyPage() {
   const router = useNavigate();
   const { userName } = useAuthStore();
+  const onClickLogout = useLogoutApi();
 
   const fetchMyPage = async () => {
     const result = await myPageApi();
@@ -144,7 +146,9 @@ function MyPage() {
             >
               내 정보 수정
             </span>
-            <span className="text-cardLongContent font-bold text-[20px] cursor-pointer">회원 탈퇴</span>
+            <span className="text-cardLongContent font-bold text-[20px] cursor-pointer" onClick={onClickLogout}>
+              로그아웃
+            </span>
           </div>
           <div className="flex flex-col justify-start items-start w-full mr-8 gap-1">
             <span className="text-cardContent2 text-lg font-semibold mb-2">문의 및 알림</span>
