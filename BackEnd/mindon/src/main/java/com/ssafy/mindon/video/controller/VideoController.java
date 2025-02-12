@@ -105,7 +105,7 @@ public class VideoController {
         }
         String userId = jwtUtil.extractUserId(accessToken);
         String sessionId = (String) params.get("recording");
-        int questionId = Integer.parseInt((String) params.get("questionId"));
+        int questionId = (Integer) params.get("questionId");
         Recording recording = videoService.stopRecording(sessionId);
         String url = recording.getUrl();
         videoService.saveRecording(url, sessionId, userId, questionId);
