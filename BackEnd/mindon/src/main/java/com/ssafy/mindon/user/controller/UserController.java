@@ -5,6 +5,7 @@ import com.ssafy.mindon.common.error.ErrorCode;
 import com.ssafy.mindon.common.exception.AuthException;
 import com.ssafy.mindon.user.dto.SpeakerListDto;
 import com.ssafy.mindon.user.dto.UserEmotionResponseDto;
+import com.ssafy.mindon.user.dto.UserProfileResponseDto;
 import com.ssafy.mindon.user.service.UserService;
 import com.ssafy.mindon.video.service.VideoService;
 import lombok.RequiredArgsConstructor;
@@ -73,4 +74,21 @@ public class UserController {
         }
     }
 
+    @GetMapping("/profile")
+    public ResponseEntity<UserProfileResponseDto> getUserProfile(@RequestHeader("Authorization") String accessToken) {
+        try {
+            if (jwtUtil.isTokenExpired(accessToken)) {
+                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
+            }
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
+        }
+
+        String userId = jwtUtil.extractUserId(accessToken);
+        
+        // 사용자 정보 조회
+        UserProfileResponseDto userProfile = userService.getUserProfile(userId);
+
+        return ResponseEntity.ok(userProfile);
+    }
 }
