@@ -2,9 +2,11 @@ import authInstance from "../authinstance";
 
 const deleteUserApi = async () => {
   try {
-    await authInstance.post("/api/users/delete");
+    const response = await authInstance.delete("/api/users/delete");
+    return response.status; // 삭제 성공 여부만 반환
   } catch (error) {
     console.error("deleteUserApi error:", error);
+    throw error;
   }
 };
 
