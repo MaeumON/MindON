@@ -135,7 +135,7 @@ const Prejoin = () => {
   }, [state.localUser]);
 
   const deleteSubscriber = useCallback(
-    (stream: any) => {
+    async (stream: any) => {
       // remotes.current에서도 해당 유저를 제거
       remotes.current = remotes.current.filter((user) => user.getStreamManager().stream !== stream);
 
@@ -146,8 +146,14 @@ const Prejoin = () => {
         ...prev,
         subscribers: remoteUsers,
       }));
+
+      // 모든 참가자가 나갔는지 확인 (remoteUsers가 비어있고 localUser도 없는 경우)
+      if (remoteUsers.length === 0 && !state.localUser) {
+        console.log("마지막 참가자가 나갔습니다. 세션을 종료합니다.");
+        await closeSession(state.sessionId);
+      }
     },
-    [state.subscribers]
+    [state.subscribers, state.localUser, state.sessionId]
   );
 
   // 세션에 참여하는 사람 생길 때 이벤트 처리
@@ -258,25 +264,23 @@ const Prejoin = () => {
 
   // 타이머 종료 시 closeSession 호출 , 임시 console.log
   console.log(closeSession);
-  // async function handleCloseSession() {
-  //   if (state.session) await closeSession(state.sessionId);
+  async function handleCloseSession() {
+    await closeSession(state.sessionId);
 
-  //   setOV(null);
-  //   setState({
-  //     ...state,
-  //     session: undefined,
-  //     sessionId: String(SESSION_ID),
-  //     userName: data.userName,
-  //     subscribers: [],
-  //     localUser: undefined,
-  //   });
+    setOV(null);
+    setState({
+      ...state,
+      session: undefined,
+      sessionId: String(SESSION_ID),
+      userName: userName,
+      subscribers: [],
+      localUser: undefined,
+    });
 
-  //   remotes.current = [];
-  //   console.log("leaveSession", state);
-  //   console.log("remotes ", remotes.current);
-
-  //   navigate("/");
-  // }
+    remotes.current = [];
+    console.log("leaveSession", state);
+    console.log("remotes ", remotes.current);
+  }
 
   async function handleRemoveUser() {
     const requestData = { sessionName: state.sessionId, token: token };
@@ -324,7 +328,10 @@ const Prejoin = () => {
       //언마운트될 때, 사용자 세션 나가기 함수 호출
       // window.removeEventListener("resize", updateLayout);
       if (token && state.sessionId) removeUser({ sessionName: state.sessionId, token: token });
-
+      if (state.subscribers.length === 0 && !state.localUser) {
+        console.log("마지막 참가자가 나갔습니다. 세션을 종료합니다.");
+        handleCloseSession();
+      }
       console.log("unMount, and remaining users", state.subscribers);
     };
   }, []);
