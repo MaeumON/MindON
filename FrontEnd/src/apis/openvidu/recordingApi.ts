@@ -3,7 +3,7 @@ import authInstance from "../authinstance";
 export async function startRecording({ sessionID }: { sessionID: string }) {
   const response = await authInstance.post("/api/video/recording/start", {
     session: sessionID,
-    outputMode: "INDIVIDUAL",
+    outputMode: "COMPOSED",
     hasAudio: true,
     hasVideo: false,
   });
