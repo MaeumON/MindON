@@ -79,6 +79,11 @@ public class GroupService {
         return groupRepository.updateGroupStatusToEnded(now);
     }
 
+    @Transactional
+    public int updateProgressWeeks() {
+        return groupRepository.updateProgressWeeks();
+    }
+
     public boolean checkGroupPassword(Integer groupId, String privatePassword) {
         System.out.println(groupId + "ser" + privatePassword);
         Group group = groupRepository.findById(groupId)
