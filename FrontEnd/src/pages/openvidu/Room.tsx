@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Message, UserModelType } from "@/utils/openviduTypes";
+import { Message, UserModelType } from "@/utils/openvidu/openviduTypes";
 import ChatComponent from "@components/Openvidu-call/components/chat/ChatComponent";
 import StreamComponent from "@components/Openvidu-call/components/stream/StreamComponent";
 import ToolbarComponent from "@components/Openvidu-call/components/toolbar/ToolbarComponent";
@@ -8,6 +8,7 @@ import UserModel from "@components/Openvidu-call/models/user-model";
 import EmotionModal from "@components/Openvidu-call/components/emotionModal/EmotionModal";
 import Question from "@components/Openvidu-call/components/questions/Question";
 import { Session } from "openvidu-browser";
+import ReportModal from "@/components/Openvidu-call/components/ReportModal";
 
 /*
 - 미팅 시작하기 전, 시작하겠습니다 멘트
@@ -50,6 +51,9 @@ function Room({
 }: RoomProps) {
   const [isEmotionModalOpen, setIsEmotionModalOpen] = useState<boolean>(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState<boolean>(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
+  const [reportedUserId, setReportedUserId] = useState<string>("");
+  const [reportedUserName, setReportedUserName] = useState<string>("");
   const [messageList, setMessageList] = useState<Message[]>([]);
   const chatScroll = useRef<HTMLDivElement>(null);
 
@@ -80,6 +84,10 @@ function Room({
     }
   }, [session, chatScroll]);
 
+  useEffect(() => {
+    console.log("subscibers", subscribers);
+  }, []);
+
   return (
     <section className="w-full h-[calc(100vh-80px)] px-[20px] flex flex-col justify-center items-center bg-offWhite font-suite">
       <Question meetingId={meetingId} session={session} mySessionId={mySessionId} />
@@ -87,13 +95,19 @@ function Room({
       <div className="w-full h-[80%] grid grid-cols-3 gap-4">
         {localUser && localUser.getStreamManager() && (
           <div className="w-full h-full">
-            <StreamComponent user={localUser} />
+            <StreamComponent user={localUser} session={session} />
           </div>
         )}
 
         {subscribers.map((sub, i) => (
           <div key={i} className="w-full h-full">
-            <StreamComponent user={sub} streamId={sub.getStreamManager().stream.streamId} />
+            <StreamComponent
+              user={new UserModel(sub)}
+              session={session}
+              setIsReportModalOpen={setIsReportModalOpen}
+              setReportedUserId={setReportedUserId}
+              setReportedUserName={setReportedUserName}
+            />
           </div>
         ))}
       </div>
@@ -110,6 +124,7 @@ function Room({
         />
       </div>
 
+      {/* 감정기록 모달 */}
       {isEmotionModalOpen && (
         <EmotionModal
           meetingId={meetingId}
@@ -117,12 +132,22 @@ function Room({
           handleRemoveUser={handleRemoveUser}
         />
       )}
+      {/* 채팅 모달 */}
       {isChatModalOpen && (
         <ChatComponent
           user={localUser && localUser.getStreamManager() ? localUser : new UserModel()}
           close={setIsChatModalOpen}
           messageList={messageList}
           chatScroll={chatScroll}
+        />
+      )}
+      {/* 신고 모달 */}
+      {isReportModalOpen && (
+        <ReportModal
+          setIsReportModalOpen={setIsReportModalOpen}
+          reportedUserId={reportedUserId}
+          reportedUserName={reportedUserName}
+          meetingId={meetingId}
         />
       )}
     </section>

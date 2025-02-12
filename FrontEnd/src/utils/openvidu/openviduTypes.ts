@@ -17,6 +17,8 @@ export interface UserModelType {
   getNickname: () => string;
   getConnectionId: () => string;
   setType: (type: string) => void;
+  getUserId: () => string;
+  setUserId: (userId: string) => void;
 }
 
 export interface VideoRoomState {
