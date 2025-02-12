@@ -25,6 +25,12 @@ public interface MeetingRepository extends JpaRepository<Meeting, Integer> {
             LocalDateTime currentDate
     );
 
+    // 진행 중(`meeting_status = 1`)인 회의를 찾기 (시간 비교 없음)
+    Optional<Meeting> findFirstByGroup_GroupIdInAndMeetingStatusOrderByDate(
+            List<Integer> groupIds, byte meetingStatus);
+    Optional<Meeting> findFirstByGroup_GroupIdInAndMeetingStatusAndDateGreaterThanEqualOrderByDate(
+            List<Integer> groupIds, byte meetingStatus, LocalDateTime date);
+
     List<Meeting> findAllByGroup_GroupIdIn(List<Integer> joinedGroupIds);
     List<Meeting> findByGroup_GroupIdIn(List<Integer> groupIds); // 위에거로 되면 삭제 가능
 

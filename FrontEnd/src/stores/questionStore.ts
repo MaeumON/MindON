@@ -30,6 +30,7 @@ interface QuestionActions {
   setIsSpeaking: (isSpeaking: boolean) => void;
   setRemainingTime: (remainingTime: number) => void;
   setTotalAnswerPerQuestion: (totalAnswerPerQuestion: number) => void;
+  reset: () => void;
 }
 
 const initialState: QuestionState = {
@@ -68,4 +69,5 @@ export const useQuestionStore = create<QuestionState & QuestionActions>()((set) 
   setIsSpeaking: (isSpeaking) => set({ isSpeaking }),
   setRemainingTime: (remainingTime) => set({ remainingTime }),
   setTotalAnswerPerQuestion: (totalAnswerPerQuestion) => set({ totalAnswerPerQuestion }),
+  reset: () => set(initialState),
 }));
