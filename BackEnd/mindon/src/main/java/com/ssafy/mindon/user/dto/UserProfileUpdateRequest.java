@@ -4,14 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserProfileResponseDto {
-    private String userId;
-    private String userName;
+public class UserProfileUpdateRequest {
+    private String password;
     private String phone;
-    private Byte diseaseId;
-    private String diseaseName;
+    private Integer diseaseId;
 }

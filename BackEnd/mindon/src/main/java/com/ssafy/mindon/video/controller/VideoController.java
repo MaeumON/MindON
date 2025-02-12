@@ -95,22 +95,24 @@ public class VideoController {
 
 
     @PostMapping("/recording/stop")
-    public ResponseEntity<?> stopRecording(@RequestBody Map<String, Object> params) {
+    public ResponseEntity<?> stopRecording(@RequestHeader("Authorization") String accessToken, @RequestBody Map<String, Object> params) {
         try {
-            String sessionId = (String) params.get("recording");
-            String userId = (String) params.get("userId");
-            int questionId = Integer.parseInt((String) params.get("questionId"));
-            Recording recording = videoService.stopRecording(sessionId);
-            String url = recording.getUrl();
-            videoService.saveRecording(url, sessionId, userId, questionId);
-            videoService.deleteRecording(sessionId);
-            // 비동기 STT 작업 추가
-            videoService.processRecordingAsync(sessionId, userId, questionId);
-
-            return new ResponseEntity<>(recording, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            if (jwtUtil.isTokenExpired(accessToken)) {
+                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
+            }
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN); // 원하는 예외 던지기
         }
+        String userId = jwtUtil.extractUserId(accessToken);
+        String sessionId = (String) params.get("recording");
+        int questionId = (Integer) params.get("questionId");
+        Recording recording = videoService.stopRecording(sessionId);
+        String url = recording.getUrl();
+        videoService.saveRecording(url, sessionId, userId, questionId);
+        videoService.deleteRecording(sessionId);
+        // 비동기 STT 작업 추가
+        videoService.processRecordingAsync(sessionId, userId, questionId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/recording/delete")

@@ -1,6 +1,7 @@
 package com.ssafy.mindon.group.service;
 
 import com.ssafy.mindon.common.error.ErrorCode;
+import com.ssafy.mindon.common.exception.GroupException;
 import com.ssafy.mindon.common.exception.NotFoundException;
 import com.ssafy.mindon.group.entity.Group;
 import com.ssafy.mindon.group.repository.GroupRepository;
@@ -76,5 +77,14 @@ public class GroupService {
     public int updateGroupStatusToEnded() {
         LocalDateTime now = LocalDateTime.now();
         return groupRepository.updateGroupStatusToEnded(now);
+    }
+
+    public boolean checkGroupPassword(Integer groupId, String privatePassword) {
+        System.out.println(groupId + "ser" + privatePassword);
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new GroupException(ErrorCode.GROUP_NOT_FOUND));
+
+        // 비밀번호 일치 여부 반환
+        return privatePassword.equals(group.getPrivatePassword());
     }
 }

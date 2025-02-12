@@ -30,6 +30,9 @@ public class VideoService {
     @Value("${openvidu.secret}")
     private String OPENVIDU_SECRET;
 
+    @Value("${recording.directory}")
+    private String recordingDirectory;
+
     private OpenVidu openvidu;
     private final GroupService groupService;
     private final AudioConverterService audioConverterService;
@@ -180,7 +183,7 @@ public class VideoService {
         }
     }
 
-    public Recording stopRecording(String recordingId) throws Exception {
+    public Recording stopRecording(String recordingId) {
         try {
             return openvidu.stopRecording(recordingId);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
@@ -188,7 +191,7 @@ public class VideoService {
         }
     }
 
-    public void deleteRecording(String recordingId) throws Exception {
+    public void deleteRecording(String recordingId) {
         try {
             openvidu.deleteRecording(recordingId);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
@@ -205,13 +208,11 @@ public class VideoService {
             // 확장자 추출
             String fileExtension = url.substring(url.lastIndexOf("."));
 
-            // 로컬 저장 경로 설정 (C:/recordings)
-            String directory = "C://recordings/";
             String fileName = sessionId + "_" + userId + "_" + questionId + fileExtension;
-            Path filePath = Paths.get(directory, fileName);
+            Path filePath = Paths.get(recordingDirectory, fileName);
 
             // 디렉토리 존재하지 않으면 생성
-            Files.createDirectories(Paths.get(directory));
+            Files.createDirectories(Paths.get(recordingDirectory));
 
             // 파일 저장
             Files.copy(in, filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -225,7 +226,7 @@ public class VideoService {
     @Async
     public void processRecordingAsync(String sessionId, String userId, int questionId) {
         try {
-            String filePath = "C:\\recordings\\" + sessionId + "_" + userId + "_" + questionId + ".webm";
+            String filePath = recordingDirectory + sessionId + "_" + userId + "_" + questionId + ".webm";
 
             // WebM → WAV 변환
             String wavPath = audioConverterService.convertWebMToWav(filePath);
