@@ -96,22 +96,10 @@ public class UserService {
     }
 
     public SpeakerListDto getSpeakerList(Integer groupId,Set<String> userIds) {
-//        List<SpeakerDto> speakerDtos = new ArrayList<>();
-//        int no = 1;
-//
-//        for (String userId : userIds) {
-//            User user = userRepository.findByUserId(userId);
-//
-//            if (user != null) {
-//                speakerDtos.add(new SpeakerDto(no++, user.getUserId(), user.getUserName()));
-//            }
-//        }
-//
-//        return new SpeakerListDto(speakerDtos);
+
         List<Meeting> completedMeetings = meetingRepository.findByGroup_GroupIdAndMeetingStatusIn(groupId, List.of((byte) 2));
         List<Integer> meetingIds = completedMeetings.stream().map(Meeting::getMeetingId).toList();
 
-        // 2. 완료된 meeting이 없으면 기존 userIds 그대로 반환
         if (meetingIds.isEmpty()) {
             List<SpeakerDto> speakerDtos = new ArrayList<>();
             int no = 1;
@@ -124,7 +112,6 @@ public class UserService {
             return new SpeakerListDto(speakerDtos);
         }
 
-        // 3. userId별 평균 speech_amount 조회 후 리스트에 저장
         List<UserSpeechAmount> userSpeechAmounts = userIds.stream()
                 .map(userId -> {
                     Double avgSpeechAmount = Optional.ofNullable(
@@ -136,7 +123,6 @@ public class UserService {
                 .sorted(Comparator.comparingDouble(UserSpeechAmount::getAvgSpeechAmount)) // 평균이 작은 순으로 정렬
                 .toList();
 
-        // 4. 정렬된 순서대로 no 값 부여하고 SpeakerDto 생성
         List<SpeakerDto> orderedSpeakerDtos = new ArrayList<>();
         int no = 1;
         for (UserSpeechAmount userSpeech : userSpeechAmounts) {
