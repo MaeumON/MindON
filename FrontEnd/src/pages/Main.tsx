@@ -23,6 +23,7 @@ function Main() {
   const nav = useNavigate();
   function navToOnTalk() {
     nav("/groupslist?isHost=1");
+    // nav("/groupslist?isHost=1&page=1&size=10&sort=startDate,asc");
   }
   function navToFreeTalk() {
     nav("/groupslist?isHost=0");
