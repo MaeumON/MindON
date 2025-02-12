@@ -3,10 +3,7 @@ package com.ssafy.mindon.group.controller;
 import com.ssafy.mindon.common.error.ErrorCode;
 import com.ssafy.mindon.common.exception.AuthException;
 import com.ssafy.mindon.common.util.JwtUtil;
-import com.ssafy.mindon.group.dto.CreateGroupRequest;
-import com.ssafy.mindon.group.dto.GroupDetailResponse;
-import com.ssafy.mindon.group.dto.GroupListRequest;
-import com.ssafy.mindon.group.dto.GroupListResponse;
+import com.ssafy.mindon.group.dto.*;
 import com.ssafy.mindon.group.service.*;
 import com.ssafy.mindon.userreview.dto.GroupReviewResponse;
 import com.ssafy.mindon.userreview.service.GroupReviewService;
@@ -149,5 +146,12 @@ public class GroupController {
 
         Map<String, Integer> result = groupService.getUserGroupStatusCount(userId);
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/password")
+    public ResponseEntity<Boolean> checkGroupPassword(@RequestBody GroupPasswordRequest request) {
+        System.out.println(request.getGroupId() + "con" +  request.getPrivatePassword());
+        boolean isCorrect = groupService.checkGroupPassword(request.getGroupId(), request.getPrivatePassword());
+        return ResponseEntity.ok(isCorrect);
     }
 }

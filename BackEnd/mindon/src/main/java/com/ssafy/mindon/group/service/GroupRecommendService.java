@@ -16,7 +16,7 @@ public class GroupRecommendService {
 
     public List<GroupListResponse> getRecommendedGroups(Byte diseaseId) {
         // 관심 질병 기반 최신 그룹 5개 조회
-        List<Group> groups = groupRepository.findTop5ByDiseaseIdAndGroupStatusOrderByCreatedDateDesc(diseaseId);
+        List<Group> groups = groupRepository.findTop5ByDiseaseDiseaseIdAndGroupStatusOrderByCreatedDateDesc(diseaseId, (byte) 0);
 
         // Entity -> DTO 변환
         return groups.stream().map(group -> {
