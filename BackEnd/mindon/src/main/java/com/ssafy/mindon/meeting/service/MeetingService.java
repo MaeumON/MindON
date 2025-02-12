@@ -46,12 +46,7 @@ public class MeetingService {
         // meetingStatus = 1
         Optional<Meeting> activeMeeting = meetingRepository
                 .findFirstByGroup_GroupIdInAndMeetingStatusOrderByDate(groupIds, (byte) 1);
-//        Optional<Meeting> activeMeeting = meetingRepository
-//                .findFirstByGroup_GroupIdInAndMeetingStatusAndDateGreaterThanEqualOrderByDate(
-//                        groupIds,
-//                        (byte) 1,  // 진행 중인 회의
-//                        LocalDateTime.now()
-//                );
+
 
         System.out.println("Active meeting found: " + activeMeeting.isPresent());
         activeMeeting.ifPresent(meeting ->
