@@ -34,4 +34,8 @@ public interface UserReviewRepository extends JpaRepository<UserReview, Long> {
                 AND ur.emotionId != 0
             """)
     Double findEmotionAvgByUserIdAndMeetings(@Param("userId") String userId, @Param("meetings") List<Integer> meetings);
+
+    @Query("SELECT COALESCE(AVG(ur.speechAmount), 0) FROM UserReview ur WHERE ur.userId = :userId AND ur.meetingId IN :meetingIds")
+    Double findAvgSpeechAmountByUserIdAndMeetings(@Param("userId") String userId, @Param("meetingIds") List<Integer> meetingIds);
 }
+
