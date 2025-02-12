@@ -114,7 +114,7 @@ function SignUp() {
   }, []);
 
   return (
-    <Wrapper className="p-[30px]  gap-[30px] pb-[80px]">
+    <Wrapper className="p-[30px]  gap-[30px] pb-[150px]">
       <Form className="font-bold  gap-[20px] pb-[20px] w-full">
         <InputForm
           title={"이름"}

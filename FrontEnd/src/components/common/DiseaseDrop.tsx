@@ -38,7 +38,7 @@ function DiseaseDrop({ title, value = null, onSelect }: DropdownProps) {
       </Form>
 
       <MenuItems className="absolute left-0 z-50 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-        <div className="py-1" style={{ maxHeight: "300px", overflowY: "auto" }}>
+        <div className="py-1 max-h-40 overflow-y-auto">
           {Object.entries(diseaseData).map(([id, disease]) => (
             <MenuItem key={id}>
               <button
