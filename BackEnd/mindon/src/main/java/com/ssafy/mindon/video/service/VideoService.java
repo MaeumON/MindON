@@ -180,7 +180,7 @@ public class VideoService {
         }
     }
 
-    public Recording stopRecording(String recordingId) throws Exception {
+    public Recording stopRecording(String recordingId) {
         try {
             return openvidu.stopRecording(recordingId);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
@@ -188,7 +188,7 @@ public class VideoService {
         }
     }
 
-    public void deleteRecording(String recordingId) throws Exception {
+    public void deleteRecording(String recordingId) {
         try {
             openvidu.deleteRecording(recordingId);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
