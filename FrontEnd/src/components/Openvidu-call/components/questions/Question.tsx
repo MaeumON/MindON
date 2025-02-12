@@ -9,7 +9,7 @@ import {
   subscribeToQuestionChanged,
   subscribeToStartMeeting,
 } from "@utils/openvidu/signal";
-import { QuestionChangedData, QuestionSpeakingOrderType } from "@utils/openviduTypes";
+import { QuestionChangedData, QuestionSpeakingOrderType } from "@/utils/openvidu/openviduTypes";
 import IntroBear from "@assets/images/bear/introbear.png";
 
 interface QuestionProps {

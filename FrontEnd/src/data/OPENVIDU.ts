@@ -1,4 +1,4 @@
-import { ParticipantType } from "@/utils/openviduTypes";
+import { ParticipantType } from "@/utils/openvidu/openviduTypes";
 
 export const OPENVIDU_SESSION = {
   sessionId: "1234",

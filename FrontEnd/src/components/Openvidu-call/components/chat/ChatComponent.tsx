@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import IconExit from "@assets/icons/IconExit";
 import IconSendMsg from "@assets/icons/IconSendMsg";
 import { StreamManager } from "openvidu-browser";
-import { Message } from "@utils/openviduTypes";
+import { Message } from "@/utils/openvidu/openviduTypes";
 
 interface ChatComponentProps {
   user: {

@@ -1,3 +1,4 @@
+import { UserModelType } from "@/utils/openvidu/openviduTypes";
 import { StreamManager } from "openvidu-browser";
 
 type UserType = "remote" | "local";
@@ -7,16 +8,28 @@ class UserModel {
   private audioActive: boolean;
   private videoActive: boolean;
   private nickname: string;
+  private userId: string;
   private streamManager: StreamManager | null;
   private type: UserType;
 
-  constructor() {
-    this.connectionId = "";
-    this.audioActive = true;
-    this.videoActive = true;
-    this.nickname = "";
-    this.streamManager = null;
-    this.type = "local";
+  constructor(user?: UserModelType) {
+    if (user) {
+      this.connectionId = user.getConnectionId();
+      this.audioActive = user.isAudioActive();
+      this.videoActive = user.isVideoActive();
+      this.nickname = user.getNickname();
+      this.userId = user.getUserId();
+      this.streamManager = user.getStreamManager();
+      this.type = user.isLocal() ? "local" : "remote";
+    } else {
+      this.connectionId = "";
+      this.audioActive = true;
+      this.videoActive = true;
+      this.nickname = "";
+      this.streamManager = null;
+      this.type = "local";
+      this.userId = "";
+    }
   }
 
   public isAudioActive(): boolean {
@@ -37,6 +50,10 @@ class UserModel {
 
   public getStreamManager(): StreamManager | null {
     return this.streamManager;
+  }
+
+  public getUserId(): string {
+    return this.userId;
   }
 
   public isLocal(): boolean {
@@ -65,6 +82,10 @@ class UserModel {
 
   public setNickname(nickname: string): void {
     this.nickname = nickname;
+  }
+
+  public setUserId(userId: string): void {
+    this.userId = userId;
   }
 
   public setType(type: UserType): void {
