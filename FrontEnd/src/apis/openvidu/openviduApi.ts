@@ -33,9 +33,11 @@ export async function removeUser(requestData: { sessionName: string; token: stri
 //세션 완전 종료
 export async function closeSession(sessionName: string) {
   try {
+    console.log("세션을 완전히 종료합니다 close Session");
     await authInstance.delete(VIDEO_API_BASE + "/close-session", {
       data: { sessionName: sessionName },
     });
+    console.log("세션 종료 성공");
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       console.log("세션 종료 오류");
