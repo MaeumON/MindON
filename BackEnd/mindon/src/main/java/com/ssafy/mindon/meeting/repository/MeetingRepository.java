@@ -35,4 +35,6 @@ public interface MeetingRepository extends JpaRepository<Meeting, Integer> {
     List<Meeting> findByGroup_GroupIdIn(List<Integer> groupIds); // 위에거로 되면 삭제 가능
 
     List<Meeting> findByGroup_GroupId(Integer groupId);
+    List<Meeting> findByGroup_GroupIdAndMeetingStatusIn(Integer groupId, List<Byte> meetingStatus);
+
 }

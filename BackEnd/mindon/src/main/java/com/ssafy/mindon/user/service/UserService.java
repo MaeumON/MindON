@@ -7,10 +7,7 @@ import com.ssafy.mindon.common.exception.NotFoundException;
 import com.ssafy.mindon.group.repository.GroupRepository;
 import com.ssafy.mindon.meeting.entity.Meeting;
 import com.ssafy.mindon.meeting.repository.MeetingRepository;
-import com.ssafy.mindon.user.dto.SpeakerDto;
-import com.ssafy.mindon.user.dto.SpeakerListDto;
-import com.ssafy.mindon.user.dto.UserEmotionResponseDto;
-import com.ssafy.mindon.user.dto.UserProfileResponseDto;
+import com.ssafy.mindon.user.dto.*;
 import com.ssafy.mindon.user.entity.User;
 import com.ssafy.mindon.user.repository.UserRepository;
 import com.ssafy.mindon.usergroup.entity.UserGroup;
@@ -98,19 +95,45 @@ public class UserService {
         user.setUserStatus((byte) 1);
     }
 
-    public SpeakerListDto getSpeakerList(Set<String> userIds) {
-        List<SpeakerDto> speakerDtos = new ArrayList<>();
+    public SpeakerListDto getSpeakerList(Integer groupId,Set<String> userIds) {
+
+        List<Meeting> completedMeetings = meetingRepository.findByGroup_GroupIdAndMeetingStatusIn(groupId, List.of((byte) 2));
+        List<Integer> meetingIds = completedMeetings.stream().map(Meeting::getMeetingId).toList();
+
+        if (meetingIds.isEmpty()) {
+            List<SpeakerDto> speakerDtos = new ArrayList<>();
+            int no = 1;
+            for (String userId : userIds) {
+                User user = userRepository.findByUserId(userId);
+                if (user != null) {
+                    speakerDtos.add(new SpeakerDto(no++, user.getUserId(), user.getUserName()));
+                }
+            }
+            return new SpeakerListDto(speakerDtos);
+        }
+
+        List<UserSpeechAmount> userSpeechAmounts = userIds.stream()
+                .map(userId -> {
+                    Double avgSpeechAmount = Optional.ofNullable(
+                            userReviewRepository.findAvgSpeechAmountByUserIdAndMeetings(userId, meetingIds)
+                    ).orElse(0.0); // null 방지
+
+                    return new UserSpeechAmount(userId, avgSpeechAmount);
+                })
+                .sorted(Comparator.comparingDouble(UserSpeechAmount::getAvgSpeechAmount)) // 평균이 작은 순으로 정렬
+                .toList();
+
+        List<SpeakerDto> orderedSpeakerDtos = new ArrayList<>();
         int no = 1;
-
-        for (String userId : userIds) {
-            User user = userRepository.findByUserId(userId);
-
+        for (UserSpeechAmount userSpeech : userSpeechAmounts) {
+            User user = userRepository.findByUserId(userSpeech.getUserId());
             if (user != null) {
-                speakerDtos.add(new SpeakerDto(no++, user.getUserId(), user.getUserName()));
+                orderedSpeakerDtos.add(new SpeakerDto(no++, user.getUserId(), user.getUserName())); // speechAmountAvg 제거
             }
         }
 
-        return new SpeakerListDto(speakerDtos);
+        return new SpeakerListDto(orderedSpeakerDtos);
+
     }
 
     public UserProfileResponseDto getUserProfile(String userId) {
