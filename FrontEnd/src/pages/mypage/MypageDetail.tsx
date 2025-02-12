@@ -9,12 +9,15 @@ import { useEffect, useState } from "react";
 import groupDetailJoinApi from "@/apis/group/groupDetailJoinApi";
 import groupDetailLeaveApi from "@/apis/group/groupDetailLeaveApi";
 import GroupJoinModal from "@components/group/GroupJoinModal";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-function GroupDetail() {
+function MypageDetail() {
   const { groupId } = useParams();
   const [isRegi, setIsRegi] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
   const queryClient = useQueryClient();
+  const router = useNavigate();
 
   // React 쿼리로 그룹 상세 정보 가져오기
   // undefined일 경우 API 요청 안함(타입 가드)
@@ -39,6 +42,12 @@ function GroupDetail() {
     staleTime: 1000 * 60 * 5, // 5분 동안 캐싱 유지(옵션)
     enabled: !!groupId, // groupId가 존재할 때만 API 요청
   });
+
+  function enterVideoCall() {
+    const groupId = group?.groupId;
+    const groupName = group?.title;
+    router(`/prejoin/${groupId}/${groupName}`);
+  }
 
   // group 데이터가 변경될 때 isRegi 상태 업데이트
   useEffect(() => {
@@ -183,6 +192,37 @@ function GroupDetail() {
       </div>
     ); // 예외처리 추가
 
+  // 플로팅 버튼
+
+  interface GroupButtonProps {
+    groupStatus: number;
+    onClickJoin: () => void; // 클릭 핸들러 props 추가
+  }
+
+  const GroupButton: React.FC<GroupButtonProps> = ({ groupStatus, onClickJoin }) => {
+    if (groupStatus === 0) {
+      return (
+        <Button
+          text="취소하기"
+          type="ORANGE"
+          onClick={onClickJoin}
+          className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-40px)] max-w-[392px] w-auto shadow-lg"
+        />
+      );
+    }
+    if (groupStatus === 1) {
+      return (
+        <Button
+          text="참여하기"
+          type="GREEN"
+          onClick={enterVideoCall}
+          className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-40px)] max-w-[392px] w-auto shadow-lg"
+        />
+      );
+    }
+    return null; // groupStatus === 2일 때 버튼 렌더링 안 함
+  };
+
   return (
     <div className="pb-[74px]">
       {showJoinModal && <GroupJoinModal isRegi={isRegi} />}
@@ -213,7 +253,7 @@ function GroupDetail() {
             <div className="flex-col justify-start items-start flex gap-10">
               <div className="flex-col justify-start items-start flex">
                 <div className=" px-5 justify-start items-center gap-2.5 inline-flex">
-                  <div className="text-cardTitle text-2xl font-jamsilMedium">👥 모임 소개</div>
+                  <div className="text-cardTitle text-2xl font-jamsilMedium">모임 소개</div>
                 </div>
                 <div className=" px-8 py-2.5 rounded-2xl justify-start items-start gap-2.5 inline-flex">
                   <div className="text-cardLongContent text-lg font-medium leading-[35px]">{group?.description}</div>
@@ -222,10 +262,14 @@ function GroupDetail() {
               {/* 모임 정보 */}
               <div className="flex-col justify-start items-start flex">
                 <div className=" px-5 justify-start items-center gap-2.5 inline-flex">
-                  <div className="text-cardTitle text-2xl font-jamsilMedium">📢 모임 정보</div>
+                  <div className="text-cardTitle text-2xl font-jamsilMedium">모임 현황</div>
                 </div>
                 <div className="px-5 py-2.5 justify-start items-start gap-2.5 inline-flex leading-[35px] text-lg">
                   <div className="grow shrink basis-0 px-3">
+                    <span className="text-cardLongContent text-lg font-medium leading-[35px]">지금까지 </span>
+                    <span className="text-[#d98600] text-lg font-bold leading-[35px]">{group?.progressWeeks}회 </span>
+                    <span className="text-cardLongContent text-lg font-medium leading-[35px]">동안 함께 했어요</span>
+                    <br />
                     <span className="text-[#d98600] text-lg font-bold ">&quot;{group?.diseaseName}&quot;</span>
                     <span className="text-cardLongContent text-lg font-medium">
                       라는 주제로 이야기해요
@@ -266,12 +310,7 @@ function GroupDetail() {
           </div>
         </div>
         <div>
-          <Button
-            text={isRegi ? "취소하기" : "참여하기"}
-            type={isRegi ? "ORANGE" : "GREEN"}
-            onClick={onClickJoin}
-            className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-40px)] max-w-[392px] w-auto shadow-lg "
-          />
+          {group?.groupStatus !== 2 && <GroupButton groupStatus={group?.groupStatus} onClickJoin={onClickJoin} />}
         </div>
       </div>
       <Footer />
@@ -279,4 +318,4 @@ function GroupDetail() {
   );
 }
 
-export default GroupDetail;
+export default MypageDetail;
