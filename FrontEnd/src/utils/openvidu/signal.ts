@@ -63,23 +63,6 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
 
       console.log("!! questions.length", questions.length);
       console.log("!! speakingOrder.length", speakingOrder.length);
-      //질문 완전 종료
-      if (currentQuestionNumber === questions.length - 1 && currentUser === speakingOrder.length - 1) {
-        if (isSpeaking) {
-          setIsSpeaking(false);
-          //녹음 종료 API 호출
-          stopRecording({ sessionID: session.sessionId, questionId: questions[currentQuestionNumber].questionId })
-            .then(() => console.log("녹음 종료 성공"))
-            .catch((error) => {
-              console.log("녹음 종료 실패", error);
-            });
-          return;
-        }
-        console.log("질문 완전 종료");
-        setCurrentQuestionText("모임이\n종료되었습니다.");
-        setIsQuestionStart(2);
-        return;
-      }
 
       //답변 시작
       console.log("!! currentUserId", currentUserId);
@@ -108,6 +91,14 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
 
         //답변이 끝나면 질문 바꾸는 로직 진행
         setTotalAnswerPerQuestion(totalAnswerPerQuestion + 1);
+
+        // 마지막 질문의 마지막 사용자인 경우 모임 종료
+        if (currentQuestionNumber === questions.length - 1 && currentUser === speakingOrder.length - 1) {
+          console.log("질문 완전 종료");
+          setCurrentQuestionText("모임이\n종료되었습니다.");
+          setIsQuestionStart(2);
+          return;
+        }
 
         //하나의 질문 종료
         if (totalAnswerPerQuestion === speakingOrder.length - 1) {
