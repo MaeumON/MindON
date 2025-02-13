@@ -42,6 +42,11 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
     const speakingOrder = data.speakingOrder;
     const userId = data.userId;
 
+    if (speakingOrder.length === 0) {
+      alert("발언자 순서를 받아오는데 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
+
     console.log("--- 버튼 조작됨 ---");
     console.log("-- 질문 리스트 --", questions);
     console.log("-- 발언자 순서 --", speakingOrder);
@@ -165,6 +170,11 @@ export function subscribeToStartMeeting({ session }: { session: Session }) {
 
       const data = JSON.parse(event.data || "");
       const speakingOrder = data.speakingOrder;
+
+      if (speakingOrder.length === 0) {
+        alert("발언자 순서를 받아오는데 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        return;
+      }
 
       if (isMeetingStart === 0) {
         await startInitialTimer();
