@@ -26,15 +26,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class GroupController {
 
-    private final GroupCreateService groupCreateService;
-    private final GroupJoinService groupJoinService;
-    private final GroupListService groupListService;
-    private final GroupLeaveService groupLeaveService;
-    private final GroupDetailService groupDetailService;
-    private final GroupRecommendService groupRecommendService;
-    private final GroupReviewService groupReviewService;
     private final JwtUtil jwtUtil;
     private final GroupService groupService;
+    private final GroupReviewService groupReviewService;
 
     @PostMapping
     public ResponseEntity<String> createGroup(
@@ -42,7 +36,7 @@ public class GroupController {
             @RequestBody @Valid CreateGroupRequestDto request) {
 
         jwtUtil.validateToken(accessToken);  // 토큰 검증
-        boolean isCreated = groupCreateService.createGroup(accessToken, request);
+        boolean isCreated = groupService.createGroup(accessToken, request);
         if (isCreated) {
             return ResponseEntity.status(201).body("{\"message\": \"success\"}");
         } else {
@@ -57,7 +51,7 @@ public class GroupController {
             @PathVariable Integer groupId) {
 
         jwtUtil.validateToken(accessToken);
-        groupJoinService.joinGroup(accessToken, groupId);
+        groupService.joinGroup(accessToken, groupId);
         return ResponseEntity.ok("{\"message\": \"success\"}");
     }
 
@@ -68,7 +62,7 @@ public class GroupController {
             Pageable pageable) {
 
         jwtUtil.validateToken(accessToken);
-        Page<GroupListResponseDto> response = groupListService.findGroupsByCriteria(
+        Page<GroupListResponseDto> response = groupService.findGroupsByCriteria(
                 request.getKeyword(), request.getDiseaseId(), request.getIsHost(),
                 request.getStartDate(), request.getPeriod(), request.getStartTime(),
                 request.getEndTime(), request.getDayOfWeek(), pageable
@@ -86,7 +80,7 @@ public class GroupController {
         jwtUtil.validateToken(accessToken);
         String keyword = (request != null) ? request.getKeyword() : null;
 
-        List<GroupListResponseDto> groupList = groupListService.findGroupsByAccessTokenAndStatus(accessToken, groupStatus, keyword);
+        List<GroupListResponseDto> groupList = groupService.findGroupsByAccessTokenAndStatus(accessToken, groupStatus, keyword);
         return ResponseEntity.ok(groupList);
     }
 
@@ -97,7 +91,7 @@ public class GroupController {
             @PathVariable Integer groupId) {
 
         jwtUtil.validateToken(accessToken);
-        groupLeaveService.leaveGroup(groupId, accessToken);
+        groupService.leaveGroup(groupId, accessToken);
         return ResponseEntity.ok("{\"message\": \"탈퇴 완료\"}");
     }
 
@@ -108,7 +102,7 @@ public class GroupController {
             @PathVariable Integer groupId) {
 
         jwtUtil.validateToken(accessToken);
-        GroupDetailResponseDto response = groupDetailService.findGroupDetailById(accessToken, groupId);
+        GroupDetailResponseDto response = groupService.findGroupDetailById(accessToken, groupId);
         return ResponseEntity.ok(response);
     }
 
@@ -118,7 +112,7 @@ public class GroupController {
             @PathVariable Byte diseaseId) {
 
         jwtUtil.validateToken(accessToken);
-        List<GroupListResponseDto> response = groupRecommendService.getRecommendedGroups(diseaseId);
+        List<GroupListResponseDto> response = groupService.getRecommendedGroups(diseaseId);
         return ResponseEntity.ok(response);
     }
 
