@@ -35,23 +35,20 @@ public class VideoController {
     }
 
     @PostMapping("/sessions/{sessionId}/connections")
-    public ResponseEntity<String> createConnection(@RequestHeader("Authorization") String accessToken, @PathVariable("sessionId") String sessionId,
+    public ResponseEntity<String> createConnection(@PathVariable("sessionId") String sessionId,
                                                    @RequestBody(required = false) Map<String, Object> params) {
-        jwtUtil.validateToken(accessToken);
         String token = videoService.createConnection(sessionId, params);
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
     @PostMapping("/remove-user")
-    public ResponseEntity<?> removeUser(@RequestHeader("Authorization") String accessToken, @RequestBody Map<String, Object> sessionNameToken) {
-        jwtUtil.validateToken(accessToken);
+    public ResponseEntity<?> removeUser(@RequestBody Map<String, Object> sessionNameToken) {
         videoService.removeUser(sessionNameToken);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("close-session")
-    public ResponseEntity<?> closeSession(@RequestHeader("Authorization") String accessToken, @RequestBody Map<String, Object> sessionName) {
-        jwtUtil.validateToken(accessToken);
+    public ResponseEntity<?> closeSession(@RequestBody Map<String, Object> sessionName) {
         videoService.closeSession(sessionName);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -59,8 +56,7 @@ public class VideoController {
 
     // 녹음 API
     @PostMapping("/recording/start")
-    public ResponseEntity<?> startRecording(@RequestHeader("Authorization") String accessToken, @RequestBody Map<String, Object> params) {
-        jwtUtil.validateToken(accessToken);
+    public ResponseEntity<?> startRecording(@RequestBody Map<String, Object> params) {
         Recording recording = videoService.startRecording((String) params.get("session"), params);
         return new ResponseEntity<>(recording, HttpStatus.OK);
     }
@@ -82,8 +78,7 @@ public class VideoController {
     }
 
     @DeleteMapping("/recording/delete")
-    public ResponseEntity<?> deleteRecording(@RequestHeader("Authorization") String accessToken, @RequestBody Map<String, Object> params) {
-        jwtUtil.validateToken(accessToken);
+    public ResponseEntity<?> deleteRecording(@RequestBody Map<String, Object> params) {
         videoService.deleteRecording((String) params.get("recording"));
         return new ResponseEntity<>(HttpStatus.OK);
     }
