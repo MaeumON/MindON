@@ -3,19 +3,18 @@
 // import axios from "axios";
 import instance from "../instance";
 
-interface Data {
-  data: {
-    state: boolean;
-  };
+interface findPwdRequestType {
+  status: boolean;
 }
 
-const findPwdApi = async (userId: string, email: string): Promise<Data[]> => {
+//회원여부 확인 API
+const findPwdApi = async (userId: string, phone: string): Promise<findPwdRequestType> => {
   try {
-    const result = await instance.post<Data[]>("/api/auth/password", { userId, email });
+    const result = await instance.post<findPwdRequestType>("/api/auth/password", { userId, phone });
     console.log("apis/auth:", result.data);
     return result.data;
   } catch (error) {
-    console.error("FindId error:", error);
+    console.error("Check user error:", error);
     throw error;
   }
 };
