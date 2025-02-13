@@ -4,26 +4,9 @@ import ChatComponent from "@components/Openvidu-call/components/chat/ChatCompone
 import StreamComponent from "@components/Openvidu-call/components/stream/StreamComponent";
 import ToolbarComponent from "@components/Openvidu-call/components/toolbar/ToolbarComponent";
 import UserModel from "@components/Openvidu-call/models/user-model";
-// import Recording from "@pages/openvidu/Recording";
 import { Session } from "openvidu-browser";
 import EndModal from "@/components/Openvidu-call/components/EndModal";
 import ReportModal from "@/components/Openvidu-call/components/ReportModal";
-
-/*
-- 미팅 시작하기 전, 시작하겠습니다 멘트
-- 미팅 시작되면, 질문 시작 전 상태
-  - 잠시 후, "1"번째 질문이 시작됩니다.
-  - 질문 차례 띄우기
-
-  - 하나의 질문이 시작되면,
-    - 질문 띄우기: question.detail
-    - 답변시작하기 버튼
-
-  - 하나의 질문이 끝나면 (모든 차례까 다 돌아가고 나면), 다음 질문으로'
-
-  전체 모임 시간이 10분 미만으로 남을 경우, 강제로 마지막 질문을 띄우기
-
-*/
 
 interface RoomProps {
   meetingId: number;
@@ -103,9 +86,6 @@ const NoHostRoom = ({
           </div>
         ))}
       </div>
-      {/* <div>
-        <Recording sessionID={mySessionId} />
-      </div> */}
       <div className="h-[10%] mb-[20px]">
         <ToolbarComponent
           user={localUser}

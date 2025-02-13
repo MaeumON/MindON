@@ -1,4 +1,4 @@
-import { saveEmotion } from "@/apis/openvidu/emotionApi";
+import { saveEmotion } from "@apis/openvidu/emotionApi";
 import IconExit from "@assets/icons/IconExit";
 import { emotionList } from "@utils/emotionList";
 import { useState } from "react";
