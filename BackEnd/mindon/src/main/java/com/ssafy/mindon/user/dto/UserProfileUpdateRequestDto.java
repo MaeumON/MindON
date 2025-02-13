@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserProfileUpdateRequest {
+public class UserProfileUpdateRequestDto {
     private String password;
     private String phone;
     private Integer diseaseId;

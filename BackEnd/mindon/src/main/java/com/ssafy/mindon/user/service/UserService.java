@@ -1,7 +1,6 @@
 package com.ssafy.mindon.user.service;
 
 import com.ssafy.mindon.common.error.ErrorCode;
-import com.ssafy.mindon.common.exception.AuthException;
 import com.ssafy.mindon.common.exception.BusinessBaseException;
 import com.ssafy.mindon.common.exception.NotFoundException;
 import com.ssafy.mindon.common.util.PasswordUtil;
@@ -115,20 +114,20 @@ public class UserService {
             return new SpeakerListDto(speakerDtos);
         }
 
-        List<UserSpeechAmount> userSpeechAmounts = userIds.stream()
+        List<UserSpeechAmountDto> userSpeechAmounts = userIds.stream()
                 .map(userId -> {
                     Double avgSpeechAmount = Optional.ofNullable(
                             userReviewRepository.findAvgSpeechAmountByUserIdAndMeetings(userId, meetingIds)
                     ).orElse(0.0); // null 방지
 
-                    return new UserSpeechAmount(userId, avgSpeechAmount);
+                    return new UserSpeechAmountDto(userId, avgSpeechAmount);
                 })
-                .sorted(Comparator.comparingDouble(UserSpeechAmount::getAvgSpeechAmount)) // 평균이 작은 순으로 정렬
+                .sorted(Comparator.comparingDouble(UserSpeechAmountDto::getAvgSpeechAmount)) // 평균이 작은 순으로 정렬
                 .toList();
 
         List<SpeakerDto> orderedSpeakerDtos = new ArrayList<>();
         int no = 1;
-        for (UserSpeechAmount userSpeech : userSpeechAmounts) {
+        for (UserSpeechAmountDto userSpeech : userSpeechAmounts) {
             User user = userRepository.findByUserId(userSpeech.getUserId());
             if (user != null) {
                 orderedSpeakerDtos.add(new SpeakerDto(no++, user.getUserId(), user.getUserName())); // speechAmountAvg 제거
@@ -155,7 +154,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserProfile(String userId, UserProfileUpdateRequest request) {
+    public void updateUserProfile(String userId, UserProfileUpdateRequestDto request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 

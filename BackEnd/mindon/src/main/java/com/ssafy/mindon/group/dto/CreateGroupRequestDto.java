@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class CreateGroupRequest {
+public class CreateGroupRequestDto {
 
     @NotBlank
     @Size(max = 15)

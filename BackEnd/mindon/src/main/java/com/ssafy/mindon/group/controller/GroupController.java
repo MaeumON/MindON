@@ -1,25 +1,18 @@
 package com.ssafy.mindon.group.controller;
 
 import com.ssafy.mindon.common.error.ErrorCode;
-import com.ssafy.mindon.common.exception.AuthException;
-import com.ssafy.mindon.common.exception.BusinessBaseException;
 import com.ssafy.mindon.common.exception.GroupException;
-import com.ssafy.mindon.common.exception.NotFoundException;
 import com.ssafy.mindon.common.util.JwtUtil;
 import com.ssafy.mindon.group.dto.*;
 import com.ssafy.mindon.group.service.*;
-import com.ssafy.mindon.userreview.dto.GroupReviewResponse;
+import com.ssafy.mindon.userreview.dto.GroupReviewResponseDto;
 import com.ssafy.mindon.userreview.service.GroupReviewService;
-import io.jsonwebtoken.JwtException;
-import jdk.jshell.spi.ExecutionControl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -46,7 +39,7 @@ public class GroupController {
     @PostMapping
     public ResponseEntity<String> createGroup(
             @RequestHeader("Authorization") String accessToken,
-            @RequestBody @Valid CreateGroupRequest request) {
+            @RequestBody @Valid CreateGroupRequestDto request) {
 
         jwtUtil.validateToken(accessToken);  // 토큰 검증
         boolean isCreated = groupCreateService.createGroup(accessToken, request);
@@ -71,11 +64,11 @@ public class GroupController {
     @PostMapping("/list")
     public ResponseEntity<?> getGroupList(
             @RequestHeader("Authorization") String accessToken,
-            @RequestBody GroupListRequest request,
+            @RequestBody GroupListRequestDto request,
             Pageable pageable) {
 
         jwtUtil.validateToken(accessToken);
-        Page<GroupListResponse> response = groupListService.findGroupsByCriteria(
+        Page<GroupListResponseDto> response = groupListService.findGroupsByCriteria(
                 request.getKeyword(), request.getDiseaseId(), request.getIsHost(),
                 request.getStartDate(), request.getPeriod(), request.getStartTime(),
                 request.getEndTime(), request.getDayOfWeek(), pageable
@@ -85,15 +78,15 @@ public class GroupController {
     }
 
     @PostMapping("/{groupStatus}/list")
-    public ResponseEntity<List<GroupListResponse>> getGroupsByStatus(
+    public ResponseEntity<List<GroupListResponseDto>> getGroupsByStatus(
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Byte groupStatus,
-            @RequestBody(required = false) GroupListRequest request
+            @RequestBody(required = false) GroupListRequestDto request
     ) {
         jwtUtil.validateToken(accessToken);
         String keyword = (request != null) ? request.getKeyword() : null;
 
-        List<GroupListResponse> groupList = groupListService.findGroupsByAccessTokenAndStatus(accessToken, groupStatus, keyword);
+        List<GroupListResponseDto> groupList = groupListService.findGroupsByAccessTokenAndStatus(accessToken, groupStatus, keyword);
         return ResponseEntity.ok(groupList);
     }
 
@@ -110,12 +103,12 @@ public class GroupController {
 
 
     @GetMapping("/{groupId}")
-    public ResponseEntity<GroupDetailResponse> getGroupDetail(
+    public ResponseEntity<GroupDetailResponseDto> getGroupDetail(
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Integer groupId) {
 
         jwtUtil.validateToken(accessToken);
-        GroupDetailResponse response = groupDetailService.findGroupDetailById(accessToken, groupId);
+        GroupDetailResponseDto response = groupDetailService.findGroupDetailById(accessToken, groupId);
         return ResponseEntity.ok(response);
     }
 
@@ -125,12 +118,12 @@ public class GroupController {
             @PathVariable Byte diseaseId) {
 
         jwtUtil.validateToken(accessToken);
-        List<GroupListResponse> response = groupRecommendService.getRecommendedGroups(diseaseId);
+        List<GroupListResponseDto> response = groupRecommendService.getRecommendedGroups(diseaseId);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{groupId}/reviews")
-    public ResponseEntity<GroupReviewResponse> getGroupReviews(
+    public ResponseEntity<GroupReviewResponseDto> getGroupReviews(
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Integer groupId) {
 
@@ -149,7 +142,7 @@ public class GroupController {
     }
 
     @PostMapping("/password")
-    public ResponseEntity<Boolean> checkGroupPassword(@RequestBody GroupPasswordRequest request) {
+    public ResponseEntity<Boolean> checkGroupPassword(@RequestBody GroupPasswordRequestDto request) {
         System.out.println(request.getGroupId() + "con" + request.getPrivatePassword());
         boolean isCorrect = groupService.checkGroupPassword(request.getGroupId(), request.getPrivatePassword());
         return ResponseEntity.ok(isCorrect);

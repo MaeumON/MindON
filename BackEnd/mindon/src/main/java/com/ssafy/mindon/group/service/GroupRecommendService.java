@@ -1,6 +1,6 @@
 package com.ssafy.mindon.group.service;
 
-import com.ssafy.mindon.group.dto.GroupListResponse;
+import com.ssafy.mindon.group.dto.GroupListResponseDto;
 import com.ssafy.mindon.group.entity.Group;
 import com.ssafy.mindon.group.repository.GroupRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +14,13 @@ public class GroupRecommendService {
 
     private final GroupRepository groupRepository;
 
-    public List<GroupListResponse> getRecommendedGroups(Byte diseaseId) {
+    public List<GroupListResponseDto> getRecommendedGroups(Byte diseaseId) {
         // 관심 질병 기반 최신 그룹 5개 조회
         List<Group> groups = groupRepository.findTop5ByDiseaseDiseaseIdAndGroupStatusOrderByCreatedDateDesc(diseaseId, (byte) 0);
 
         // Entity -> DTO 변환
         return groups.stream().map(group -> {
-            GroupListResponse response = new GroupListResponse();
+            GroupListResponseDto response = new GroupListResponseDto();
             response.setGroupId(group.getGroupId());
             response.setTitle(group.getTitle());
             response.setDiseaseId(group.getDisease().getDiseaseId());

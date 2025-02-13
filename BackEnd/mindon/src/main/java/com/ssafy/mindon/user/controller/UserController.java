@@ -1,12 +1,10 @@
 package com.ssafy.mindon.user.controller;
 
 import com.ssafy.mindon.auth.service.AuthService;
-import com.ssafy.mindon.common.error.ErrorCode;
-import com.ssafy.mindon.common.exception.AuthException;
 import com.ssafy.mindon.user.dto.SpeakerListDto;
 import com.ssafy.mindon.user.dto.UserEmotionResponseDto;
 import com.ssafy.mindon.user.dto.UserProfileResponseDto;
-import com.ssafy.mindon.user.dto.UserProfileUpdateRequest;
+import com.ssafy.mindon.user.dto.UserProfileUpdateRequestDto;
 import com.ssafy.mindon.user.service.UserService;
 import com.ssafy.mindon.video.service.VideoService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +14,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.Set;
 
 @Slf4j
@@ -74,7 +71,7 @@ public class UserController {
     @PatchMapping("/profile")
     public ResponseEntity<?> updateUserProfile(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken,
-            @RequestBody UserProfileUpdateRequest request) {
+            @RequestBody UserProfileUpdateRequestDto request) {
         jwtUtil.validateToken(accessToken);
 
         String userId = jwtUtil.extractUserId(accessToken);
