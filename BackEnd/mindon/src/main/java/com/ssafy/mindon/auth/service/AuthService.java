@@ -145,4 +145,9 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    public boolean isIdAvailable(String userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) return true;
+        else return false;
+    }
 }
