@@ -7,12 +7,10 @@ import java.io.*;
 @Service
 public class AudioConverterService {
 
-//    private static final String FFMPEG_PATH = "ffmpeg"; // FFmpeg 실행 경로 (환경 변수 등록됨)
-    private static final String FFMPEG_PATH = "/usr/bin/ffmpeg"; // FFmpeg 실행 경로 (ec2 환경)
-
+    @Value("${ffmpeg.path}")
+    private String FFMPEG_PATH;
     @Value("${recording.directory}")
     private String OUTPUT_DIRECTORY; // 변환된 파일 저장 디렉토리
-
 
     /**
      * WebM 파일을 WAV 형식으로 변환

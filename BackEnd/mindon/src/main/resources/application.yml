@@ -58,3 +58,6 @@ file:
 
 recording:
   directory: ${RECORDING_DIRECTORY}
+
+ffmpeg:
+  path: ${FFMPEG_PATH}
