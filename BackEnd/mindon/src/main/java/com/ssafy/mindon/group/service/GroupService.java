@@ -20,16 +20,11 @@ import java.util.stream.Collectors;
 import static com.ssafy.mindon.common.error.ErrorCode.GROUP_NOT_FOUND;
 
 @Service
+@RequiredArgsConstructor
 public class GroupService {
 
     private final GroupRepository groupRepository;
     private final UserGroupRepository userGroupRepository;
-
-    @Autowired
-    public GroupService(GroupRepository groupRepository, UserGroupRepository userGroupRepository) {
-        this.groupRepository = groupRepository;
-        this.userGroupRepository = userGroupRepository;
-    }
 
     public boolean isHostGroup(String sessionId) {
         try {
