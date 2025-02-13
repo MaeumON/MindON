@@ -25,7 +25,7 @@ const groupListApi = async (
       sort: sort,
     }).toString();
 
-    const result = await authInstance.post<ApiResponse>(`/api/groups/list${queryParams}`, requestData);
+    const result = await authInstance.post<ApiResponse>(`/api/groups/list?${queryParams}`, requestData);
     // const result = await authInstance.post<Group[]>("/api/groups/list", payload);
     console.log("📌 전체 API 응답 without data:", result);
     console.log("📌 전체 API 응답:", result.data);
