@@ -36,18 +36,16 @@ function DiseaseDrop({ title, value = null, onSelect }: DropdownProps) {
   }, [value]);
 
   return (
-    <Menu as="div" className="relative inline-block text-left w-full">
+    <Menu as="div" className="relative inline-block text-left w-full font-suite">
       <Form className="gap-3 w-full">
         <div className="block text-xl font-bold text-cardTitle">{title}</div>
-        <div>
-          <MenuButton className="inline-flex w-full justify-start gap-x-2 rounded-xl bg-white px-4 py-4 text-lg font-bold text-cardLongContent outline-none border-2 focus:border-yellow100 focus:border-yellow100  focus:ring-0.5 focus:ring-yellow100">
-            {selectedText || "대화를 나누고 싶은 주제를 선택하세요"}
-            <ChevronDownIcon aria-hidden="true" className="mr-1 size-7 text-gray-400" />
-          </MenuButton>
-        </div>
+        <MenuButton className="flex justify-between w-full rounded-xl bg-white px-4 py-3 text-lg font-bold text-cardLongContent outline-none border-2 focus:border-yellow100 focus:border-1 focus:ring-0.5 focus:ring-yellow100">
+          {selectedText || "대화 주제를 선택해주세요"}
+          <ChevronDownIcon aria-hidden="true" className="mr-1 size-7 text-gray-400" />
+        </MenuButton>
       </Form>
 
-      <MenuItems className="absolute left-0 z-50 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+      <MenuItems className="absolute left-0 z-50 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-black ring-opacity-5 focus:outline-none">
         <div className="py-1 max-h-40 overflow-y-auto">
           {Object.entries(diseaseData).map(([id, disease]) => (
             <MenuItem key={id}>
