@@ -42,11 +42,10 @@ authInstance.interceptors.response.use(
 
       try {
         // refresh 요청할 토큰 가져오기
-        const { accessToken, refreshToken } = useAuthStore.getState();
+        const { refreshToken } = useAuthStore.getState();
 
         // 백엔드에 refresh 요청
         const res = await axios.post(`${VITE_APP_API_URL}/api/auth/refresh`, {
-          accessToken,
           refreshToken,
         });
 
