@@ -61,7 +61,7 @@ public class AuthService {
             throw new AuthException(ErrorCode.INVALID_PASSWORD);
         }
 
-        if (user.getUserStatus() == 2) { // 정지된 계정이면 에러 반환
+        if (user.getUserStatus() == 2 || user.getUserStatus() == 1) { // 정지된 계정이나 탈퇴한 계정이면 에러 반환
             throw new AuthException(ErrorCode.ACCOUNT_SUSPENDED);
         }
 
@@ -120,12 +120,24 @@ public class AuthService {
 
     public String findUserId(String userName, String phone) {
         return userRepository.findByUserNameAndPhone(userName, phone)
-                .map(User::getUserId)
+                .map(user -> {
+                    if (user.getUserStatus() == 2 || user.getUserStatus() == 1) { // 정지된 계정이나 탈퇴한 계정이면 에러 반환
+                        throw new AuthException(ErrorCode.ACCOUNT_SUSPENDED);
+                    }
+                    return user.getUserId();
+                })
                 .orElseThrow(() -> new AuthException(ErrorCode.USER_NOT_FOUND));
     }
 
     public boolean isUserExists(String userId, String phone) {
-        return userRepository.findByUserIdAndPhone(userId, phone).isPresent();
+        return userRepository.findByUserIdAndPhone(userId, phone)
+                .map(user -> {
+                    if (user.getUserStatus() == 2 || user.getUserStatus() == 1) { // 정지된 계정이나 탈퇴한 계정이면 에러 반환
+                        throw new AuthException(ErrorCode.ACCOUNT_SUSPENDED);
+                    }
+                    return true;
+                })
+                .orElse(false);
     }
 
     // 비밀번호 재설정
