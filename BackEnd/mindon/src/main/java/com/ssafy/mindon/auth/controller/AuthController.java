@@ -75,4 +75,11 @@ public class AuthController {
         return ResponseEntity.ok("Password reset successful.");
     }
 
+    @PostMapping("/check-id")
+    public ResponseEntity<?> checkId(@RequestBody Map<String, String> request) {
+        String userId = request.get("userId");
+
+        boolean response = authService.isIdAvailable(userId); 
+        return ResponseEntity.ok(response);
+    }
 }
