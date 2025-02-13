@@ -12,7 +12,7 @@ function Welcome() {
       <div className="flex flex-col w-full ">
         {/* 로고+곰 가로배치*/}
         <div className="flex">
-          <div className="flex justify-center items-center pl-[100px]">
+          <div className="w-full flex justify-center items-center pl-[50px]">
             {/* <img src={logo_mindon} alt="마음 ON" /> */}
             <p className="font-jamsilExtraBold text-white text-[40px] [text-shadow:_4px_2px_0_#828282]">마음ON</p>
           </div>
