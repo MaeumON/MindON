@@ -5,12 +5,17 @@ import { Wrapper, Form } from "@components/common/DivName";
 import Button from "@components/common/Button";
 import DiseaseDrop from "@components/common/DiseaseDrop";
 import signUpApi from "@/apis/auth/signUpApi";
+import checkUserIdApi from "@/apis/auth/checkUserIdApi";
 
 function SignUp() {
   const [userName, setUserName] = useState<string>("");
   const [userId, setUserId] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [diseaseId, setDiseaseId] = useState<number | null>(null); // 질병 선택 전 null 값
+
+  // 아이디 중복 확인
+  const [isIdCheck, setIsIdCheck] = useState<boolean>(false);
+  const [userIdCheckMsg, setUserIdCheckMsg] = useState<string>("");
 
   // 비밀번호, 확인
   const [password, setPassword] = useState<string>("");
@@ -65,6 +70,18 @@ function SignUp() {
   const onChangeUserId = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setUserId(e.target.value);
   }, []);
+
+  // 아이디 확인
+  async function onClickCheckUserId() {
+    const response = await checkUserIdApi(userId);
+    if (response) {
+      setUserIdCheckMsg("사용 가능한 아이디입니다.");
+      setIsIdCheck(true);
+    } else {
+      setUserIdCheckMsg("이미 사용 중인 아이디입니다.");
+      setIsIdCheck(false);
+    }
+  }
 
   // 비밀번호
   const onChangePassword = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,14 +141,20 @@ function SignUp() {
           onChange={onChangeUserName}
         />
         <span></span>
-        <InputForm
-          title={"아이디"}
-          titleClassName="text-xl"
-          holder={"아이디"}
-          value={userId}
-          onChange={onChangeUserId}
-        />
-        <span></span>
+        <div className="flex flex-col gap-3">
+          <div className="text-xl">아이디</div>
+          <div className="flex gap-[5px]">
+            <input
+              className="grow shrink basis-0 font-suite rounded-xl py-3 px-4 text-cardLongContent
+          disabled:text-cardContent disabled:bg-cardSubcontent disabled:cursor-not-allowed  bg-White text-lg justify-start items-center font-bold whitespace-nowrap w-full outline-none border-2 focus:border-yellow100 focus:border-yellow100  focus:ring-0.5 focus:ring-yellow100"
+              placeholder="아이디"
+              value={userId}
+              onChange={onChangeUserId}
+            ></input>
+            <Button text="중복확인" type="GREEN" className="basis-0" onClick={onClickCheckUserId} />
+          </div>
+        </div>
+        <span className={`text-sm pl-2 ${isIdCheck ? "text-green100" : "text-red-500"}`}>{userIdCheckMsg}</span>
         <InputForm
           title={"비밀번호"}
           type="password"

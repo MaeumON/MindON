@@ -19,6 +19,12 @@ const handlers = [
   http.get("", () => {
     return HttpResponse.json({ test: "test" });
   }),
+
+  // //아이디 중복 체크
+  // http.post("/api/auth/check-id", () => {
+  //   return HttpResponse.json({ data: true });
+  // }),
+
   // 질문 받아오기
   // http.get(VITE_APP_API_URL + "/api/meetings/:meetingId/questions", (req) => {
   //   const { meetingId } = req.params; // meetingId 파라미터 접근
