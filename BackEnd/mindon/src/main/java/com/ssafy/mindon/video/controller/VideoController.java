@@ -20,27 +20,16 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/video")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@RequiredArgsConstructor
 public class VideoController {
 
     private final VideoService videoService;
     private final JwtUtil jwtUtil;
 
-    @Autowired
-    public VideoController(VideoService videoService, JwtUtil jwtUtil) {
-        this.videoService = videoService;
-        this.jwtUtil = jwtUtil;
-    }
-
     // 세션 API
     @PostMapping("/sessions")
     public ResponseEntity<SessionResponse> initializeSession(@RequestHeader("Authorization") String accessToken, @RequestBody(required = false) Map<String, Object> params) {
-        try {
-            if (jwtUtil.isTokenExpired(accessToken)) {
-                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-            }
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN); // 원하는 예외 던지기
-        }
+        jwtUtil.validateToken(accessToken);
         String customSessionId = (String) params.get("customSessionId");
         String userId = jwtUtil.extractUserId(accessToken);
         SessionResponse response = videoService.initializeSession(params);
@@ -51,58 +40,40 @@ public class VideoController {
     }
 
     @PostMapping("/sessions/{sessionId}/connections")
-    public ResponseEntity<String> createConnection(@PathVariable("sessionId") String sessionId,
+    public ResponseEntity<String> createConnection(@RequestHeader("Authorization") String accessToken, @PathVariable("sessionId") String sessionId,
                                                    @RequestBody(required = false) Map<String, Object> params) {
-        try {
-            String token = videoService.createConnection(sessionId, params);
-            return new ResponseEntity<>(token, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        jwtUtil.validateToken(accessToken);
+        String token = videoService.createConnection(sessionId, params);
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
     @PostMapping("/remove-user")
-    public ResponseEntity<?> removeUser(@RequestBody Map<String, Object> sessionNameToken) {
-        try {
-            videoService.removeUser(sessionNameToken);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<?> removeUser(@RequestHeader("Authorization") String accessToken, @RequestBody Map<String, Object> sessionNameToken) {
+        jwtUtil.validateToken(accessToken);
+        videoService.removeUser(sessionNameToken);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("close-session")
-    public ResponseEntity<?> closeSession(@RequestBody Map<String, Object> sessionName) {
-        try {
-            videoService.closeSession(sessionName);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<?> closeSession(@RequestHeader("Authorization") String accessToken, @RequestBody Map<String, Object> sessionName) {
+        jwtUtil.validateToken(accessToken);
+        videoService.closeSession(sessionName);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
     // 녹음 API
     @PostMapping("/recording/start")
-    public ResponseEntity<?> startRecording(@RequestBody Map<String, Object> params) {
-        try {
-            Recording recording = videoService.startRecording((String) params.get("session"), params);
-            return new ResponseEntity<>(recording, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<?> startRecording(@RequestHeader("Authorization") String accessToken, @RequestBody Map<String, Object> params) {
+        jwtUtil.validateToken(accessToken);
+        Recording recording = videoService.startRecording((String) params.get("session"), params);
+        return new ResponseEntity<>(recording, HttpStatus.OK);
     }
 
 
     @PostMapping("/recording/stop")
     public ResponseEntity<?> stopRecording(@RequestHeader("Authorization") String accessToken, @RequestBody Map<String, Object> params) {
-        try {
-            if (jwtUtil.isTokenExpired(accessToken)) {
-                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-            }
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN); // 원하는 예외 던지기
-        }
+        jwtUtil.validateToken(accessToken);
         String userId = jwtUtil.extractUserId(accessToken);
         String sessionId = (String) params.get("recording");
         int questionId = (Integer) params.get("questionId");
@@ -116,23 +87,16 @@ public class VideoController {
     }
 
     @DeleteMapping("/recording/delete")
-    public ResponseEntity<?> deleteRecording(@RequestBody Map<String, Object> params) {
-        try {
-            videoService.deleteRecording((String) params.get("recording"));
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<?> deleteRecording(@RequestHeader("Authorization") String accessToken, @RequestBody Map<String, Object> params) {
+        jwtUtil.validateToken(accessToken);
+        videoService.deleteRecording((String) params.get("recording"));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/sessions/{sessionId}/participants")
     public ResponseEntity<Set<String>> getParticipants(@PathVariable("sessionId") String sessionId) {
-        try {
-            Set<String> participants = videoService.getParticipants(sessionId);
-            return new ResponseEntity<>(participants, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
+        Set<String> participants = videoService.getParticipants(sessionId);
+        return new ResponseEntity<>(participants, HttpStatus.OK);
     }
 
 }

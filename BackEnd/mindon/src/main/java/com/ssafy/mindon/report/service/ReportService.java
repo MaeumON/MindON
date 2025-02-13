@@ -8,24 +8,19 @@ import com.ssafy.mindon.report.repository.ReasonRepository;
 import com.ssafy.mindon.report.repository.ReportRepository;
 import com.ssafy.mindon.user.entity.User;
 import com.ssafy.mindon.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ReportService {
     private final ReportRepository reportRepository;
     private final UserRepository userRepository;
     private final ReasonRepository reasonRepository;
     private final MeetingRepository meetingRepository;
-
-    public ReportService(ReportRepository reportRepository, UserRepository userRepository, ReasonRepository reasonRepository, MeetingRepository meetingRepository) {
-        this.reportRepository = reportRepository;
-        this.userRepository = userRepository;
-        this.reasonRepository = reasonRepository;
-        this.meetingRepository = meetingRepository;
-    }
 
     @Transactional
     public void reportUser(String reportingUserId, String reportedUserId, Integer reasonId, String reason, Integer meetingId) {

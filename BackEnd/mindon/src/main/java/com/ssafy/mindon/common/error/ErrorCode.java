@@ -21,6 +21,7 @@ public enum ErrorCode {
     MEETING_Question_NOT_FOUND(HttpStatus.NOT_FOUND, "M4", "질문의 수가 충분하지 않습니다."),
     VIDEO_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "O1", "OpenVidu 서버에서 오류가 발생했습니다."),
     SESSION_NOT_FOUND(HttpStatus.NOT_FOUND, "O2", "해당 세션을 찾을 수 없습니다."),
+    INVALID_SESSION_TOKEN(HttpStatus.UNAUTHORIZED, "O3", "유효하지 않은 세션 토큰입니다."),
     GROUP_CREATION_FAILED(HttpStatus.BAD_REQUEST, "G2", "그룹 생성에 실패했습니다."),
     GROUP_JOIN_SAME_TIME(HttpStatus.BAD_REQUEST, "G3", "동일한 시간에 가입된 그룹이 있어 그룹 가입에 실패했습니다."),
     GROUP_FULL(HttpStatus.BAD_REQUEST, "G4", "그룹 정원이 초과되어 그룹 가입에 실패했습니다."),
