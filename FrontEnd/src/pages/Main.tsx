@@ -22,11 +22,12 @@ function Main() {
   const { userName, diseaseId } = useAuthStore();
   const nav = useNavigate();
   function navToOnTalk() {
-    nav("/groupslist?isHost=1");
-    // nav("/groupslist?isHost=1&page=1&size=10&sort=startDate,asc");
+    // nav("/groupslist?isHost=1");
+    nav("/groupslist?isHost=1&page=1&size=10&sort=startDate,asc");
   }
   function navToFreeTalk() {
-    nav("/groupslist?isHost=0");
+    // nav("/groupslist?isHost=0");
+    nav("/groupslist?isHost=0&page=1&size=10&sort=startDate,asc");
   }
 
   const [upcomingEvent, setUpcomingEvent] = useState<EventDics>();
