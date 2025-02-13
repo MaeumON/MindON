@@ -47,8 +47,7 @@ public class UserController {
     }
 
     @GetMapping("/{groupId}/list")
-    public ResponseEntity<?> getSpeakerList(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken, @PathVariable Integer groupId) {
-        jwtUtil.validateToken(accessToken);
+    public ResponseEntity<?> getSpeakerList(@PathVariable Integer groupId) throws Exception {
         String id = String.valueOf(groupId);
         Set<String> speakerIds = videoService.getParticipants(id);
         SpeakerListDto speakerListDto = userService.getSpeakerList(groupId,speakerIds);
