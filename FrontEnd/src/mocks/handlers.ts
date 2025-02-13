@@ -33,9 +33,9 @@ const handlers = [
   // }),
 
   // FindId 정보
-  http.post(VITE_APP_API_URL + "/api/auth/userid", () => {
-    return HttpResponse.json(FINDID);
-  }),
+  // http.post(VITE_APP_API_URL + "/api/auth/userid", () => {
+  //   return HttpResponse.json(FINDID);
+  // }),
 
   // FindPwd 정보
   http.post(VITE_APP_API_URL + "/api/auth/password", () => {

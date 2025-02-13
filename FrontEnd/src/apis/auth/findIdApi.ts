@@ -1,18 +1,15 @@
 // findId axios
 
-// import axios from "axios";
 import instance from "../instance";
 
-interface Data {
-  data: {
-    userId: string;
-  };
+interface findUserIdType {
+  userId: string;
 }
 
-const findIdApi = async (userName: string, email: string): Promise<Data[]> => {
+const findIdApi = async (userName: string, phone: string): Promise<findUserIdType> => {
   try {
-    const result = await instance.post<Data[]>("/api/auth/userid", { userName, email });
-    console.log("apis/auth:", result.data);
+    const result = await instance.post<findUserIdType>("/api/auth/userid", { userName, phone });
+    console.log("아이디 찾기: ", result.data);
     return result.data;
   } catch (error) {
     console.error("FindIdApi error:", error);
