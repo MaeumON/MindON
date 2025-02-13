@@ -83,11 +83,10 @@ public class MeetingService {
 
     public List<QuestionDto> getMeetingQuestions(Integer meetingId) {
         Meeting meeting = meetingRepository.findById(meetingId)
-                .orElseThrow(() -> new EntityNotFoundException("Meeting not found"));
+                .orElseThrow(() -> new MeetingException(ErrorCode.MEETING_NOT_FOUND));
 
         byte meetingWeek = meeting.getMeetingWeek();
         byte period = meeting.getGroup().getPeriod();
-
         List<QuestionDto> questions = new ArrayList<>();
 
         // 시작 메시지 추가
@@ -111,7 +110,7 @@ public class MeetingService {
             int questionsPerWeek = allQuestions.size() / totalMiddleWeeks;
 
             int startIndex = (meetingWeek - 2) * questionsPerWeek;
-            startIndex = Math.min(startIndex, allQuestions.size() - 1);
+            //startIndex = Math.min(startIndex, allQuestions.size() - 1);
             int endIndex = Math.min((meetingWeek - 1) * questionsPerWeek, allQuestions.size());
 
             if (meetingWeek == totalMiddleWeeks + 1) {
@@ -123,6 +122,16 @@ public class MeetingService {
             middleQuestions = weekQuestions.stream()
                     .limit(3)
                     .collect(Collectors.toList());
+
+            // 만약 중간 주 질문이 3개 미만이면 추가 확보
+            if (middleQuestions.size() < 3) {
+                List<QuestionDto> additionalQuestions = new ArrayList<>(allQuestions);
+                additionalQuestions.removeAll(middleQuestions);
+                Collections.shuffle(additionalQuestions);
+                middleQuestions.addAll(additionalQuestions.stream()
+                        .limit(3 - middleQuestions.size())
+                        .collect(Collectors.toList()));
+            }
         }
 
         questions.addAll(middleQuestions);
