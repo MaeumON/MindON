@@ -43,12 +43,12 @@ public class AudioConverterService {
         // FFmpeg 명령어 실행
         ProcessBuilder processBuilder = new ProcessBuilder(
                 FFMPEG_PATH,
-                "-i", "\"" + inputAbsolutePath + "\"", // 파일명 공백 대비 처리
+                "-i", inputAbsolutePath,
                 "-vn",                 // 비디오 제외
                 "-ac", "1",            // 오디오 채널 (모노)
                 "-ar", "16000",        // 샘플 레이트 (16kHz) (STT에 최적화)
                 "-c:a", "pcm_s16le",   // WAV 오디오 코덱 지정 (16-bit PCM)
-                "\"" + outputPath + "\"" // 출력 파일 경로도 공백 대비 처리
+                outputPath
         );
 
         processBuilder.redirectErrorStream(true); // 오류 메시지를 출력으로 포함
