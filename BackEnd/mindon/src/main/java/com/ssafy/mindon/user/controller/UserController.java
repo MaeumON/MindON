@@ -31,14 +31,7 @@ public class UserController {
 
     @GetMapping("/temparature")
     public ResponseEntity<?> getTemparature(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
-        try {
-            if (jwtUtil.isTokenExpired(accessToken)) {
-                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-            }
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN); // 원하는 예외 던지기
-        }
-
+        jwtUtil.validateToken(accessToken);
         String userId = jwtUtil.extractUserId(accessToken);
 
         UserEmotionResponseDto responseDto  = userService.calculateUserEmotionScore(userId);
@@ -48,13 +41,7 @@ public class UserController {
 
     @PatchMapping()
     public ResponseEntity<?> deleteUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
-        try {
-            if (jwtUtil.isTokenExpired(accessToken)) {
-                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-            }
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-        }
+        jwtUtil.validateToken(accessToken);
 
         String userId = jwtUtil.extractUserId(accessToken);
         userService.deleteUser(userId);
@@ -63,28 +50,18 @@ public class UserController {
     }
 
     @GetMapping("/{groupId}/list")
-    public ResponseEntity<?> getSpeakerList(@PathVariable Integer groupId) {
+    public ResponseEntity<?> getSpeakerList(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken, @PathVariable Integer groupId) {
+        jwtUtil.validateToken(accessToken);
         String id = String.valueOf(groupId);
-        try {
-            Set<String> speakerIds = videoService.getParticipants(id);
-            //Set<String> speakerIds = Set.of("user02", "user03");
-            SpeakerListDto speakerListDto = userService.getSpeakerList(groupId,speakerIds);
+        Set<String> speakerIds = videoService.getParticipants(id);
+        SpeakerListDto speakerListDto = userService.getSpeakerList(groupId,speakerIds);
 
-            return ResponseEntity.ok(speakerListDto);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return ResponseEntity.ok(speakerListDto);
     }
 
     @GetMapping("/profile")
     public ResponseEntity<UserProfileResponseDto> getUserProfile(@RequestHeader("Authorization") String accessToken) {
-        try {
-            if (jwtUtil.isTokenExpired(accessToken)) {
-                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-            }
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-        }
+        jwtUtil.validateToken(accessToken);
 
         String userId = jwtUtil.extractUserId(accessToken);
         
@@ -98,13 +75,7 @@ public class UserController {
     public ResponseEntity<?> updateUserProfile(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken,
             @RequestBody UserProfileUpdateRequest request) {
-        try {
-            if (jwtUtil.isTokenExpired(accessToken)) {
-                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-            }
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-        }
+        jwtUtil.validateToken(accessToken);
 
         String userId = jwtUtil.extractUserId(accessToken);
 

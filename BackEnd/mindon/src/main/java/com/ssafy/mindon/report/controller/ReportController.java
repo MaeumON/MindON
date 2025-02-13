@@ -20,7 +20,7 @@ public class ReportController {
             @RequestHeader("Authorization") String accessToken,
             @RequestBody ReportRequest request
     ) {
-        // 액세스 토큰에서 신고한 유저 ID 추출
+        jwtUtil.validateToken(accessToken);
         String reportingUserId = jwtUtil.extractUserId(accessToken);
 
         // 신고 처리

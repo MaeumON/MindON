@@ -9,6 +9,7 @@ import com.ssafy.mindon.common.util.PasswordUtil;
 import com.ssafy.mindon.disease.entity.Disease;
 import com.ssafy.mindon.user.entity.User;
 import com.ssafy.mindon.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +18,13 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordUtil passwordUtil;
     private final JwtUtil jwtUtil;
     private final RedisTemplate<String, String> redisTemplate;
-
-    public AuthService(UserRepository userRepository, PasswordUtil passwordUtil, JwtUtil jwtUtil, RedisTemplate<String, String> redisTemplate) {
-        this.userRepository = userRepository;
-        this.passwordUtil = passwordUtil;
-        this.jwtUtil = jwtUtil;
-        this.redisTemplate = redisTemplate;
-    }
 
     // 회원 가입
     public void signup(SignupRequestDto requestDto) {
