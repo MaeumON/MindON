@@ -1,6 +1,7 @@
-// groupList axios
+// groupListApi.ts
+
 import authInstance from "../authinstance";
-import { RequestData, Group } from "@utils/groups";
+import { RequestData, ApiResponse } from "@utils/groups";
 
 // interface ResponseData {
 //   data: Group[]; // 그룹 목록이므로 배열 형태
@@ -11,11 +12,20 @@ interface GroupStatusRequest {
   keyword?: string;
 }
 
-const groupListApi = async (requestData: Partial<RequestData> = {}): Promise<Group[]> => {
+const groupListApi = async (
+  requestData: Partial<RequestData>,
+  page: number = 1,
+  size: number = 10,
+  sort: string = "startDate,asc"
+): Promise<ApiResponse> => {
   try {
-    //pagination 처리 후 추가
-    // const payload = { ...requestData, page };
-    const result = await authInstance.post<Group[]>("/api/groups/list", requestData);
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      size: size.toString(),
+      sort: sort,
+    }).toString();
+
+    const result = await authInstance.post<ApiResponse>(`/api/groups/list${queryParams}`, requestData);
     // const result = await authInstance.post<Group[]>("/api/groups/list", payload);
     console.log("📌 전체 API 응답 without data:", result);
     console.log("📌 전체 API 응답:", result.data);
@@ -28,9 +38,9 @@ const groupListApi = async (requestData: Partial<RequestData> = {}): Promise<Gro
 
 export default groupListApi;
 
-export const groupStatusApi = async ({ groupStatus, keyword }: GroupStatusRequest): Promise<Group[]> => {
+export const groupStatusApi = async ({ groupStatus, keyword }: GroupStatusRequest): Promise<ApiResponse> => {
   try {
-    const result = await authInstance.post<Group[]>(`/api/groups/${groupStatus}/list`, { keyword: keyword });
+    const result = await authInstance.post<ApiResponse>(`/api/groups/${groupStatus}/list`, { keyword: keyword });
 
     console.log("result data : ", result.data);
     return result.data;

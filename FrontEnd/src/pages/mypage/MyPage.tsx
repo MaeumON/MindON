@@ -104,7 +104,10 @@ function MyPage() {
             나의 활동
           </div>
           <div className="flex flex-col gap-6">
-            <Card className="items-center" onClick={() => router("/mypage/grouplist/0")}>
+            <Card
+              className="items-center"
+              onClick={() => router("/mypage/grouplist/0&page=1&size=10&sort=startDate,asc")}
+            >
               <div className="ps-[10px] py-[5px]">
                 <div className="flex justify-between">
                   <div className="text-24px font-suite font-[700] text-cardLongContent">예정된 모임</div>
@@ -113,7 +116,10 @@ function MyPage() {
                 <div className="text-14px font-suite font-[500] text-cardContent">곧 함께 따뜻해질 모임이에요</div>
               </div>
             </Card>
-            <Card className="items-center" onClick={() => router("/mypage/grouplist/1")}>
+            <Card
+              className="items-center"
+              onClick={() => router("/mypage/grouplist/1&page=1&size=10&sort=startDate,asc")}
+            >
               <div className="ps-[10px] py-[5px]">
                 <div className="flex justify-between">
                   <div className="text-24px font-suite font-[700] text-cardLongContent">참여 중 모임</div>
@@ -124,7 +130,10 @@ function MyPage() {
                 </div>
               </div>
             </Card>
-            <Card onClick={() => router("/mypage/grouplist/2")} className="items-center">
+            <Card
+              onClick={() => router("/mypage/grouplist/2&page=1&size=10&sort=startDate,asc")}
+              className="items-center"
+            >
               <div className="ps-[10px] py-[5px]">
                 <div className="flex justify-between">
                   <div className="text-24px font-suite font-[700]  text-cardLongContent ">종료된 모임</div>
