@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { OpenVidu, Publisher } from "openvidu-browser";
 import Room from "@pages/openvidu/Room";
-import { createSessionResponse, UserModelType, VideoRoomState } from "@utils/openviduTypes";
+import { createSessionResponse, UserModelType, VideoRoomState } from "@/utils/openvidu/openviduTypes";
 import UserModel from "@components/Openvidu-call/models/user-model";
 // import OpenViduLayout from "@components/Openvidu-call/layout/openvidu-layout";
 import Button from "@components/common/Button";
@@ -30,7 +30,7 @@ const Prejoin = () => {
   const SESSION_ID = String(groupId);
   const GROUP_NAME = groupName;
 
-  const { userName } = useAuthStore();
+  const { userName, userId } = useAuthStore();
   const { reset: resetQuestionStore } = useQuestionStore();
 
   const [state, setState] = useState<VideoRoomState>({
@@ -66,10 +66,17 @@ const Prejoin = () => {
 
     try {
       //세션 연결
-      state.session?.connect(token, { clientData: state.userName }).then(() => {
-        //카메라 연결
-        connectWebCam();
-      });
+      state.session
+        ?.connect(token, {
+          clientData: {
+            userName: state.userName,
+            userId: userId, // userId는 상태에서 가져오거나 props로 전달받아야 합니다
+          },
+        })
+        .then(() => {
+          //카메라 연결
+          connectWebCam();
+        });
     } catch (error) {
       console.log("There was an error connecting to the session:", error);
     }
@@ -102,6 +109,7 @@ const Prejoin = () => {
       .catch(() => {});
 
     // 로컬 사용자 설정
+    localUser.setUserId(userId);
     localUser.setNickname(state.userName);
     localUser.setConnectionId(state.session?.connection.connectionId || "");
     localUser.setStreamManager(publisher);
@@ -130,6 +138,7 @@ const Prejoin = () => {
         isAudioActive: state.localUser.isAudioActive(),
         isVideoActive: state.localUser.isVideoActive(),
         nickname: state.localUser.getNickname(),
+        userId: state.localUser.getUserId(),
       });
     }
 
@@ -166,6 +175,7 @@ const Prejoin = () => {
       const subscriber = state.session?.subscribe(event.stream, undefined);
 
       console.log("event ", event);
+      console.log("### event stream connections", event.stream.connection);
 
       const newUser = new UserModel();
 
@@ -177,7 +187,8 @@ const Prejoin = () => {
       }
 
       const nickname = event.stream.connection.data.split("%")[0];
-      newUser.setNickname(JSON.parse(nickname).clientData);
+      newUser.setNickname(JSON.parse(nickname).clientData.userName);
+      newUser.setUserId(JSON.parse(nickname).clientData.userId);
       remotes.current.push(newUser as UserModelType);
 
       updateSubscribers();
@@ -346,6 +357,7 @@ const Prejoin = () => {
       </div>
       {state.session && !isHost && (
         <NoHostRoom
+          meetingId={meetingId}
           session={state.session}
           mySessionId={state.sessionId}
           localUser={localUser}

@@ -1,5 +1,5 @@
 import { Session } from "openvidu-browser";
-import { QuestionChangedData, QuestionSpeakingOrderType } from "../openviduTypes";
+import { QuestionChangedData, QuestionSpeakingOrderType } from "./openviduTypes";
 import { useQuestionStore } from "@/stores/questionStore";
 import { startInitialTimer } from "./timer";
 import { startRecording, stopRecording } from "@/apis/openvidu/recordingApi";

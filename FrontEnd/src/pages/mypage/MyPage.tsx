@@ -1,19 +1,21 @@
 import ShadowCard from "@components/common/ShadowCard";
 import Footer from "@components/Layout/Footer";
 import Header from "@/components/Layout/Header";
+import Card from "@/components/common/ShadowCard";
 import hellowbear from "@assets/images/bear/hellowbear.png";
 import IconCalendar from "@assets/icons/IconCalendar.png";
 import IconGrayCalendar from "@assets/icons/IconGrayCalendar.png";
-import Card from "@/components/common/ShadowCard";
 import IconArrowRight from "@/assets/icons/IconArrowRight";
-import { useNavigate } from "react-router-dom";
 import useAuthStore from "@stores/authStore";
 import myPageApi from "@apis/mypage/myPageApi";
+import useLogoutApi from "@/apis/auth/logoutApi";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 function MyPage() {
   const router = useNavigate();
   const { userName } = useAuthStore();
+  const onClickLogout = useLogoutApi();
 
   const fetchMyPage = async () => {
     const result = await myPageApi();
@@ -39,9 +41,9 @@ function MyPage() {
         <section className="relative flex flex-col bg-yellow100 card-title h-[180px] px-[40px] py-[40px]"></section>
         {/* 흰색 박스 */}
         <ShadowCard className="absolute top-[20px] left-1/2 transform -translate-x-1/2 md:w-[370px] sm:w-[330px] w-[310px]">
-          <div className="flex flex-col items-start gap-5">
+          <div className="flex flex-col items-start gap-4">
             {/* 온이 이미지+글 */}
-            <div className="justify-start items-center gap-2.5 inline-flex">
+            <div className="justify-start items-center gap-2.5 inline-flex pl-4 pt-2">
               {/* 온이 img */}
               <div className="justify-center items-center flex">
                 <img
@@ -97,8 +99,8 @@ function MyPage() {
 
         {/* 나의 활동 */}
 
-        <div className="mt-[90px] flex flex-col gap-5  mx-6 pt-[20px] border-3 border-solid border-red-500">
-          <div className="font-suite font-[700] text-20px text-cardLongContent border-3 border-solid border-red-500">
+        <div className="mt-[100px] flex flex-col gap-5  mx-6 pt-[20px] border-3 border-solid border-red-500">
+          <div className="pt-5 font-suite font-[700] text-22px text-cardLongContent border-3 border-solid border-red-500">
             나의 활동
           </div>
           <div className="flex flex-col gap-6">
@@ -138,8 +140,15 @@ function MyPage() {
         <div className="w-full flex gap-6 justify-start items-start font-suite mt-[40px]">
           <div className="flex flex-col justify-start items-start w-full ml-8 gap-1">
             <span className="text-cardContent2 text-lg font-semibold mb-2">정보 수정</span>
-            <span className="text-cardLongContent font-bold text-[20px] cursor-pointer">내 정보 수정</span>
-            <span className="text-cardLongContent font-bold text-[20px] cursor-pointer">회원 탈퇴</span>
+            <span
+              className="text-cardLongContent font-bold text-[20px] cursor-pointer"
+              onClick={() => router("/mypage/updateuser")}
+            >
+              내 정보 수정
+            </span>
+            <span className="text-cardLongContent font-bold text-[20px] cursor-pointer" onClick={onClickLogout}>
+              로그아웃
+            </span>
           </div>
           <div className="flex flex-col justify-start items-start w-full mr-8 gap-1">
             <span className="text-cardContent2 text-lg font-semibold mb-2">문의 및 알림</span>

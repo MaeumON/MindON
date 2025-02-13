@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Message, UserModelType } from "@/utils/openviduTypes";
+import { Message, UserModelType } from "@/utils/openvidu/openviduTypes";
 import ChatComponent from "@components/Openvidu-call/components/chat/ChatComponent";
 import StreamComponent from "@components/Openvidu-call/components/stream/StreamComponent";
 import ToolbarComponent from "@components/Openvidu-call/components/toolbar/ToolbarComponent";
@@ -7,6 +7,7 @@ import UserModel from "@components/Openvidu-call/models/user-model";
 // import Recording from "@pages/openvidu/Recording";
 import { Session } from "openvidu-browser";
 import EndModal from "@/components/Openvidu-call/components/EndModal";
+import ReportModal from "@/components/Openvidu-call/components/ReportModal";
 
 /*
 - 미팅 시작하기 전, 시작하겠습니다 멘트
@@ -25,8 +26,9 @@ import EndModal from "@/components/Openvidu-call/components/EndModal";
 */
 
 interface RoomProps {
+  meetingId: number;
   session: Session;
-  mySessionId: string;
+  mySessionId?: string;
   localUser: UserModel;
   subscribers: UserModelType[];
   showNotification?: boolean;
@@ -37,8 +39,8 @@ interface RoomProps {
 }
 
 const NoHostRoom = ({
+  meetingId,
   session,
-  // mySessionId,
   localUser,
   subscribers,
   camStatusChanged,
@@ -47,6 +49,9 @@ const NoHostRoom = ({
 }: RoomProps) => {
   const [isEndModalOpen, setIsEndModalOpen] = useState<boolean>(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState<boolean>(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
+  const [reportedUserId, setReportedUserId] = useState<string>("");
+  const [reportedUserName, setReportedUserName] = useState<string>("");
   const [messageList, setMessageList] = useState<Message[]>([]);
   const chatScroll = useRef<HTMLDivElement>(null);
 
@@ -88,7 +93,13 @@ const NoHostRoom = ({
 
         {subscribers.map((sub, i) => (
           <div key={i} className="w-[50%] h-[50%]" id="remoteUsers">
-            <StreamComponent user={sub} streamId={sub.getStreamManager().stream.streamId} />
+            <StreamComponent
+              user={new UserModel(sub)}
+              session={session}
+              setIsReportModalOpen={setIsReportModalOpen}
+              setReportedUserId={setReportedUserId}
+              setReportedUserName={setReportedUserName}
+            />
           </div>
         ))}
       </div>
@@ -112,6 +123,15 @@ const NoHostRoom = ({
           close={setIsChatModalOpen}
           messageList={messageList}
           chatScroll={chatScroll}
+        />
+      )}
+      {/* 신고 모달 */}
+      {isReportModalOpen && (
+        <ReportModal
+          setIsReportModalOpen={setIsReportModalOpen}
+          reportedUserId={reportedUserId}
+          reportedUserName={reportedUserName}
+          meetingId={meetingId}
         />
       )}
     </section>

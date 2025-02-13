@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { createSessionResponse } from "@utils/openviduTypes";
+import { createSessionResponse } from "@/utils/openvidu/openviduTypes";
 import authInstance from "../authinstance";
 
 const VIDEO_API_BASE = "/api/video";
