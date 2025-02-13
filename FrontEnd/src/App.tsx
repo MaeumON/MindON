@@ -17,6 +17,7 @@ import CreateGroup from "./pages/group/CreateGroup";
 import MypageDetail from "@pages/mypage/MypageDetail";
 import MyPageGroupList from "@pages/mypage/MyPageGroupList";
 import UpdateUser from "./pages/auth/UpdateUser";
+import { ProtectRouter } from "./ProtectRouter";
 
 const queryClient = new QueryClient();
 
@@ -24,11 +25,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Routes>
-        <Route path="/main" element={<Main />} />
-
-        {/* openvidu */}
-        <Route path="/prejoin/:groupId/:groupName" element={<PreJoin />} />
-
+        {/* 로그인 되지 않았을 때 접근 가능한 페이지 */}
         {/* auth */}
         <Route path="/" element={<Welcome />} />
         <Route path="/login" element={<Login />} />
@@ -36,25 +33,35 @@ function App() {
         <Route path="/findid" element={<FindId />} />
         <Route path="/findpwd" element={<FindPwd />} />
 
-        {/* group */}
-        <Route path="/groupslist" element={<GroupsList />} />
-        <Route path="/groups/:groupId" element={<GroupDetail />} />
+        {/* 로그인 됐을 때만 접근 가능한 페이지 */}
+        <Route element={<ProtectRouter />}>
+          <Route path="/main" element={<Main />} />
 
-        {/* mydata */}
-        <Route path="/mydata" element={<MyData />} />
-        <Route path="/mydata/grouplist/:groupStatus" element={<MyDataList />} />
-        <Route
-          path="/mydata/grouplist"
-          element={<div className="font-jamsilMedium text-32px flex justify-center my-10">잘못된 주소입니다!</div>}
-        />
-        <Route path="/mydata/:groupId" element={<MyDataDetail />} />
+          {/* openvidu */}
+          <Route path="/prejoin/:groupId/:groupName" element={<PreJoin />} />
 
-        {/* mypage */}
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/creategroup" element={<CreateGroup />} />
-        <Route path="/mypage/grouplist/:groupStatus" element={<MyPageGroupList />} />
-        <Route path="/mypage/:groupId" element={<MypageDetail />} />
-        <Route path="/mypage/updateuser" element={<UpdateUser />} />
+          {/* openvidu */}
+          <Route path="/prejoin/:groupId/:groupName" element={<PreJoin />} />
+          {/* group */}
+          <Route path="/groupslist" element={<GroupsList />} />
+          <Route path="/groups/:groupId" element={<GroupDetail />} />
+
+          {/* mydata */}
+          <Route path="/mydata" element={<MyData />} />
+          <Route path="/mydata/grouplist/:groupStatus" element={<MyDataList />} />
+          <Route
+            path="/mydata/grouplist"
+            element={<div className="font-jamsilMedium text-32px flex justify-center my-10">잘못된 주소입니다!</div>}
+          />
+          <Route path="/mydata/:groupId" element={<MyDataDetail />} />
+
+          {/* mypage */}
+          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/creategroup" element={<CreateGroup />} />
+          <Route path="/mypage/grouplist/:groupStatus" element={<MyPageGroupList />} />
+          <Route path="/mypage/:groupId" element={<MypageDetail />} />
+          <Route path="/mypage/updateuser" element={<UpdateUser />} />
+        </Route>
       </Routes>
     </QueryClientProvider>
   );
