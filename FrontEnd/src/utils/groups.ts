@@ -41,3 +41,18 @@ export interface GroupDetail extends Group {
   description: string;
   progressWeeks?: number;
 }
+
+export interface CreateRoomReqestType {
+  title: string;
+  diseaseId: number;
+  isPrivate: boolean;
+  privatePassword: string;
+  isHost: boolean;
+  startDate: Date;
+  period: number;
+  meetingTime: number;
+  dayOfWeek: number;
+  minMembers: number;
+  maxMembers: number;
+  description: string;
+}

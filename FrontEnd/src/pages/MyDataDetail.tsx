@@ -73,7 +73,9 @@ function MyDataDetail() {
     );
   // 모임 감정 총평
   const emotionTitle = (() => {
-    if (emotionAvg > 3) {
+    if (emotionAvg === 999) {
+      return "아직 모름";
+    } else if (emotionAvg > 3) {
       return "훌륭함";
     } else if (emotionAvg === 3) {
       return "괜찮음";
@@ -117,7 +119,7 @@ function MyDataDetail() {
             </span>
           </div>
           <div className="text-cardTitle font-jamsilRegular text-16px whitespace-nowrap">
-            {username}님의 기분은 <span className="text-orange100">{emotionTitle}</span>이었어요.
+            {username}님의 기분은 <span className="text-orange100">{emotionTitle || "괜찮음"}</span>이었어요.
           </div>
           <div className="graphbox relative w-[280px] h-[100px] flex items-center justify-center mt-2 px-4">
             {/* 감정 꺾은선 그래프 */}
