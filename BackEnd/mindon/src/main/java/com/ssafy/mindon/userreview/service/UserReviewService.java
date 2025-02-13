@@ -59,12 +59,15 @@ public class UserReviewService {
 
 
         // 5. STT 데이터로 질문과 답변 텍스트 결합
-        String combinedQA = userSttList.stream()
+        String combined = userSttList.stream()
                 .map(stt -> {
                     String questionDetail = (stt.getQuestion() != null) ? stt.getQuestion().getDetail() : "질문 없음";
                     return "질문: " + questionDetail + " 답변: " + stt.getText();
                 })
                 .collect(Collectors.joining(" "));
+
+        // 모든 줄바꿈 문자(\n, \r) 제거
+        String combinedQA = combined.replaceAll("[\\n\\r]", "");
 
         // 6. ChatGPT 프롬프트 생성 및 요청
         String summationPrompt = "다음은 사용자가 특정 상황에서 했던 대화 내용입니다. 이 내용을 기반으로 **100~150자 내외로 요약문을 작성**해 주세요. 📌 요약 규칙:- 핵심적인 질문과 답변 내용을 담아야 합니다.- 사용자의 감정 상태(예: 기뻐요, 행복해요, 뿌듯해요, 평온해요, 슬퍼요, 불안해요, 피곤해요, 화나요 등)는 요약에 포함되지 않습니다.- 문장은 간결하고 명확해야 합니다.- 불필요한 감탄사나 주관적인 감정 표현을 배제하고 객관적으로 요약하세요. 📌 대화 내용:"+ combinedQA + "📌 예시 출력: 치료로 인해 피로감이 지속되지만, 작은 목표를 세우며 일상 속에서 긍정적인 변화를 만들어 가고 있습니다.";
