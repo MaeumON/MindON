@@ -3,22 +3,19 @@ package com.ssafy.mindon.auth.controller;
 import com.ssafy.mindon.auth.dto.LoginRequestDto;
 import com.ssafy.mindon.auth.dto.SignupRequestDto;
 import com.ssafy.mindon.auth.service.AuthService;
+import com.ssafy.mindon.common.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
-
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignupRequestDto requestDto) {
@@ -43,8 +40,9 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestBody Map<String, String> logoutRequest) {
-        String userId = logoutRequest.get("userId");
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String accessToken) {
+        // 액세스 토큰에서 신고한 유저 ID 추출
+        String userId = jwtUtil.extractUserId(accessToken);
         authService.logout(userId); // 로그아웃 처리 (Redis에서 리프레시 토큰 삭제)
         return ResponseEntity.ok().build();
     }

@@ -19,13 +19,17 @@ public enum ErrorCode {
     GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "G1", "해당 groupId가 존재하지 않습니다."),
     ONGOING_MEETING_NOT_FOUND(HttpStatus.NOT_FOUND, "M3", "해당 groupId에 대한 진행 중인 미팅이 존재하지 않습니다."),
     VIDEO_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "O1", "OpenVidu 서버에서 오류가 발생했습니다."),
-    SESSION_NOT_FOUND(HttpStatus.NOT_FOUND, "O2", "해당 세션을 찾을 수 없습니다.");
+    SESSION_NOT_FOUND(HttpStatus.NOT_FOUND, "O2", "해당 세션을 찾을 수 없습니다."),
+    GROUP_CREATION_FAILED(HttpStatus.BAD_REQUEST, "G2", "그룹 생성에 실패했습니다."),
+    GROUP_JOIN_SAME_TIME(HttpStatus.BAD_REQUEST, "G3", "동일한 시간에 가입된 그룹이 있어 그룹 가입에 실패했습니다."),
+    GROUP_FULL(HttpStatus.BAD_REQUEST, "G4", "그룹 정원이 초과되어 그룹 가입에 실패했습니다."),
+    USER_NOT_IN_GROUP(HttpStatus.BAD_REQUEST, "G5", "그룹에 해당 회원이 가입되어 있지 않아 탈퇴할 수 없습니다.");
 
 
     private final String message;
-
     private final String code;
     private final HttpStatus status;
+
     ErrorCode(final HttpStatus status, final String code, final String message) {
         this.message = message;
         this.code = code;

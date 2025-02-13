@@ -1,6 +1,8 @@
 package com.ssafy.mindon.group.repository;
 
 import com.ssafy.mindon.group.entity.Group;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,7 +27,7 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
             "(:startTime IS NULL OR g.meetingTime >= :startTime) AND " +
             "(:endTime IS NULL OR g.meetingTime <= :endTime) AND " +
             "(:dayOfWeek IS NULL OR g.dayOfWeek IN :dayOfWeek)")
-    List<Group> findGroupsByCriteria(
+    Page<Group> findGroupsByCriteria(
             @Param("keyword") String keyword,
             @Param("diseaseId") List<Byte> diseaseId,
             @Param("isHost") Boolean isHost,
@@ -33,7 +35,8 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
             @Param("period") Byte period,
             @Param("startTime") Byte startTime,
             @Param("endTime") Byte endTime,
-            @Param("dayOfWeek") List<Byte> dayOfWeek
+            @Param("dayOfWeek") List<Byte> dayOfWeek,
+            Pageable pageable
     );
 
     void deleteByGroupId(int groupId);
@@ -53,8 +56,13 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
 
     @Modifying(clearAutomatically = true)
     @Transactional
-    @Query("UPDATE Group g SET g.groupStatus = 2 WHERE g.endDate < :now AND g.groupStatus = 1")
+    @Query(value = "UPDATE `groups` " +
+            "SET group_status = 2 " +
+            "WHERE DATE_ADD(end_date, INTERVAL 1 HOUR) < :now " +
+            "AND group_status = 1",
+            nativeQuery = true)
     int updateGroupStatusToEnded(@Param("now") LocalDateTime now);
+
 
     @Query("SELECT g FROM Group g WHERE g.groupId IN :groupIds " +
             "AND g.groupStatus = :groupStatus " +
@@ -62,4 +70,13 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     List<Group> findGroupsByKeywordAndStatus(@Param("groupIds") List<Integer> groupIds,
                                              @Param("groupStatus") Byte groupStatus,
                                              @Param("keyword") String keyword);
+
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query(value = "UPDATE `groups` " +
+            "SET progress_weeks = progress_weeks + 1 " +
+            "WHERE progress_weeks < period " +
+            "AND NOW() >= DATE_ADD(start_date, INTERVAL progress_weeks WEEK)",
+            nativeQuery = true)
+    int updateProgressWeeks();
 }

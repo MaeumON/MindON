@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 public class GroupStatusScheduler {
 
     private final GroupService groupService;
-
     @Scheduled(cron = "0 0 * * * ?")  // 매 정각 실행
     public void scheduleUpdateGroupStatusToOngoing() {
         try {
@@ -34,6 +33,17 @@ public class GroupStatusScheduler {
             }
         } catch (Exception e) {
             log.error("종료 상태로 변경하는 중 오류 발생: {}", e.getMessage(), e);
+        }
+    }
+    @Scheduled(cron = "0 0 * * * ?")
+    public void scheduleUpdateProgressWeeks() {
+        try {
+            int updatedCount = groupService.updateProgressWeeks();
+            if (updatedCount > 0) {
+                log.info("progress_weeks 증가된 그룹 개수: {}", updatedCount);
+            }
+        } catch (Exception e) {
+            log.error("progress_weeks 업데이트 중 오류 발생: {}", e.getMessage(), e);
         }
     }
 }

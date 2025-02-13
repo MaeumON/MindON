@@ -7,6 +7,7 @@ import Button from "@components/common/Button";
 import DiseaseDrop from "@components/common/DiseaseDrop";
 import useAuthStore from "@stores/authStore";
 import updateUserApi, { UpdateUserData } from "@apis/auth/updateUserApi";
+import deleteUserApi from "@apis/auth/deleteUserApi";
 
 function UpdateUser() {
   // User정보 가져오기
@@ -113,6 +114,25 @@ function UpdateUser() {
     }
   }, []);
 
+  // 회원 탈퇴
+
+  const onClickDelete = useCallback(async () => {
+    if (window.confirm("정말로 탈퇴하시겠습니까?")) {
+      try {
+        const status = await deleteUserApi();
+        if (status === 200) {
+          // 성공적으로 삭제된 경우만 처리
+          alert("회원 탈퇴가 완료되었습니다.");
+          useAuthStore.getState().logout(); // 로그인 상태 초기화
+          router("/login"); // 로그인 페이지로 이동
+        }
+      } catch (error) {
+        console.error("회원 탈퇴 오류:", error);
+        alert("회원 탈퇴에 실패했습니다.");
+      }
+    }
+  }, [router]);
+
   return (
     <>
       <Header title={"회원정보수정"} isicon={true} />
@@ -152,6 +172,12 @@ function UpdateUser() {
           <DiseaseDrop title="관심 질병" value={diseaseId} onSelect={setDiseaseId} />
         </Form>
         <Button text="회원정보 수정" type="GREEN" onClick={handleSignUp} />
+        <div
+          className="cursor-pointer text-cardContent underline text-semibold decoration-cardContent2"
+          onClick={onClickDelete}
+        >
+          회원 탈퇴
+        </div>
       </Wrapper>
     </>
   );
