@@ -1,7 +1,7 @@
 package com.ssafy.mindon.report.controller;
 
 import com.ssafy.mindon.common.util.JwtUtil;
-import com.ssafy.mindon.report.dto.ReportRequest;
+import com.ssafy.mindon.report.dto.ReportRequestDto;
 import com.ssafy.mindon.report.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class ReportController {
     @PostMapping
     public ResponseEntity<String> reportUser(
             @RequestHeader("Authorization") String accessToken,
-            @RequestBody ReportRequest request
+            @RequestBody ReportRequestDto request
     ) {
         jwtUtil.validateToken(accessToken);
         String reportingUserId = jwtUtil.extractUserId(accessToken);

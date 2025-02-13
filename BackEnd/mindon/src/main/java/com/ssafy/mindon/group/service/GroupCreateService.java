@@ -10,7 +10,7 @@ import com.ssafy.mindon.user.entity.User;
 import com.ssafy.mindon.user.repository.UserRepository;
 import com.ssafy.mindon.usergroup.entity.UserGroup;
 import com.ssafy.mindon.usergroup.repository.UserGroupRepository;
-import com.ssafy.mindon.group.dto.CreateGroupRequest;
+import com.ssafy.mindon.group.dto.CreateGroupRequestDto;
 import com.ssafy.mindon.common.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -43,7 +43,7 @@ public class GroupCreateService {
     }
 
     @Transactional
-    public boolean createGroup(String accessToken, CreateGroupRequest request) {
+    public boolean createGroup(String accessToken, CreateGroupRequestDto request) {
         String userId = jwtUtil.extractUserId(accessToken);
         Optional<User> userOpt = userRepository.findById(userId);
         if (userOpt.isEmpty()) {

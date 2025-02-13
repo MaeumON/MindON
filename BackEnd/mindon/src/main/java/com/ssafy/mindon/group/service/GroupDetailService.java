@@ -2,9 +2,8 @@ package com.ssafy.mindon.group.service;
 
 import com.ssafy.mindon.common.error.ErrorCode;
 import com.ssafy.mindon.common.exception.NotFoundException;
-import com.ssafy.mindon.common.exception.GroupException;
 import com.ssafy.mindon.common.util.JwtUtil;
-import com.ssafy.mindon.group.dto.GroupDetailResponse;
+import com.ssafy.mindon.group.dto.GroupDetailResponseDto;
 import com.ssafy.mindon.group.entity.Group;
 import com.ssafy.mindon.group.repository.GroupRepository;
 import com.ssafy.mindon.usergroup.repository.UserGroupRepository;
@@ -19,7 +18,7 @@ public class GroupDetailService {
     private final UserGroupRepository userGroupRepository;
     private final JwtUtil jwtUtil;
 
-    public GroupDetailResponse findGroupDetailById(String accessToken, Integer groupId) {
+    public GroupDetailResponseDto findGroupDetailById(String accessToken, Integer groupId) {
         // JWT에서 userId 추출
         String userId = jwtUtil.extractUserId(accessToken);
 
@@ -31,7 +30,7 @@ public class GroupDetailService {
         boolean isRegistered = userGroupRepository.existsByUser_UserIdAndGroup_GroupId(userId, groupId);
 
         // DTO 변환 후 반환
-        GroupDetailResponse dto = new GroupDetailResponse();
+        GroupDetailResponseDto dto = new GroupDetailResponseDto();
         dto.setRegistered(isRegistered);
         dto.setGroupId(group.getGroupId());
         dto.setTitle(group.getTitle());

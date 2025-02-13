@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class GroupReviewResponse {
+public class GroupReviewResponseDto {
     private Integer emotionAvg;
     private List<ReviewData> data;
 

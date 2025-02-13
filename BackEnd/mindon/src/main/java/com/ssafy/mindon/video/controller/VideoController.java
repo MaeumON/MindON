@@ -1,19 +1,14 @@
 package com.ssafy.mindon.video.controller;
 
-import com.ssafy.mindon.common.error.ErrorCode;
-import com.ssafy.mindon.common.exception.AuthException;
 import com.ssafy.mindon.common.util.JwtUtil;
-import com.ssafy.mindon.video.dto.SessionResponse;
+import com.ssafy.mindon.video.dto.SessionResponseDto;
 import com.ssafy.mindon.video.service.VideoService;
 import io.openvidu.java.client.Recording;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,11 +23,11 @@ public class VideoController {
 
     // 세션 API
     @PostMapping("/sessions")
-    public ResponseEntity<SessionResponse> initializeSession(@RequestHeader("Authorization") String accessToken, @RequestBody(required = false) Map<String, Object> params) {
+    public ResponseEntity<SessionResponseDto> initializeSession(@RequestHeader("Authorization") String accessToken, @RequestBody(required = false) Map<String, Object> params) {
         jwtUtil.validateToken(accessToken);
         String customSessionId = (String) params.get("customSessionId");
         String userId = jwtUtil.extractUserId(accessToken);
-        SessionResponse response = videoService.initializeSession(params);
+        SessionResponseDto response = videoService.initializeSession(params);
         videoService.addParticipant(customSessionId, userId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);

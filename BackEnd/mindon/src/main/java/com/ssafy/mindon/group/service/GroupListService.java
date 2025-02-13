@@ -4,7 +4,7 @@ import com.ssafy.mindon.common.error.ErrorCode;
 import com.ssafy.mindon.common.exception.GroupException;
 import com.ssafy.mindon.common.exception.NotFoundException;
 import com.ssafy.mindon.common.util.JwtUtil;
-import com.ssafy.mindon.group.dto.GroupListResponse;
+import com.ssafy.mindon.group.dto.GroupListResponseDto;
 import com.ssafy.mindon.group.entity.Group;
 import com.ssafy.mindon.group.repository.GroupRepository;
 import com.ssafy.mindon.user.repository.UserRepository;
@@ -27,9 +27,9 @@ public class GroupListService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;  // JwtUtil 객체 주입
 
-    public Page<GroupListResponse> findGroupsByCriteria(String keyword, List<Byte> diseaseId, Boolean isHost,
-                                                        LocalDateTime startDate, Byte period, Byte startTime,
-                                                        Byte endTime, List<Byte> dayOfWeek, Pageable pageable) {
+    public Page<GroupListResponseDto> findGroupsByCriteria(String keyword, List<Byte> diseaseId, Boolean isHost,
+                                                           LocalDateTime startDate, Byte period, Byte startTime,
+                                                           Byte endTime, List<Byte> dayOfWeek, Pageable pageable) {
 
         // 빈 리스트 처리
         if (diseaseId == null || diseaseId.isEmpty()) {
@@ -55,7 +55,7 @@ public class GroupListService {
         return groups.map(this::mapToDto);
     }
 
-    public List<GroupListResponse> findGroupsByAccessTokenAndStatus(String accessToken, Byte groupStatus, String keyword) {
+    public List<GroupListResponseDto> findGroupsByAccessTokenAndStatus(String accessToken, Byte groupStatus, String keyword) {
         String userId = jwtUtil.extractUserId(accessToken);
 
         if (!userRepository.existsById(userId)) {
@@ -79,8 +79,8 @@ public class GroupListService {
         return filteredGroups.stream().map(this::mapToDto).toList();
     }
 
-    private GroupListResponse mapToDto(Group group) {
-        GroupListResponse dto = new GroupListResponse();
+    private GroupListResponseDto mapToDto(Group group) {
+        GroupListResponseDto dto = new GroupListResponseDto();
         dto.setGroupId(group.getGroupId());
         dto.setTitle(group.getTitle());
         dto.setDiseaseId(group.getDisease().getDiseaseId());

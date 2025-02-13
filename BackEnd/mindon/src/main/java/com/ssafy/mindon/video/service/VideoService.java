@@ -2,18 +2,16 @@ package com.ssafy.mindon.video.service;
 
 import com.ssafy.mindon.common.error.ErrorCode;
 import com.ssafy.mindon.common.exception.VideoException;
-import com.ssafy.mindon.group.repository.GroupRepository;
 import com.ssafy.mindon.group.service.GroupService;
 import com.ssafy.mindon.stt.service.AudioConverterService;
 import com.ssafy.mindon.stt.service.SpeechToTextService;
-import com.ssafy.mindon.video.dto.SessionResponse;
+import com.ssafy.mindon.video.dto.SessionResponseDto;
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import com.ssafy.mindon.group.entity.Group;
+
 import java.io.*;
 import java.net.URL;
 import java.nio.file.*;
@@ -56,7 +54,7 @@ public class VideoService {
         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
     }
 
-    public SessionResponse initializeSession(Map<String, Object> params) {
+    public SessionResponseDto initializeSession(Map<String, Object> params) {
         try {
             SessionProperties properties = SessionProperties.fromJson(params).build();
             Session session = openvidu.createSession(properties);
@@ -66,7 +64,7 @@ public class VideoService {
             String sessionId = session.getSessionId();
             boolean isHost = groupService.isHostGroup(session.getSessionId());
 
-            return new SessionResponse(sessionId, isHost);
+            return new SessionResponseDto(sessionId, isHost);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             throw new VideoException(ErrorCode.VIDEO_SERVER_ERROR);
         }
