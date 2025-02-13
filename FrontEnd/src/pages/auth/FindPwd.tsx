@@ -4,10 +4,11 @@ import FindPwdInform from "@components/auth/FindPwdInform";
 
 import React, { useState } from "react";
 
+//비밀번호 재설정 전 회원여부 확인 컴포넌트
 function FindPwd() {
   const [userId, setUserId] = useState("");
   const [phone, setPhone] = useState("");
-  const [state, setState] = useState(false);
+  const [status, setStatus] = useState(false);
 
   function onChangeId(e: React.ChangeEvent<HTMLInputElement>) {
     setUserId(e.target.value);
@@ -22,8 +23,8 @@ function FindPwd() {
       const result = await findPwdApi(userId, phone);
 
       // setState가 비동기적으로 작동하므로 동기적으로 처리
-      const newState = result[0].data.state;
-      setState(newState);
+      const newState = result.status;
+      setStatus(newState);
 
       // 유저 정보 state가 false로 반환되면 실패 알림
       if (!newState) {
@@ -44,7 +45,7 @@ function FindPwd() {
     onClickFindPwd,
   };
 
-  return <div>{!state ? <FindPwdCheck {...checkProps} /> : <FindPwdInform userId={userId as string} />}</div>;
+  return <div>{!status ? <FindPwdCheck {...checkProps} /> : <FindPwdInform userId={userId as string} />}</div>;
 }
 
 export default FindPwd;
