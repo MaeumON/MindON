@@ -64,7 +64,7 @@ public class MeetingService {
         );
 
         if (upcomingMeeting == null) {
-            return null; // ✅ 데이터가 없으면 null 반환
+            return null;
         }
 
         Group group = upcomingMeeting.getGroup();
@@ -103,7 +103,7 @@ public class MeetingService {
             List<QuestionDto> allQuestions = questionRepository.findByCurriculumWeekOrderByQuestionId((byte) 2);
 
             if (allQuestions.size() < 21) {  // 최소 21개 체크
-                throw new RuntimeException("Not enough questions for curriculum week 2. Minimum 21 required.");
+                throw new MeetingException(ErrorCode.MEETING_Question_NOT_FOUND);
             }
 
             int totalMiddleWeeks = (period == 8) ? 6 : (period - 2);
