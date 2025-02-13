@@ -51,7 +51,7 @@ openvidu:
 
 google:
   credentials:
-    file: src/main/resources/stt.json
+    file: ${GOOGLE_APPLICATION_CREDENTIALS}
 
 file:
   upload-dir: /tmp # 파일 업로드 디렉토리 설정
