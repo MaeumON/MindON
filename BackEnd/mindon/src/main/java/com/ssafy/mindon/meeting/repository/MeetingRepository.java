@@ -4,9 +4,11 @@ import com.ssafy.mindon.meeting.entity.Meeting;
 import com.ssafy.mindon.group.entity.Group;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,4 +39,16 @@ public interface MeetingRepository extends JpaRepository<Meeting, Integer> {
     List<Meeting> findByGroup_GroupId(Integer groupId);
     List<Meeting> findByGroup_GroupIdAndMeetingStatusIn(Integer groupId, List<Byte> meetingStatus);
 
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query(value = """
+        UPDATE meetings
+        SET meeting_status = CASE
+            WHEN meeting_status = 0 AND NOW() >= date THEN 1
+            WHEN meeting_status = 1 AND NOW() >= DATE_ADD(date, INTERVAL 50 MINUTE) THEN 2
+            ELSE meeting_status
+        END
+        WHERE meeting_status < 2
+    """, nativeQuery = true)
+    int updateMeetingStatus();
 }

@@ -156,5 +156,8 @@ public class MeetingService {
     }
 
 
-
+    @Transactional
+    public int updateMeetingStatus() {
+        return meetingRepository.updateMeetingStatus();
+    }
 }
