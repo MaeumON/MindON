@@ -1,7 +1,12 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import useAuthStore from "@/stores/authStore";
 
 const { VITE_APP_API_URL } = import.meta.env;
+
+interface ErrorResponse {
+  message: string;
+  code: string;
+}
 
 const authInstance = axios.create({
   baseURL: VITE_APP_API_URL, // 프로덕션 환경
@@ -42,12 +47,12 @@ authInstance.interceptors.response.use(
 
       try {
         // refresh 요청할 토큰 가져오기
-        const { accessToken, refreshToken } = useAuthStore.getState();
+        const { userId, refreshToken } = useAuthStore.getState();
 
         // 백엔드에 refresh 요청
         const res = await axios.post(`${VITE_APP_API_URL}/api/auth/refresh`, {
-          accessToken,
-          refreshToken,
+          userId: userId,
+          refreshToken: refreshToken,
         });
 
         if (res.status === 200) {
@@ -64,7 +69,10 @@ authInstance.interceptors.response.use(
           return authInstance(originalRequest);
         }
       } catch (refreshError) {
-        console.error("토큰 갱신 실패:", refreshError);
+        if (axios.isAxiosError(refreshError)) {
+          const error = refreshError as AxiosError<ErrorResponse>;
+          console.error("토큰 갱신 실패:", error.response?.data.message);
+        }
         useAuthStore.getState().logout(); // 상태 초기화 메서드
         window.location.href = "/login"; // 로그인 페이지로 이동
       }
