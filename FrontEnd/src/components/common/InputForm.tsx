@@ -11,6 +11,7 @@ interface InputBoxProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
   caption?: string;
+  maxLength?: number;
 }
 
 const InputForm = ({
@@ -24,6 +25,7 @@ const InputForm = ({
   onChange,
   disabled = false,
   caption,
+  maxLength,
 }: InputBoxProps) => {
   return (
     <div className="flex flex-col gap-3 font-suite font-bold text-xl text-cardTitle">
@@ -43,6 +45,7 @@ const InputForm = ({
         value={value}
         onChange={onChange}
         disabled={disabled}
+        maxLength={maxLength}
       ></input>
     </div>
   );
