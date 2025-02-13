@@ -21,8 +21,6 @@ export function startInitialTimer() {
       timeLeft -= 1;
       setRemainingTime(timeLeft);
 
-      console.log("timeLeft", timeLeft);
-
       // 시간이 다 되면 타이머 종료
       if (timeLeft <= 0) {
         if (timerInterval !== null) {
