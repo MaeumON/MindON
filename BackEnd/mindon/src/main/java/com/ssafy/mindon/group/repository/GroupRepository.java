@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Integer> {
@@ -48,6 +49,8 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     List<Group> findAllByGroupIdIn(List<Integer> groupIds);
 
     Group findByGroupId(Integer groupId);
+
+    Page<Group> findByInviteCode(String inviteCode, Pageable pageable);
 
     @Modifying(clearAutomatically = true)  // 변경 사항을 영속성 컨텍스트에 즉시 반영
     @Transactional
