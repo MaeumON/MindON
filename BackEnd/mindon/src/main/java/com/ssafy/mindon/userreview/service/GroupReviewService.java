@@ -11,6 +11,7 @@ import com.ssafy.mindon.meeting.repository.MeetingRepository;
 import com.ssafy.mindon.userreview.entity.UserReview;
 import com.ssafy.mindon.userreview.repository.UserReviewRepository;
 import com.ssafy.mindon.common.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,22 +19,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class GroupReviewService {
 
     private final UserReviewRepository userReviewRepository;
     private final MeetingRepository meetingRepository;
     private final GroupRepository groupRepository;
     private final JwtUtil jwtUtil;
-
-    public GroupReviewService(UserReviewRepository userReviewRepository,
-                              MeetingRepository meetingRepository,
-                              GroupRepository groupRepository,
-                              JwtUtil jwtUtil) {
-        this.userReviewRepository = userReviewRepository;
-        this.meetingRepository = meetingRepository;
-        this.groupRepository = groupRepository;
-        this.jwtUtil = jwtUtil;
-    }
 
     @Transactional(readOnly = true)
     public GroupReviewResponseDto getGroupReviews(String accessToken, Integer groupId) {

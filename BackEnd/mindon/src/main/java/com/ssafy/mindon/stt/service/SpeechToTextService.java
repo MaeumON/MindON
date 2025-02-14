@@ -11,6 +11,7 @@ import com.ssafy.mindon.question.repository.QuestionRepository;
 import com.ssafy.mindon.user.entity.User;
 import com.ssafy.mindon.user.repository.UserRepository;
 import com.ssafy.mindon.meeting.entity.Meeting;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 @Service
+@RequiredArgsConstructor
 public class SpeechToTextService {
 
     private static final Logger logger = LoggerFactory.getLogger(SpeechToTextService.class);
@@ -33,15 +35,6 @@ public class SpeechToTextService {
     private final MeetingRepository meetingRepository;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
-
-    @Autowired
-    public SpeechToTextService(SttRepository sttRepository, MeetingRepository meetingRepository,
-                               QuestionRepository questionRepository, UserRepository userRepository) {
-        this.sttRepository = sttRepository;
-        this.meetingRepository = meetingRepository;
-        this.questionRepository = questionRepository;
-        this.userRepository = userRepository;
-    }
 
     /**
      * WAV 파일을 STT 변환하고 저장

@@ -20,15 +20,6 @@ public class AudioConverterService {
      * @throws IOException 변환 실패 시 예외 발생
      */
     public String convertWebMToWav(String inputPath) throws IOException {
-//        File inputFile = new File(inputPath);
-//        if (!inputFile.exists()) {
-//            throw new IOException("입력 파일이 존재하지 않습니다: " + inputFile.getAbsolutePath());
-//        }
-//        inputPath = inputFile.getAbsolutePath();
-//
-//        // 변환될 WAV 파일 경로 설정
-//        String outputFileName = inputFile.getName().replace(".webm", ".wav");
-//        String outputPath = OUTPUT_DIRECTORY + outputFileName;
         File inputFile  = new File(inputPath);
         String inputAbsolutePath = inputFile.getAbsolutePath();
         System.out.println("FFmpeg 변환 시작: 입력 파일 = " + inputAbsolutePath);
