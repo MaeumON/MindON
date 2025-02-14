@@ -60,7 +60,7 @@ function MyPageGroupList() {
     searchParams.set("size", size.toString());
     searchParams.set("sort", sort);
 
-    nav(`/mypage/groupslist?${searchParams.toString()}`);
+    nav(`/mypage/groupslist?${groupStatus}${searchParams.toString()}`);
   }
   useEffect(() => {
     fetchGroups();

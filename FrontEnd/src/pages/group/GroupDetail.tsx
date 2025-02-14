@@ -191,15 +191,15 @@ function GroupDetail() {
 
         {/* 모임 상세정보 박스 */}
         <div className="flex flex-col font-suite items-start justify-center mx-5  mb-[100px] pt-6 bg-white rounded-xl gap-5 inline-flex overflow-hidden">
-          <div className="px-5 justify-start items-center gap-2.5 inline-flex">
+          <div className="px-5 justify-start items-center gap-1 inline-flex">
             {/* 질병 버튼 */}
-            <div className="relative w-fit px-3.5 py-1 bg-white rounded-2xl border border-cardSubcontent">
+            <div className="relative w-fit px- py-1 bg-white rounded-2xl border border-cardSubcontent">
               <div className="text-center text-cardContent text-sm md:text-base font-bold">{group?.diseaseName}</div>
             </div>
-            <div className="relative w-fit px-3.5 py-1 bg-white rounded-2xl border border-cardSubcontent">
+            <div className="relative w-fit px-2.5 py-1 bg-white rounded-2xl border border-cardSubcontent">
               <div className="text-center text-cardContent text-sm md:text-base font-bold">{dayOfWeekStr()}</div>
             </div>
-            <div className="relative w-fit px-3.5 py-1 bg-white rounded-2xl border border-cardSubcontent">
+            <div className="relative w-fit px-2.5 py-1 bg-white rounded-2xl border border-cardSubcontent">
               <div className="text-center text-cardContent text-sm md:text-base font-bold">{correctionHour()}</div>
             </div>
           </div>
@@ -224,11 +224,12 @@ function GroupDetail() {
                 <div className=" px-5 justify-start items-center gap-2.5 inline-flex">
                   <div className="text-cardTitle text-2xl font-jamsilMedium">📢 모임 정보</div>
                 </div>
-                <div className="px-5 py-2.5 justify-start items-start gap-2.5 inline-flex leading-[35px] text-lg">
+                <div className="px-5 pl-2.5 pr-1.5 justify-start items-start gap-2.5 inline-flex leading-[35px] text-lg">
                   <div className="grow shrink basis-0 px-3">
+                    <span className="text-cardLongContent text-lg font-medium leading-[35px]">주제는 </span>
                     <span className="text-[#d98600] text-lg font-bold ">&quot;{group?.diseaseName}&quot;</span>
                     <span className="text-cardLongContent text-lg font-medium">
-                      라는 주제로 이야기해요
+                      에요
                       <br />
                       매주{" "}
                     </span>
@@ -244,22 +245,23 @@ function GroupDetail() {
                       해요
                       <br />
                     </span>
+                    <span className="text-cardLongContent text-lg font-medium leading-[35px]">인원은 </span>
                     <span className="text-[#d98600] text-lg font-bold leading-[35px]">
-                      최소 {group?.minMember}명 이상 최대 {group?.maxMember}명 이하
+                      {group?.minMember}명 ~ {group?.maxMember}명
                     </span>
-                    <span className="text-cardLongContent text-lg font-medium leading-[35px]">로 참여해요</span>
+                    <span className="text-cardLongContent text-lg font-medium leading-[35px]">이 함께해요</span>
                     {getHostMessage()}
                     {getPrivateMessage()}
                   </div>
                 </div>
               </div>
-              <div className="flex inline-flex justify-center items-center mx-5 gap-3">
-                <div className="flex text-cardLongContent text-base font-medium leading-tight px-10 py-3 bg-yellow100 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl justify-center items-center gap-2.5 ">
+              <div className="flex inline-flex justify-center items-center  gap-3 w-full">
+                <div className="flex text-cardLongContent text-base font-medium leading-tight px-5 py-3 bg-yellow100 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl justify-center items-center gap-2.5 ">
                   함께 마음의 온기를
                   <br /> 나누러 가볼까요??
                 </div>
                 <div className="flex flex-col justify-center items-center inline-flex">
-                  <img src={Introbear} alt="온이" className="sm:w-[113px] sm:h-[120px] w-[93px] h-[100px]" />
+                  <img src={Introbear} alt="온이" className="w-[93px] h-[100px] sm:w-[103px] h-[105px]" />
                 </div>
               </div>
             </div>
@@ -270,7 +272,7 @@ function GroupDetail() {
             text={isRegi ? "취소하기" : "참여하기"}
             type={isRegi ? "ORANGE" : "GREEN"}
             onClick={onClickJoin}
-            className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-40px)] max-w-[392px] w-auto shadow-lg "
+            className="fixed justify-center mb-10 bottom-[60px]  left-1/2 -translate-x-1/2 w-[calc(100%-40px)] max-w-[392px] w-auto shadow-lg mx-10"
           />
         </div>
       </div>

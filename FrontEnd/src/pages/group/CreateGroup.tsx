@@ -151,7 +151,7 @@ function CreateGroup() {
   return (
     <div>
       <Header title="모임 만들기" isicon={false} />
-      <div className="fixed inset-0 flex justify-center bg-black/50">
+      <div className="fixed bg-black/50">
         <div className="w-[95%] overflow-y-auto">
           <div className="max-w-3xl bg-offWhite rounded-[12px] p-4 my-4">
             <div onClick={handleCloseModal} className="flex justify-end mb-2">
