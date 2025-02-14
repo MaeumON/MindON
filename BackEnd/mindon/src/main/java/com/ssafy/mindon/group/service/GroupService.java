@@ -1,6 +1,7 @@
 package com.ssafy.mindon.group.service;
 
 import com.ssafy.mindon.common.error.ErrorCode;
+import org.springframework.data.domain.PageRequest;
 import com.ssafy.mindon.common.exception.GroupException;
 import com.ssafy.mindon.common.exception.NotFoundException;
 import com.ssafy.mindon.common.util.JwtUtil;
@@ -289,8 +290,19 @@ public class GroupService {
             throw new GroupException(ErrorCode.INVALID_INPUT_VALUE);
         }
 
-        // Repository에서 결과 조회
-        Page<Group> groups = groupRepository.findGroupsByCriteria(keyword, diseaseId, isHost, startDate, period, startTime, endTime, dayOfWeek, pageable);
+        // 초대코드 검색인 경우
+        Page<Group> groups = groupRepository.findByInviteCode(keyword, PageRequest.of(0, 1));
+
+        // 초대코드가 아닌 경우
+        if (!groups.hasContent()) {
+            int currentPage = pageable.getPageNumber(); // 현재 페이지 번호 가져오기
+            int newPage = currentPage > 0 ? currentPage - 1 : 0; // 0보다 작을 수 없으므로, 최소 0으로 설정
+
+            Pageable newPageable = PageRequest.of(newPage, pageable.getPageSize(), pageable.getSort()); // 새로운 pageable 생성
+
+            groups = groupRepository.findGroupsByCriteria(keyword, diseaseId, isHost, startDate, period, startTime, endTime, dayOfWeek, newPageable);
+            System.out.println(pageable);
+        }
 
         return groups.map(this::mapToDto);
     }
