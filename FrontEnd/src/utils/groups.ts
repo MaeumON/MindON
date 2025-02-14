@@ -7,7 +7,6 @@ export interface RequestData {
   startTime?: number; // 시작 시간 (HH)
   endTime?: number; // 종료 시간 (HH)
   dayOfWeek?: number[]; // 요일 (1~7)
-  // groupStatus?: string;
 }
 
 export interface Group {
@@ -17,7 +16,7 @@ export interface Group {
   diseaseName: string;
   isPrivate: boolean;
   privatePassword?: string;
-  inviteCode: string;
+  inviteCode?: string;
   isHost: boolean;
   startDate: Date;
   period: number;
@@ -29,8 +28,31 @@ export interface Group {
   groupStatus: number;
 }
 
+export interface ApiResponse {
+  content: Group[];
+  first: boolean;
+  last: boolean;
+  totalElements: number;
+  totalPages: number;
+}
+
 export interface GroupDetail extends Group {
   registered: boolean;
   description: string;
   progressWeeks?: number;
+}
+
+export interface CreateRoomReqestType {
+  title: string;
+  diseaseId: number;
+  isPrivate: boolean;
+  privatePassword: string;
+  isHost: boolean;
+  startDate: string;
+  period: number;
+  meetingTime: number;
+  dayOfWeek: number;
+  minMember: number;
+  maxMember: number;
+  description: string;
 }

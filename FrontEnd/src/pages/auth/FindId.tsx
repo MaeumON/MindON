@@ -24,12 +24,12 @@ function FindId() {
       console.log("result:", result);
 
       // userId가 null 값이면 알림
-      if (!result[0].data.userId) {
+      if (!result.userId) {
         alert("회원 정보를 찾을 수 없습니다.");
         return;
       }
 
-      setUserId(result[0].data.userId);
+      setUserId(result.userId);
       setCheck(true);
     } catch (error) {
       console.log("아이디찾기 실패:", error);

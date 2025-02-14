@@ -23,7 +23,7 @@ const Button = ({ text, type, onClick, className, disabled, onKeyDown }: ButtonP
   } else if (type === "WHITE") {
     return (
       <button
-        className={`bg-offWhite font-suite rounded-xl py-3 px-4 text-cardLongContent text-lg font-bold whitespace-nowrap w-full ${className}`}
+        className={` ${className} bg-offWhite font-suite rounded-xl py-3 px-4 text-cardLongContent text-lg font-bold whitespace-nowrap w-full`}
         onClick={onClick}
         onKeyDown={onKeyDown}
       >

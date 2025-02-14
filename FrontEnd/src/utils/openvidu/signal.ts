@@ -42,6 +42,11 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
     const speakingOrder = data.speakingOrder;
     const userId = data.userId;
 
+    if (speakingOrder.length === 0) {
+      alert("발언자 순서를 받아오는데 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
+
     console.log("--- 버튼 조작됨 ---");
     console.log("-- 질문 리스트 --", questions);
     console.log("-- 발언자 순서 --", speakingOrder);
@@ -56,20 +61,8 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
 
     //질문 중
     if (isMeetingStart === 1 && isQuestionStart === 1) {
-      console.log("--- 질문 중 ---");
-
-      console.log("!! currentQuestionNumber", currentQuestionNumber);
-      console.log("!! currentUser", currentUser);
-
-      console.log("!! questions.length", questions.length);
-      console.log("!! speakingOrder.length", speakingOrder.length);
-
       //답변 시작
-      console.log("!! currentUserId", currentUserId);
-      console.log("!! userId", userId);
-      console.log("!! isSpeaking", isSpeaking);
       if (currentUserId === userId && !isSpeaking) {
-        console.log("답변 시작");
         setIsSpeaking(true);
         //녹음 시작 API 호출
         startRecording({ sessionID: session.sessionId })
@@ -80,7 +73,6 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
 
         return;
       } else if (currentUserId === userId && isSpeaking) {
-        console.log("답변 중단");
         setIsSpeaking(false);
         //녹음 종료 API 호출
         stopRecording({ sessionID: session.sessionId, questionId: questions[currentQuestionNumber].questionId })
@@ -94,7 +86,6 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
 
         // 마지막 질문의 마지막 사용자인 경우 모임 종료
         if (currentQuestionNumber === questions.length - 1 && currentUser === speakingOrder.length - 1) {
-          console.log("질문 완전 종료");
           setCurrentQuestionText("모임이\n종료되었습니다.");
           setIsQuestionStart(2);
           return;
@@ -102,14 +93,9 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
 
         //하나의 질문 종료
         if (totalAnswerPerQuestion === speakingOrder.length - 1) {
-          console.log("하나의 질문이 종료됨");
-
           // 다음 질문 번호를 직접 계산
           const nextQuestionNumber = currentQuestionNumber + 1;
           const nextQuestionId = questions[nextQuestionNumber].questionId;
-
-          console.log("다음 질문 인덱스", nextQuestionNumber);
-          console.log("다음 질문 아이디", nextQuestionId);
 
           setCurrentUser(0);
           setCurrentUserId(speakingOrder[0].userId);
@@ -118,11 +104,7 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
           setCurrentQuestionText(`Q${nextQuestionNumber + 1}.\n${questions[nextQuestionNumber].detail}`);
           setTotalAnswerPerQuestion(0);
         } else {
-          console.log("아직 질문이 종료되지 않음");
-
           const nextUser = (currentUser + 1) % speakingOrder.length;
-          console.log("다음 발언자 인덱스", nextUser);
-          console.log("다음 발언자 아이디", speakingOrder[nextUser].userId);
 
           setCurrentUser(nextUser);
           setCurrentUserId(speakingOrder[nextUser].userId);
@@ -165,6 +147,11 @@ export function subscribeToStartMeeting({ session }: { session: Session }) {
 
       const data = JSON.parse(event.data || "");
       const speakingOrder = data.speakingOrder;
+
+      if (speakingOrder.length === 0) {
+        alert("발언자 순서를 받아오는데 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        return;
+      }
 
       if (isMeetingStart === 0) {
         await startInitialTimer();

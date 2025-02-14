@@ -118,20 +118,17 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter, selectedFilters }: Group
   // ✅버튼
   // 필터 적용하기 버튼 클릭 시 실행
   const applyFilter = () => {
-    // 현재 날짜 이용하여 시간 변환
-
     const startDateObj = startDate ? new Date(startDate) : new Date();
+    startDateObj.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정 (로컬 시간 유지)
 
-    const formattedStartDate = new Date(
-      startDateObj.getFullYear(),
-      startDateObj.getMonth(),
-      startDateObj.getDate(), // ✅ 연, 월, 일만 설정하고 시간은 00:00:00
-      0,
-      0,
-      0
-    );
+    // YYYY-MM-DD 형식으로 변환 (UTC 변환 없이 로컬 시간 유지)
+    const year = startDateObj.getFullYear();
+    const month = String(startDateObj.getMonth() + 1).padStart(2, "0"); // 1월이 0부터 시작하므로 +1
+    const day = String(startDateObj.getDate()).padStart(2, "0");
 
-    const formattedStartDateString = formattedStartDate.toISOString().split("T")[0] + "T00:00:00Z";
+    const formattedStartDateString = `${year}-${month}-${day}T00:00:00Z`;
+
+    // const formattedStartDateString = formattedStartDate.toISOString().split("T")[0] + "T00:00:00Z";
     const filterData: RequestData = {
       diseaseId: selectedDiseases.map((disease) => diseaseMap[disease] || null).filter((id) => id !== null),
       isHost: selectedHost === "유" ? true : selectedHost === "무" ? false : null,

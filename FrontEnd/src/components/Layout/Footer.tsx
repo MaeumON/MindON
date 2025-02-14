@@ -36,7 +36,7 @@ function Footer() {
       {/* 모임 버튼 */}
       <div
         className="flex flex-col items-center gap-1.5 cursor-pointer w-[50px]"
-        onClick={() => handleFooterClick("/groupslist")}
+        onClick={() => handleFooterClick("/groupslist?page=1&size=10&sort=startDate,asc")}
       >
         <IconPeople width={40} height={30} fillColor={currentPath === "/groupslist" ? "orange100" : "cardContent2"} />
         <span

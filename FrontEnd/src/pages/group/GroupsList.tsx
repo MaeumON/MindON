@@ -1,19 +1,22 @@
+import Pagination from "react-js-pagination";
 import Header from "@components/Layout/Header";
 import GroupCard from "@/components/group/GroupCard";
 import GroupsFilter from "@components/group/GroupsFilter";
 import Footer from "@components/Layout/Footer";
 import { Group, RequestData } from "@utils/groups";
+import { ReactJsPaginationProps } from "react-js-pagination";
 
 import IconSearch from "@assets/icons/IconSearch";
 import SeachFilter from "@assets/images/SeachFilter.png";
 
 import groupListApi from "@apis/group/groupListApi";
 
-import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import PasswordModal from "@/components/group/PasswordModal";
+
+const PaginationComponent = Pagination as unknown as React.ComponentType<ReactJsPaginationProps>;
 
 function GroupsList() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -22,9 +25,33 @@ function GroupsList() {
   const [passwordModal, setPasswordModal] = useState(false);
   const [selectedGroupId, setSelectedGroupId] = useState<number>(0);
 
+  const location = useLocation();
   const nav = useNavigate();
-  // 그룹 상세보기로 이동하는 함수
-  const onClickDetail = (groupId: number) => {
+
+  // 페이지네이션
+  const [totalItems, setTotalItems] = useState(0);
+
+  // 파라미터 추출
+
+  const queryParams = new URLSearchParams(location.search);
+  const page = Number(queryParams.get("page")) || 1;
+  const size = Number(queryParams.get("size")) || 10;
+  const sort = queryParams.get("sort") || "startDate,asc";
+
+  // 페이지 변경 핸들러
+  function handlePageChange(newPage: number) {
+    const searchParams = new URLSearchParams();
+    searchParams.set("page", newPage.toString());
+    searchParams.set("size", size.toString());
+    searchParams.set("sort", sort);
+
+    nav(`/groupslist?${searchParams.toString()}`);
+  }
+  useEffect(() => {
+    fetchGroups();
+  }, [page, size, sort]);
+
+  function onClickDetail(groupId: number) {
     //isPrivate 확인
     const isPrivate = groups.find((group) => group.groupId === groupId)?.isPrivate;
     if (isPrivate) {
@@ -33,79 +60,42 @@ function GroupsList() {
     } else {
       nav(`/groups/${groupId}`);
     }
-  };
+  }
   // ✅ 메인페이지에서 그룹 연결
   // 파라미터 추출
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+
   const isHostParam = queryParams.get("isHost");
+
   // 파라미터 boolean 타입으로 변환
   const isHost: boolean | null = isHostParam === "1" ? true : isHostParam === "0" ? false : null;
 
   // ✅ 그룹 목록을 가져오는 API 함수
-  const fetchGroups = async () => {
+  async function fetchGroups() {
     try {
+      const filters: Partial<RequestData> = {};
+
+      // `isHost` 파라미터 처리
+      const isHostParam = queryParams.get("isHost");
+      const isHost: boolean | null = isHostParam === "1" ? true : isHostParam === "0" ? false : null;
+
       if (isHost !== null) {
-        // isHost가 true 또는 false일 경우 필터링된 목록 요청
-        const filters: Partial<RequestData> = { isHost };
-        const result = await groupListApi(filters);
-        setGroups(result);
-      } else {
-        // isHost가 null이면 전체 목록 요청
-        const result = await groupListApi();
-        setGroups(result);
+        filters.isHost = isHost;
       }
+
+      const result = await groupListApi(filters, page, size, sort);
+      console.log("📌 그룹 목록 API 응답:", result);
+      setGroups(result.content);
+      setTotalItems(result.totalElements);
     } catch (error) {
       console.error("그룹 목록 요청 실패:", error);
       setGroups([]);
     }
-  };
+  }
 
   // ✅ useEffect에서 fetchGroups() 호출
   useEffect(() => {
     fetchGroups();
-  }, [isHost]);
-
-  // useEffect(() => {
-  //   const fetchFilteredGroups = async () => {
-  //     try {
-  //       const filters: Partial<RequestData> = {};
-  //       if (isHost !== null) {
-  //         filters.isHost = isHost; // ✅ 명확하게 false도 포함하여 전달
-  //       }
-  //       const result = await groupListApi(filters);
-  //       setGroups(result);
-  //     } catch (error) {
-  //       console.error("그룹 목록 요청 실패 : ", error);
-  //       setGroups([]);
-  //     }
-  //   };
-
-  //   fetchFilteredGroups();
-  // }, [isHost]);
-
-  // // ✅ 마운트 API 요청
-  // // 첫 렌더링 시 accessToken만 보내서 그룹 목록 불러오기
-  // const fetchInitialGroups = async () => {
-  //   try {
-  //     const result = await groupListApi();
-  //     console.log("📌 API 응답 데이터:", result);
-  //     setGroups(result);
-  //     console.log("📌 setGroup 이후 :", groups);
-  //   } catch (error) {
-  //     console.error("초기 그룹 목록 요청 실패:", error);
-  //     setGroups([]); // 에러 발생 시 빈 배열 설정
-  //   }
-  // };
-
-  // // 첫 렌더링 시 accessToken만 보내서 그룹 목록 불러오기
-  // useEffect(() => {
-  //   fetchInitialGroups();
-  // }, []);
-
-  useEffect(() => {
-    // console.log("📌 groups 상태 변경됨:", groups);
-  }, [groups]);
+  }, [page, size, sort]);
 
   // ✅ 필터
   // 필터 상태 관리를 위한 변수들
@@ -120,20 +110,20 @@ function GroupsList() {
   });
 
   // 필터가 적용된 API 요청을 받으면 실행됨
-  const handleApplyFilter = async (filters: Partial<RequestData>) => {
+  async function handleApplyFilter(filters: Partial<RequestData>) {
     try {
       setSelectedFilters(filters); // 필터 상태 저장
       const result = await groupListApi(filters);
-      setGroups(result); // 기존 그룹 목록을 새로운 목록으로 갱신
+      setGroups(result.content); // 기존 그룹 목록을 새로운 목록으로 갱신
       // console.log("📌 필터 적용 API 응답:", result);
     } catch (error) {
       console.error("필터 적용 후 그룹 목록 요청 실패:", error);
     }
-  };
+  }
 
   // ✅검색창
   // 검색 기능 API 호출
-  const fetchSearchGroups = async () => {
+  async function fetchSearchGroups() {
     if (!keyword.trim()) {
       // 빈 값으로 검색하면 전체 목록 조회
       fetchGroups();
@@ -143,11 +133,11 @@ function GroupsList() {
     try {
       const result = await groupListApi({ keyword });
       console.log("📌 검색 API 응답:", result);
-      setGroups(result);
+      setGroups(result.content);
     } catch (error) {
       console.log("검색 요청 실패 : ", error);
     }
-  };
+  }
 
   // 검색 입력값 업데이트
   const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -216,6 +206,21 @@ function GroupsList() {
           </div>
         )}
       </div>
+
+      {/* 페이지네이션 */}
+      {totalItems > 0 && (
+        <PaginationComponent
+          activePage={page}
+          itemsCountPerPage={size}
+          totalItemsCount={totalItems}
+          pageRangeDisplayed={5}
+          onChange={handlePageChange}
+          prevPageText={"‹"}
+          nextPageText={"›"}
+          firstPageText={"«"}
+          lastPageText={"»"}
+        />
+      )}
 
       {/* 모달 */}
       {isFilterOpen && (

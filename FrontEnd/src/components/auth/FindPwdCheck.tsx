@@ -20,7 +20,7 @@ function FindPwdCheck({ userId, phone, onChangeId, onChangePhone, onClickFindPwd
       <div className="flex flex-col font-bold gap-[60px] w-full">
         <TextSection className="text-2xl ">
           <div>기존에 가입한 계정의</div>
-          <div>이름과 전화번호를 입력해 주세요.</div>
+          <div>아이디와 전화번호를 입력해 주세요.</div>
         </TextSection>
         <Form className="flex flex-col gap-[30px]">
           <InputForm title={"아이디"} titleClassName="text-xl" holder={"아이디"} value={userId} onChange={onChangeId} />
@@ -32,7 +32,7 @@ function FindPwdCheck({ userId, phone, onChangeId, onChangePhone, onClickFindPwd
             onChange={onChangePhone}
           />
         </Form>
-        <Button text={"비밀번호 찾기"} type={"GREEN"} onClick={onClickFindPwd} />
+        <Button text={"회원정보 확인"} type={"GREEN"} onClick={onClickFindPwd} />
       </div>
     </Wrapper>
   );

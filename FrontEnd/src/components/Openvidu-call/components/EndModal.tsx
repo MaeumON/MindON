@@ -22,7 +22,6 @@ const EndModal = ({ setIsEndModalOpen, handleRemoveUser }: EmotionModalProps) =>
           <div className="w-[10%]"></div>
           <p className="font-jamsilRegular text-24px">모임을 종료하시겠습니까?</p>
           <div className="mt-[5px] mr-[15px]">
-            {/* <span>{user.getStreamManager().stream.session.sessionId} - CHAT</span> */}
             <div onClick={handleCloseModal}>
               <IconExit width={25} height={25} fillColor="" />
             </div>
