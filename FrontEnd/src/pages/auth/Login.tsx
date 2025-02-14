@@ -26,12 +26,18 @@ function Login() {
   async function onClickLogin() {
     try {
       const result = await loginApi(id, password);
-      const { accessToken, refreshToken, userId, userName, diseaseId, diseaseName } = result;
+      const { accessToken, refreshToken, userId, userName, diseaseId, diseaseName, isAdmin } = result;
       console.log("API result :", result);
 
       // Zustand에 로그인 정보 저장
-      setAuth({ accessToken, refreshToken, userId, userName, diseaseId, diseaseName });
-      router("/main");
+      setAuth({ accessToken, refreshToken, userId, userName, diseaseId, diseaseName, isAdmin });
+
+      // 관리자 페이지
+      if (isAdmin) {
+        router("/admin");
+      } else {
+        router("/main");
+      }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError<{ message: string; code: string }>;
