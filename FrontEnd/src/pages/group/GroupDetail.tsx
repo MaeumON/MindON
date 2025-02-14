@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 import groupDetailJoinApi from "@/apis/group/groupDetailJoinApi";
 import groupDetailLeaveApi from "@/apis/group/groupDetailLeaveApi";
 import GroupJoinModal from "@components/group/GroupJoinModal";
+import ChatImg from "@assets/icons/chat.png";
+import LoudSpeakerImg from "@assets/icons/loudspeaker.png";
 
 function GroupDetail() {
   const { groupId } = useParams();
@@ -213,7 +215,8 @@ function GroupDetail() {
             <div className="flex-col justify-start items-start flex gap-10">
               <div className="flex-col justify-start items-start flex">
                 <div className=" px-5 justify-start items-center gap-2.5 inline-flex">
-                  <div className="text-cardTitle text-2xl font-jamsilMedium">👥 모임 소개</div>
+                  <img src={ChatImg} alt="채팅아이콘" className="w-[50px] h-[50px]" />
+                  <div className="text-cardTitle text-2xl font-jamsilMedium">모임 소개</div>
                 </div>
                 <div className=" px-8 py-2.5 rounded-2xl justify-start items-start gap-2.5 inline-flex">
                   <div className="text-cardLongContent text-lg font-medium leading-[35px]">{group?.description}</div>
@@ -222,7 +225,8 @@ function GroupDetail() {
               {/* 모임 정보 */}
               <div className="flex-col justify-start items-start flex">
                 <div className=" px-5 justify-start items-center gap-2.5 inline-flex">
-                  <div className="text-cardTitle text-2xl font-jamsilMedium">📢 모임 정보</div>
+                  <img src={LoudSpeakerImg} alt="확성기 아이콘" className="w-[50px] h-[50px]" />
+                  <div className="text-cardTitle text-2xl font-jamsilMedium">모임 정보</div>
                 </div>
                 <div className="px-5 py-2.5 justify-start items-start gap-2.5 inline-flex leading-[35px] text-lg">
                   <div className="grow shrink basis-0 px-3">
