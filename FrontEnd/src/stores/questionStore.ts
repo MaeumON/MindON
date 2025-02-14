@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { fetchQuestions } from "@/apis/openvidu/questionApi";
 import { questionType } from "@apis/types/questions";
+import { QuestionSpeakingOrderType } from "@/utils/openvidu/openviduTypes";
 
 interface QuestionState {
   questions: questionType[];
@@ -15,6 +16,7 @@ interface QuestionState {
   isSpeaking: boolean;
   remainingTime: number;
   totalAnswerPerQuestion: number;
+  speakingOrder: QuestionSpeakingOrderType[];
 }
 
 interface QuestionActions {
@@ -31,6 +33,7 @@ interface QuestionActions {
   setRemainingTime: (remainingTime: number) => void;
   setTotalAnswerPerQuestion: (totalAnswerPerQuestion: number) => void;
   reset: () => void;
+  setSpeakingOrder: (speakingOrder: QuestionSpeakingOrderType[]) => void;
 }
 
 const initialState: QuestionState = {
@@ -46,6 +49,7 @@ const initialState: QuestionState = {
   isSpeaking: false, //현재 발언 중인지 여부
   remainingTime: 0,
   totalAnswerPerQuestion: 0, //현재 질문의 총 답변자 수
+  speakingOrder: [],
 };
 
 export const useQuestionStore = create<QuestionState & QuestionActions>()((set) => ({
@@ -70,4 +74,5 @@ export const useQuestionStore = create<QuestionState & QuestionActions>()((set) 
   setRemainingTime: (remainingTime) => set({ remainingTime }),
   setTotalAnswerPerQuestion: (totalAnswerPerQuestion) => set({ totalAnswerPerQuestion }),
   reset: () => set(initialState),
+  setSpeakingOrder: (speakingOrder) => set({ speakingOrder }),
 }));

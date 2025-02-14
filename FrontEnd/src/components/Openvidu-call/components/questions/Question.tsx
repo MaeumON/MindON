@@ -9,7 +9,7 @@ import {
   subscribeToQuestionChanged,
   subscribeToStartMeeting,
 } from "@utils/openvidu/signal";
-import { QuestionChangedData, QuestionSpeakingOrderType } from "@/utils/openvidu/openviduTypes";
+import { QuestionChangedData } from "@/utils/openvidu/openviduTypes";
 import IntroBear from "@assets/images/bear/introbear.png";
 import SpeakerModal from "../SpeakerModal";
 import SpeakerBubble from "@assets/images/SpeakerBubble.png";
@@ -33,20 +33,23 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
     setCurrentQuestionText,
     setCurrentBtnText,
     remainingTime,
+    speakingOrder,
+    setSpeakingOrder,
   } = useQuestionStore();
 
-  //추후 로그인 기능과 연동 시, 사용
   const { userId } = useAuthStore();
-  const [speakingOrder, setSpeakingOrder] = useState<QuestionSpeakingOrderType[]>([]);
   const [btnDisabled, setBtnDisabled] = useState<boolean>(false);
   const [isSpeakerModalOpen, setIsSpeakerModalOpen] = useState<boolean>(false);
 
   function stateChanger() {
-    const signalData: QuestionChangedData = { userId: userId, speakingOrder: speakingOrder };
     if (isMeetingStart === 0) {
-      sendSignalStartMeeting({ data: { speakingOrder: speakingOrder }, session });
+      fetchOrder().then(() => {
+        sendSignalStartMeeting({ session });
+      });
+    } else {
+      const signalData: QuestionChangedData = { userId: userId };
+      sendSignalQuestionChanged({ data: signalData, session });
     }
-    sendSignalQuestionChanged({ data: signalData, session });
   }
 
   function getButtonText() {
@@ -75,10 +78,10 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
 
   const fetchOrder = async () => {
     const response = await fetchQuestionSpeakingOrder({ groupId: mySessionId });
-
     const sortedResponse = response.sort((a, b) => a.no - b.no);
     setSpeakingOrder(sortedResponse);
-    console.log("speakingOrder", speakingOrder);
+
+    console.log("fetchOrder 끝");
   };
 
   function showSpeakerModal() {
@@ -89,7 +92,7 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
     //질문 받아와서 전역에 설정
     console.log("meetingId", meetingId);
 
-    fetchQuestionsData(meetingId).then(() => fetchOrder());
+    fetchQuestionsData(meetingId);
 
     setCurrentQuestionText(`잠시 후,\n모임이 시작됩니다.`);
     setCurrentBtnText("모임 바로 시작하기");

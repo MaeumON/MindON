@@ -286,23 +286,23 @@ const Prejoin = () => {
 
   // 타이머 종료 시 closeSession 호출 , 임시 console.log
   console.log(closeSession);
-  async function handleCloseSession() {
-    await closeSession(state.sessionId);
+  // async function handleCloseSession() {
+  //   await closeSession(state.sessionId);
 
-    setOV(null);
-    setState({
-      ...state,
-      session: undefined,
-      sessionId: String(SESSION_ID),
-      userName: userName,
-      subscribers: [],
-      localUser: undefined,
-    });
+  //   setOV(null);
+  //   setState({
+  //     ...state,
+  //     session: undefined,
+  //     sessionId: String(SESSION_ID),
+  //     userName: userName,
+  //     subscribers: [],
+  //     localUser: undefined,
+  //   });
 
-    remotes.current = [];
-    console.log("leaveSession", state);
-    console.log("remotes ", remotes.current);
-  }
+  //   remotes.current = [];
+  //   console.log("leaveSession", state);
+  //   console.log("remotes ", remotes.current);
+  // }
 
   async function handleRemoveUser() {
     const requestData = { sessionName: state.sessionId, token: token };
@@ -352,7 +352,7 @@ const Prejoin = () => {
       if (token && state.sessionId) removeUser({ sessionName: state.sessionId, token: token });
       if (state.subscribers.length === 0 && !state.localUser) {
         console.log("마지막 참가자가 나갔습니다. 세션을 종료합니다.");
-        handleCloseSession();
+        // handleCloseSession();
         console.log("questionStore 초기화");
         resetQuestionStore();
       }
