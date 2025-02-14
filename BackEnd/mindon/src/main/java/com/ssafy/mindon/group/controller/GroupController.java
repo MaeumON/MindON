@@ -42,7 +42,7 @@ public class GroupController {
         if (isCreated) {
             return ResponseEntity.status(201).body("{\"message\": \"success\"}");
         } else {
-            throw new GroupException(ErrorCode.GROUP_CREATION_FAILED);
+            return ResponseEntity.status(201).body("{\"message\": \"fail\"}");
         }
 
     }
