@@ -10,6 +10,10 @@ import IconSearch from "@assets/icons/IconSearch";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { groupStatusApi } from "@/apis/group/groupListApi";
+import Pagination from "react-js-pagination";
+import { ReactJsPaginationProps } from "react-js-pagination";
+
+const PaginationComponent = Pagination as unknown as React.ComponentType<ReactJsPaginationProps>;
 
 function MyPageGroupList() {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -39,31 +43,42 @@ function MyPageGroupList() {
     fetchInitialGroups(groupStatus, "");
   }, []);
 
+  // ✅ 페이지네이션
+  const [totalItems, setTotalItems] = useState(0);
+
+  // 파라미터 추출
+
+  const queryParams = new URLSearchParams(location.search);
+  const page = Number(queryParams.get("page")) || 1;
+  const size = Number(queryParams.get("size")) || 10;
+  const sort = queryParams.get("sort") || "startDate,asc";
+
+  // 페이지 변경 핸들러
+  function handlePageChange(newPage: number) {
+    const searchParams = new URLSearchParams();
+    searchParams.set("page", newPage.toString());
+    searchParams.set("size", size.toString());
+    searchParams.set("sort", sort);
+
+    nav(`/mypage/groupslist?${searchParams.toString()}`);
+  }
   useEffect(() => {
-    console.log("📌 groups 상태 변경됨:", groups);
-  }, [groups]);
-  // ✅ 필터
-  // 필터 상태 관리를 위한 변수들
-  // const [selectedFilters, setSelectedFilters] = useState<RequestData>({
-  //   diseaseId: [],
-  //   isHost: null,
-  //   startDate: new Date().toISOString().split("T")[0] + "T00:00:00Z",
-  //   period: 0,
-  //   startTime: 0,
-  //   endTime: 23,
-  //   dayOfWeek: [],
-  // });
-  // 필터가 적용된 API 요청을 받으면 실행됨
-  // const handleApplyFilter = async (filters: Partial<RequestData>) => {
-  //   try {
-  //     setSelectedFilters(filters); // 필터 상태 저장
-  //     const result = await groupListApi(filters);
-  //     setGroups(result); // 기존 그룹 목록을 새로운 목록으로 갱신
-  //     // console.log("📌 필터 적용 API 응답:", result);
-  //   } catch (error) {
-  //     console.error("필터 적용 후 그룹 목록 요청 실패:", error);
-  //   }
-  // };
+    fetchGroups();
+  }, [page, size, sort]);
+
+  // ✅ 그룹 목록을 가져오는 API 함수
+  async function fetchGroups() {
+    try {
+      const result = await groupStatusApi({ groupStatus, keyword }, page, size, sort);
+      console.log("📌 그룹 목록 API 응답:", result);
+      setGroups(result.content);
+      setTotalItems(result.totalElements);
+    } catch (error) {
+      console.error("그룹 목록 요청 실패:", error);
+      setGroups([]);
+    }
+  }
+
   // ✅검색창
   // 검색 기능 API 호출
   const fetchSearchGroups = async () => {
@@ -101,7 +116,7 @@ function MyPageGroupList() {
   };
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <Header title={"모임목록보기"} isicon={true} className="bg-yellow100" />
       {/* 검색창 */}
       <div className="h-[85px] px-5 py-3 flex-col justify-start items-start gap-2.5 flex bg-yellow100">
@@ -148,7 +163,22 @@ function MyPageGroupList() {
           </div>
         )}
       </div>
-
+      {/* 페이지네이션 */}
+      <div className="flex justify-center items-center mb-[100px]">
+        {totalItems > 0 && (
+          <PaginationComponent
+            activePage={page}
+            itemsCountPerPage={size}
+            totalItemsCount={totalItems}
+            pageRangeDisplayed={5}
+            onChange={handlePageChange}
+            prevPageText={"‹"}
+            nextPageText={"›"}
+            firstPageText={"«"}
+            lastPageText={"»"}
+          />
+        )}
+      </div>
       {/* 모달 */}
       {/* {isFilterOpen && (
         <GroupsFilter

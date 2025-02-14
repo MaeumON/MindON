@@ -106,7 +106,7 @@ function MyPage() {
           <div className="flex flex-col gap-6">
             <Card
               className="items-center"
-              onClick={() => router("/mypage/grouplist/0&page=1&size=10&sort=startDate,asc")}
+              onClick={() => router("/mypage/grouplist?0&page=1&size=10&sort=startDate,asc")}
             >
               <div className="ps-[10px] py-[5px]">
                 <div className="flex justify-between">
@@ -118,7 +118,7 @@ function MyPage() {
             </Card>
             <Card
               className="items-center"
-              onClick={() => router("/mypage/grouplist/1&page=1&size=10&sort=startDate,asc")}
+              onClick={() => router("/mypage/grouplist?1&page=1&size=10&sort=startDate,asc")}
             >
               <div className="ps-[10px] py-[5px]">
                 <div className="flex justify-between">
@@ -131,7 +131,7 @@ function MyPage() {
               </div>
             </Card>
             <Card
-              onClick={() => router("/mypage/grouplist/2&page=1&size=10&sort=startDate,asc")}
+              onClick={() => router("/mypage/grouplist?2&page=1&size=10&sort=startDate,asc")}
               className="items-center"
             >
               <div className="ps-[10px] py-[5px]">
