@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Slf4j
@@ -87,5 +88,18 @@ public class UserController {
         List<ReportedUserResponseDto> reportedUsers = userService.getReportedUsers();
 
         return ResponseEntity.ok(reportedUsers);
+    }
+
+    @PutMapping("/reset")
+    public ResponseEntity<?> resetUserStatus(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken,
+            @RequestBody Map<String, String> request) {
+
+        jwtUtil.validateToken(accessToken);
+
+        String userId = request.get("userId");
+        userService.resetUserStatus(userId);
+
+        return ResponseEntity.ok("사용자 상태가 정상으로 변경되었습니다.");
     }
 }
