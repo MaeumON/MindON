@@ -3,6 +3,7 @@ import Header from "@components/Layout/Header";
 import GroupCard from "@/components/group/GroupCard";
 import GroupsFilter from "@components/group/GroupsFilter";
 import Footer from "@components/Layout/Footer";
+import "@assets/styles/pagination.css";
 import { Group, RequestData } from "@utils/groups";
 import { ReactJsPaginationProps } from "react-js-pagination";
 
@@ -157,7 +158,7 @@ function GroupsList() {
   };
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <Header title={"모임목록보기"} isicon={true} className="bg-yellow100" />
 
       {/* 검색창 */}
@@ -208,19 +209,21 @@ function GroupsList() {
       </div>
 
       {/* 페이지네이션 */}
-      {totalItems > 0 && (
-        <PaginationComponent
-          activePage={page}
-          itemsCountPerPage={size}
-          totalItemsCount={totalItems}
-          pageRangeDisplayed={5}
-          onChange={handlePageChange}
-          prevPageText={"‹"}
-          nextPageText={"›"}
-          firstPageText={"«"}
-          lastPageText={"»"}
-        />
-      )}
+      <div className="flex justify-center items-center mb-[100px]">
+        {totalItems > 0 && (
+          <PaginationComponent
+            activePage={page}
+            itemsCountPerPage={size}
+            totalItemsCount={totalItems}
+            pageRangeDisplayed={5}
+            onChange={handlePageChange}
+            prevPageText={"‹"}
+            nextPageText={"›"}
+            firstPageText={"«"}
+            lastPageText={"»"}
+          />
+        )}
+      </div>
 
       {/* 모달 */}
       {isFilterOpen && (

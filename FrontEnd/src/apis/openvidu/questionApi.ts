@@ -1,16 +1,16 @@
-import instance from "../instance";
+import authInstance from "../authinstance";
 import { questionType } from "../types/questions";
 
 // 미팅 ID 받아오기
 export const fetchMeetingId = async (groupId: string): Promise<number> => {
-  const response = await instance.get(`/api/meetings/ongoing/${groupId}`);
+  const response = await authInstance.get(`/api/meetings/ongoing/${groupId}`);
   return response.data.meetingId;
 };
 
 //meetingID에 맞는 질문 받아오기
 export const fetchQuestions = async (meetingId: number): Promise<questionType[]> => {
   console.log("fetch Questions meetingId", meetingId);
-  const response = await instance.get(`/api/meetings/${meetingId}/questions`);
+  const response = await authInstance.get(`/api/meetings/${meetingId}/questions`);
   console.log("response", response);
   return await response.data.data;
 };
@@ -27,7 +27,7 @@ export const fetchQuestionSpeakingOrder = async ({
 }: {
   groupId: string;
 }): Promise<QuestionSpeakingOrderType[]> => {
-  const response = await instance.get(`/api/users/${groupId}/list`);
+  const response = await authInstance.get(`/api/users/${groupId}/list`);
 
   return await response.data.data;
 };

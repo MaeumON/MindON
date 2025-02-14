@@ -1,0 +1,28 @@
+.pagination {
+  font-size: large;
+  width: 50%;
+  height: 5%;
+  display: flex; /* flex row 사용*/
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+  margin-bottom: 0.5rem;
+
+  li {
+    /* Pagination 컴포넌트의 각 요소들은 li로 묶여있음 */
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    display: flex; /* flex 사용 */
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+
+    /* 마우스를 올리거나 해당 요소가 선택되어 있는 경우 */
+    &:hover,
+    &:active,
+    &.active {
+      /* 배경색과 요소 색을 바꿔줌 */
+      background-color: #6bb07c;
+      color: white;
+    }
+  }
+}
