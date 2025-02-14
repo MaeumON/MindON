@@ -21,6 +21,10 @@ RUN ./gradlew build --no-daemon
 # 5. 실행용 JDK 이미지 설정
 FROM openjdk:17-jdk-slim
 
+# 타임존 설정 추가
+ENV TZ=Asia/Seoul
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # ffmpeg 설치 (실행 환경에도 필요할 경우 추가)
 RUN apt-get update && apt-get install -y ffmpeg
 
