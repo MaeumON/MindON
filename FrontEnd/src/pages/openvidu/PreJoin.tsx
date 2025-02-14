@@ -12,6 +12,7 @@ import NoHostRoom from "./NoHostRoom";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchMeetingId } from "@/apis/openvidu/questionApi";
 import { useQuestionStore } from "@stores/questionStore";
+import OpenViduLayout from "@/components/Openvidu-call/layout/openvidu-layout";
 
 /*
 실제 화상채팅으로 진입하기 전에,
@@ -32,6 +33,7 @@ const Prejoin = () => {
 
   const { userName, userId } = useAuthStore();
   const { reset: resetQuestionStore } = useQuestionStore();
+  const layout = useRef(new OpenViduLayout());
 
   const [state, setState] = useState<VideoRoomState>({
     sessionId: SESSION_ID, //meetingID
@@ -122,10 +124,16 @@ const Prejoin = () => {
       localUser: localUser as UserModelType,
     }));
 
-    // publisher.on("streamPlaying", () => {
-    //   updateLayout();
-    // });
+    publisher.on("streamPlaying", () => {
+      updateLayout();
+    });
   };
+
+  const updateLayout = useCallback(() => {
+    setTimeout(() => {
+      layout.current.updateLayout();
+    }, 20);
+  }, []);
 
   const updateSubscribers = useCallback(() => {
     setState((prev) => ({
@@ -142,7 +150,7 @@ const Prejoin = () => {
       });
     }
 
-    // updateLayout();
+    updateLayout();
   }, [state.localUser]);
 
   const deleteSubscriber = useCallback(
@@ -199,6 +207,7 @@ const Prejoin = () => {
     state.session?.on("streamDestroyed", (event) => {
       deleteSubscriber(event.stream);
       event.preventDefault();
+      updateLayout();
     });
   }, [state.session, deleteSubscriber]);
 

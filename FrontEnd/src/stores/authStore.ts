@@ -8,6 +8,7 @@ interface StoreState {
   userName: string;
   diseaseId: number;
   diseaseName: string;
+  isAdmin: boolean;
 
   setAuth: (authData: Partial<StoreState>) => void;
   logout: () => void;
@@ -22,6 +23,7 @@ const useAuthStore = create<StoreState>()(
       userName: "",
       diseaseId: 1, // 초기값 통일
       diseaseName: "",
+      isAdmin: false,
 
       // 로그인 정보 저장 (기존 상태를 유지하면서 일부 값만 변경)
       setAuth: (authData: Partial<StoreState>) => set((state) => ({ ...state, ...authData })),
@@ -35,6 +37,7 @@ const useAuthStore = create<StoreState>()(
           userName: "",
           diseaseId: 1, // 초기값과 동일하게 유지
           diseaseName: "",
+          isAdmin: false,
         }),
     }),
     {
