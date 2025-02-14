@@ -1,5 +1,5 @@
 import { Session } from "openvidu-browser";
-import { QuestionChangedData, QuestionSpeakingOrderType } from "./openviduTypes";
+import { QuestionChangedData } from "./openviduTypes";
 import { useQuestionStore } from "@/stores/questionStore";
 import { startInitialTimer } from "./timer";
 import { startRecording, stopRecording } from "@/apis/openvidu/recordingApi";
@@ -15,10 +15,10 @@ export function sendSignalQuestionChanged({ data, session }: { data: QuestionCha
 
 export function subscribeToQuestionChanged({ session }: { session: Session }) {
   session.on("signal:questionChanged", (event) => {
-    // 매번 최신 store 상태를 가져오도록 수정
     const store = useQuestionStore.getState();
     const {
       questions,
+      speakingOrder,
       isMeetingStart,
       isQuestionStart,
       currentQuestionNumber,
@@ -26,7 +26,6 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
       currentUserId,
       isSpeaking,
       totalAnswerPerQuestion,
-      setIsMeetingStart,
       setIsQuestionStart,
       setCurrentQuestionNumber,
       setCurrentQuestionId,
@@ -35,11 +34,10 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
       setCurrentQuestionText,
       setIsSpeaking,
       setTotalAnswerPerQuestion,
+      setSpeakingOrder,
     } = store;
 
     const data = JSON.parse(event.data || "");
-
-    const speakingOrder = data.speakingOrder;
     const userId = data.userId;
 
     if (speakingOrder.length === 0) {
@@ -47,15 +45,15 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
       return;
     }
 
+    setSpeakingOrder(speakingOrder);
+
+    console.log("question changed 실행", speakingOrder);
+
     console.log("--- 버튼 조작됨 ---");
     console.log("-- 질문 리스트 --", questions);
     console.log("-- 발언자 순서 --", speakingOrder);
-    //미팅 시작 전
-    if (isMeetingStart === 0) {
-      setIsMeetingStart(1);
-      setIsQuestionStart(0);
-      setCurrentQuestionText("잠시 후,\n질문이 시작됩니다.");
 
+    if (isMeetingStart === 0) {
       return;
     }
 
@@ -116,45 +114,46 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
 }
 
 //모임 바로 시작하기 버튼 누르면 모임 시작 시그널 보내기
-export function sendSignalStartMeeting({
-  data,
-  session,
-}: {
-  data: { speakingOrder: QuestionSpeakingOrderType[] };
-  session: Session;
-}) {
+export function sendSignalStartMeeting({ session }: { session: Session }) {
   const signalOptions = {
-    data: JSON.stringify(data),
     type: "startMeeting",
   };
   session?.signal(signalOptions);
 }
 
 export function subscribeToStartMeeting({ session }: { session: Session }) {
-  session.on("signal:startMeeting", async (event) => {
+  session.on("signal:startMeeting", async () => {
     try {
       const store = useQuestionStore.getState();
       const {
         questions,
+        speakingOrder,
         isMeetingStart,
+        setIsMeetingStart,
         setCurrentUser,
         setCurrentQuestionNumber,
         setCurrentQuestionId,
         setCurrentUserId,
         setIsQuestionStart,
         setCurrentQuestionText,
+        setSpeakingOrder,
       } = store;
 
-      const data = JSON.parse(event.data || "");
-      const speakingOrder = data.speakingOrder;
+      console.log("startMeeting 실행", speakingOrder);
 
-      if (speakingOrder.length === 0) {
+      if (!speakingOrder || speakingOrder.length === 0) {
         alert("발언자 순서를 받아오는데 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
         return;
       }
 
+      setSpeakingOrder(speakingOrder);
+
       if (isMeetingStart === 0) {
+        setIsMeetingStart(1);
+        setIsQuestionStart(0);
+
         await startInitialTimer();
+
         setIsQuestionStart(1);
         setCurrentUser(0);
         setCurrentUserId(speakingOrder[0].userId);
