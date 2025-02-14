@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -174,5 +175,17 @@ public class UserService {
         }
 
         userRepository.save(user); // JPA는 변경 감지로 update 처리
+    }
+
+    public List<ReportedUserResponseDto> getReportedUsers() {
+        // userStatus가 2인 유저들 조회
+        List<User> reportedUsers = userRepository.findByUserStatus((byte) 2);
+
+        return reportedUsers.stream()
+                .map(user -> ReportedUserResponseDto.builder()
+                        .userId(user.getUserId())
+                        .userName(user.getUserName())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
