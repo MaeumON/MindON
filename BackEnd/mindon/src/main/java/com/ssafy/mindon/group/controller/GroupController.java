@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -85,16 +86,28 @@ public class GroupController {
     }
 
     @PostMapping("/{groupStatus}/list")
-    public ResponseEntity<List<GroupListResponseDto>> getGroupsByStatus(
+    public ResponseEntity<Page<GroupListResponseDto>> getGroupsByStatus(
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Byte groupStatus,
-            @RequestBody(required = false) GroupListRequestDto request
+            @RequestBody(required = false) GroupListRequestDto request,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "startDate,asc") String sort
     ) {
         jwtUtil.validateToken(accessToken);
         String keyword = (request != null) ? request.getKeyword() : null;
 
-        List<GroupListResponseDto> groupList = groupService.findGroupsByAccessTokenAndStatus(accessToken, groupStatus, keyword);
-        return ResponseEntity.ok(groupList);
+        String[] sortParams = sort.split(",");
+        Sort.Direction direction = (sortParams.length > 1 && "desc".equalsIgnoreCase(sortParams[1]))
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+        Sort sortCriteria = Sort.by(new Sort.Order(direction, sortParams[0]));
+
+        Pageable pageable = PageRequest.of(page, size, sortCriteria);
+
+        Page<GroupListResponseDto> response = groupService.findGroupsByAccessTokenAndStatus(accessToken, groupStatus, keyword, pageable);
+
+        return ResponseEntity.ok(response);
     }
 
     // 그룹 탈퇴
