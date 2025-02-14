@@ -297,7 +297,7 @@ public class GroupService {
         if (!groups.hasContent()) {
             groups = groupRepository.findGroupsByCriteria(keyword, diseaseId, isHost, startDate, period, startTime, endTime, dayOfWeek, pageable);
         }
-        
+
         return groups.map(this::mapToDto);
     }
 
