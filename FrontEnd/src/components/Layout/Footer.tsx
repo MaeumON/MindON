@@ -1,17 +1,18 @@
-import IconHome from "@/assets/icons/IconHome";
-import IconPeople from "@/assets/icons/IconPeople";
-import IconChart from "@/assets/icons/IconChart";
-import IconPlus from "@/assets/icons/IconPlus";
-import IconProfile from "@/assets/icons/IconProfile";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import IconHome from "@assets/icons/IconHome";
+import IconPeople from "@assets/icons/IconPeople";
+import IconChart from "@assets/icons/IconChart";
+import IconPlus from "@assets/icons/IconPlus";
+import IconProfile from "@assets/icons/IconProfile";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Footer() {
   const nav = useNavigate();
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
+  const location = useLocation();
+  const currentPath = location.pathname;
 
   const handleFooterClick = (path: string) => {
-    setCurrentPath(path);
+    // setCurrentPath(path);
+    console.log(currentPath);
     nav(path);
   };
 
@@ -25,9 +26,9 @@ function Footer() {
         className="flex flex-col items-center gap-1.5 cursor-pointer w-[50px]"
         onClick={() => handleFooterClick("/main")}
       >
-        <IconHome width={30} height={30} fillColor={currentPath === "/main" ? "#DA8600" : "#9D9D9D"} />
+        <IconHome width={30} height={30} fillColor={currentPath.includes("/main") ? "#DA8600" : "#9D9D9D"} />
         <span
-          className={`text-14px font-bold font-suite ${currentPath === "/main" ? "text-orange100" : "text-cardContent2"}`}
+          className={`text-14px font-bold font-suite ${currentPath.includes("/main") ? "text-orange100" : "text-cardContent2"}`}
         >
           홈
         </span>
@@ -38,9 +39,15 @@ function Footer() {
         className="flex flex-col items-center gap-1.5 cursor-pointer w-[50px]"
         onClick={() => handleFooterClick("/groupslist?page=1&size=10&sort=startDate,asc")}
       >
-        <IconPeople width={40} height={30} fillColor={currentPath === "/groupslist" ? "orange100" : "cardContent2"} />
+        <IconPeople
+          width={40}
+          height={30}
+          fillColor={
+            currentPath.includes("/groupslist") || currentPath.includes("/groups") ? "orange100" : "cardContent2"
+          }
+        />
         <span
-          className={`text-14px font-bold font-suite ${currentPath === "/groupslist" ? "text-orange100" : "text-cardContent2"}`}
+          className={`text-14px font-bold font-suite ${currentPath.includes("/groupslist") || currentPath.includes("/groups") ? "text-orange100" : "text-cardContent2"}`}
         >
           모임
         </span>
@@ -59,9 +66,9 @@ function Footer() {
         className="flex flex-col items-center gap-1.5 cursor-pointer w-[50px]"
         onClick={() => handleFooterClick("/mydata")}
       >
-        <IconChart width={30} height={30} fillColor={currentPath === "/mydata" ? "orange100" : "cardContent2"} />
+        <IconChart width={30} height={30} fillColor={currentPath.includes("/mydata") ? "orange100" : "cardContent2"} />
         <span
-          className={`whitespace-nowrap text-14px font-bold font-suite ${currentPath === "/mydata" ? "text-orange100" : "text-cardContent2"}`}
+          className={`whitespace-nowrap text-14px font-bold font-suite ${currentPath.includes("/mydata") ? "text-orange100" : "text-cardContent2"}`}
         >
           마음리포트
         </span>
@@ -72,9 +79,13 @@ function Footer() {
         className="flex flex-col items-center gap-1.5 cursor-pointer w-[50px] whitespace-nowrap"
         onClick={() => handleFooterClick("/mypage")}
       >
-        <IconProfile width={30} height={30} fillColor={currentPath === "/mypage" ? "orange100" : "cardContent2"} />
+        <IconProfile
+          width={30}
+          height={30}
+          fillColor={currentPath.includes("/mypage") ? "orange100" : "cardContent2"}
+        />
         <span
-          className={`text-14px font-bold font-suite ${currentPath === "/mypage" ? "text-orange100" : "text-cardContent2"}`}
+          className={`text-14px font-bold font-suite ${currentPath.includes("/mypage") ? "text-orange100" : "text-cardContent2"}`}
         >
           마이페이지
         </span>
