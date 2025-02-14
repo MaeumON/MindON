@@ -1,6 +1,7 @@
 package com.ssafy.mindon.user.service;
 
 import com.ssafy.mindon.common.error.ErrorCode;
+import com.ssafy.mindon.common.exception.AuthException;
 import com.ssafy.mindon.common.exception.BusinessBaseException;
 import com.ssafy.mindon.common.exception.NotFoundException;
 import com.ssafy.mindon.common.util.PasswordUtil;
@@ -187,5 +188,17 @@ public class UserService {
                         .userName(user.getUserName())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public void resetUserStatus(String userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new AuthException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        user.setUserStatus((byte) 0);
+        user.setReportedCnt(0);
+
+        userRepository.save(user);
     }
 }
