@@ -36,7 +36,7 @@ public class UserController {
 
     }
 
-    @PatchMapping()
+    @PatchMapping("/delete")
     public ResponseEntity<?> deleteUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
         jwtUtil.validateToken(accessToken);
 
