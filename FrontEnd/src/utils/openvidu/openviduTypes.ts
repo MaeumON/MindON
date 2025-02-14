@@ -33,7 +33,6 @@ export interface VideoRoomState {
 
 export interface QuestionChangedData {
   userId: string;
-  speakingOrder: QuestionSpeakingOrderType[];
 }
 
 export //참여자 목록
