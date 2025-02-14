@@ -35,10 +35,6 @@ export const createGroupApi = async (requestData: CreateRoomReqestType): Promise
   try {
     const response = await authInstance.post("/api/groups", requestData);
 
-    if (response.data.message === "fail") {
-      throw new Error("fail");
-    }
-
     console.log("📌 모임 만들었따~!");
     return response.data;
   } catch (error: any) {
