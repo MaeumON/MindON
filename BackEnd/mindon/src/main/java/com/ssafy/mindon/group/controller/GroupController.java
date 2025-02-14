@@ -10,7 +10,9 @@ import com.ssafy.mindon.userreview.service.GroupReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -59,9 +61,20 @@ public class GroupController {
     public ResponseEntity<?> getGroupList(
             @RequestHeader("Authorization") String accessToken,
             @RequestBody GroupListRequestDto request,
-            Pageable pageable) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "startDate,asc") String sort) {
 
         jwtUtil.validateToken(accessToken);
+
+        String[] sortParams = sort.split(",");
+        Sort.Direction direction = (sortParams.length > 1 && "desc".equalsIgnoreCase(sortParams[1]))
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+        Sort sortCriteria = Sort.by(new Sort.Order(direction, sortParams[0]));
+
+        Pageable pageable = PageRequest.of(page, size, sortCriteria);
+
         Page<GroupListResponseDto> response = groupService.findGroupsByCriteria(
                 request.getKeyword(), request.getDiseaseId(), request.getIsHost(),
                 request.getStartDate(), request.getPeriod(), request.getStartTime(),
