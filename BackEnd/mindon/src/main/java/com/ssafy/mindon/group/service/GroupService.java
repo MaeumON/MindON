@@ -307,7 +307,7 @@ public class GroupService {
         return groups.map(this::mapToDto);
     }
 
-    public List<GroupListResponseDto> findGroupsByAccessTokenAndStatus(String accessToken, Byte groupStatus, String keyword) {
+    public Page<GroupListResponseDto> findGroupsByAccessTokenAndStatus(String accessToken, Byte groupStatus, String keyword, Pageable pageable) {
         String userId = jwtUtil.extractUserId(accessToken);
 
         if (!userRepository.existsById(userId)) {
@@ -326,9 +326,9 @@ public class GroupService {
             throw new GroupException(ErrorCode.INVALID_INPUT_VALUE);
         }
 
-        List<Group> filteredGroups = groupRepository.findGroupsByKeywordAndStatus(groupIds, groupStatus, keyword);
+        Page<Group> filteredGroups = groupRepository.findGroupsByKeywordAndStatus(groupIds, groupStatus, keyword, pageable);
 
-        return filteredGroups.stream().map(this::mapToDto).toList();
+        return filteredGroups.map(this::mapToDto);
     }
 
     private GroupListResponseDto mapToDto(Group group) {
