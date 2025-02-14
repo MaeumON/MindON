@@ -295,7 +295,13 @@ public class GroupService {
 
         // 초대코드가 아닌 경우
         if (!groups.hasContent()) {
-            groups = groupRepository.findGroupsByCriteria(keyword, diseaseId, isHost, startDate, period, startTime, endTime, dayOfWeek, pageable);
+            int currentPage = pageable.getPageNumber(); // 현재 페이지 번호 가져오기
+            int newPage = currentPage > 0 ? currentPage - 1 : 0; // 0보다 작을 수 없으므로, 최소 0으로 설정
+
+            Pageable newPageable = PageRequest.of(newPage, pageable.getPageSize(), pageable.getSort()); // 새로운 pageable 생성
+
+            groups = groupRepository.findGroupsByCriteria(keyword, diseaseId, isHost, startDate, period, startTime, endTime, dayOfWeek, newPageable);
+            System.out.println(pageable);
         }
 
         return groups.map(this::mapToDto);
