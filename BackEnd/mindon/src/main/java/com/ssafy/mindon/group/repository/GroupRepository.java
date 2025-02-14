@@ -27,7 +27,8 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
             "(:period IS NULL OR g.period = :period) AND " +
             "(:startTime IS NULL OR g.meetingTime >= :startTime) AND " +
             "(:endTime IS NULL OR g.meetingTime <= :endTime) AND " +
-            "(:dayOfWeek IS NULL OR g.dayOfWeek IN :dayOfWeek)")
+            "(:dayOfWeek IS NULL OR g.dayOfWeek IN :dayOfWeek)"+
+            "ORDER BY g.startDate ASC")
     Page<Group> findGroupsByCriteria(
             @Param("keyword") String keyword,
             @Param("diseaseId") List<Byte> diseaseId,
