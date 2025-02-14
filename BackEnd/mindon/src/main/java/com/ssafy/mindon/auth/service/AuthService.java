@@ -9,6 +9,7 @@ import com.ssafy.mindon.common.util.PasswordUtil;
 import com.ssafy.mindon.disease.entity.Disease;
 import com.ssafy.mindon.user.entity.User;
 import com.ssafy.mindon.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +18,13 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordUtil passwordUtil;
     private final JwtUtil jwtUtil;
     private final RedisTemplate<String, String> redisTemplate;
-
-    public AuthService(UserRepository userRepository, PasswordUtil passwordUtil, JwtUtil jwtUtil, RedisTemplate<String, String> redisTemplate) {
-        this.userRepository = userRepository;
-        this.passwordUtil = passwordUtil;
-        this.jwtUtil = jwtUtil;
-        this.redisTemplate = redisTemplate;
-    }
 
     // 회원 가입
     public void signup(SignupRequestDto requestDto) {
@@ -61,7 +56,7 @@ public class AuthService {
             throw new AuthException(ErrorCode.INVALID_PASSWORD);
         }
 
-        if (user.getUserStatus() == 2) { // 정지된 계정이면 에러 반환
+        if (user.getUserStatus() == 2 || user.getUserStatus() == 1) { // 정지된 계정이나 탈퇴한 계정이면 에러 반환
             throw new AuthException(ErrorCode.ACCOUNT_SUSPENDED);
         }
 
@@ -120,12 +115,24 @@ public class AuthService {
 
     public String findUserId(String userName, String phone) {
         return userRepository.findByUserNameAndPhone(userName, phone)
-                .map(User::getUserId)
+                .map(user -> {
+                    if (user.getUserStatus() == 2 || user.getUserStatus() == 1) { // 정지된 계정이나 탈퇴한 계정이면 에러 반환
+                        throw new AuthException(ErrorCode.ACCOUNT_SUSPENDED);
+                    }
+                    return user.getUserId();
+                })
                 .orElseThrow(() -> new AuthException(ErrorCode.USER_NOT_FOUND));
     }
 
     public boolean isUserExists(String userId, String phone) {
-        return userRepository.findByUserIdAndPhone(userId, phone).isPresent();
+        return userRepository.findByUserIdAndPhone(userId, phone)
+                .map(user -> {
+                    if (user.getUserStatus() == 2 || user.getUserStatus() == 1) { // 정지된 계정이나 탈퇴한 계정이면 에러 반환
+                        throw new AuthException(ErrorCode.ACCOUNT_SUSPENDED);
+                    }
+                    return true;
+                })
+                .orElse(false);
     }
 
     // 비밀번호 재설정
@@ -145,4 +152,9 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    public boolean isIdAvailable(String userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) return true;
+        else return false;
+    }
 }

@@ -3,7 +3,7 @@ package com.ssafy.mindon.userreview.service;
 import com.ssafy.mindon.common.error.ErrorCode;
 import com.ssafy.mindon.common.exception.NotFoundException;
 import com.ssafy.mindon.common.exception.GroupException;
-import com.ssafy.mindon.userreview.dto.GroupReviewResponse;
+import com.ssafy.mindon.userreview.dto.GroupReviewResponseDto;
 import com.ssafy.mindon.group.entity.Group;
 import com.ssafy.mindon.group.repository.GroupRepository;
 import com.ssafy.mindon.meeting.entity.Meeting;
@@ -11,6 +11,7 @@ import com.ssafy.mindon.meeting.repository.MeetingRepository;
 import com.ssafy.mindon.userreview.entity.UserReview;
 import com.ssafy.mindon.userreview.repository.UserReviewRepository;
 import com.ssafy.mindon.common.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class GroupReviewService {
 
     private final UserReviewRepository userReviewRepository;
@@ -25,18 +27,8 @@ public class GroupReviewService {
     private final GroupRepository groupRepository;
     private final JwtUtil jwtUtil;
 
-    public GroupReviewService(UserReviewRepository userReviewRepository,
-                              MeetingRepository meetingRepository,
-                              GroupRepository groupRepository,
-                              JwtUtil jwtUtil) {
-        this.userReviewRepository = userReviewRepository;
-        this.meetingRepository = meetingRepository;
-        this.groupRepository = groupRepository;
-        this.jwtUtil = jwtUtil;
-    }
-
     @Transactional(readOnly = true)
-    public GroupReviewResponse getGroupReviews(String accessToken, Integer groupId) {
+    public GroupReviewResponseDto getGroupReviews(String accessToken, Integer groupId) {
         String userId = jwtUtil.extractUserId(accessToken); // 토큰에서 userId 추출
 
         // 그룹 정보 조회 (period, progressWeeks)
@@ -64,13 +56,13 @@ public class GroupReviewService {
         int avgScore = (emotionAvg != null) ? emotionAvg.intValue() : 0;
 
         // DTO 변환
-        List<GroupReviewResponse.ReviewData> reviewDataList = reviews.stream()
+        List<GroupReviewResponseDto.ReviewData> reviewDataList = reviews.stream()
                 .map(review -> {
                     Meeting meeting = meetings.stream()
                             .filter(m -> m.getMeetingId().equals(review.getMeetingId()))
                             .findFirst()
                             .orElse(null);
-                    return new GroupReviewResponse.ReviewData(
+                    return new GroupReviewResponseDto.ReviewData(
                             review.getMeetingId(),
                             review.getUserId(),
                             review.getEmotionId(),
@@ -84,6 +76,6 @@ public class GroupReviewService {
                 })
                 .collect(Collectors.toList());
 
-        return new GroupReviewResponse(avgScore, reviewDataList);
+        return new GroupReviewResponseDto(avgScore, reviewDataList);
     }
 }

@@ -64,7 +64,7 @@ public class MeetingService {
         );
 
         if (upcomingMeeting == null) {
-            return null; // ✅ 데이터가 없으면 null 반환
+            return null;
         }
 
         Group group = upcomingMeeting.getGroup();
@@ -83,11 +83,10 @@ public class MeetingService {
 
     public List<QuestionDto> getMeetingQuestions(Integer meetingId) {
         Meeting meeting = meetingRepository.findById(meetingId)
-                .orElseThrow(() -> new EntityNotFoundException("Meeting not found"));
+                .orElseThrow(() -> new MeetingException(ErrorCode.MEETING_NOT_FOUND));
 
         byte meetingWeek = meeting.getMeetingWeek();
         byte period = meeting.getGroup().getPeriod();
-
         List<QuestionDto> questions = new ArrayList<>();
 
         // 시작 메시지 추가
@@ -104,14 +103,14 @@ public class MeetingService {
             List<QuestionDto> allQuestions = questionRepository.findByCurriculumWeekOrderByQuestionId((byte) 2);
 
             if (allQuestions.size() < 21) {  // 최소 21개 체크
-                throw new RuntimeException("Not enough questions for curriculum week 2. Minimum 21 required.");
+                throw new MeetingException(ErrorCode.MEETING_Question_NOT_FOUND);
             }
 
             int totalMiddleWeeks = (period == 8) ? 6 : (period - 2);
             int questionsPerWeek = allQuestions.size() / totalMiddleWeeks;
 
             int startIndex = (meetingWeek - 2) * questionsPerWeek;
-            startIndex = Math.min(startIndex, allQuestions.size() - 1);
+            //startIndex = Math.min(startIndex, allQuestions.size() - 1);
             int endIndex = Math.min((meetingWeek - 1) * questionsPerWeek, allQuestions.size());
 
             if (meetingWeek == totalMiddleWeeks + 1) {
@@ -123,6 +122,16 @@ public class MeetingService {
             middleQuestions = weekQuestions.stream()
                     .limit(3)
                     .collect(Collectors.toList());
+
+            // 만약 중간 주 질문이 3개 미만이면 추가 확보
+            if (middleQuestions.size() < 3) {
+                List<QuestionDto> additionalQuestions = new ArrayList<>(allQuestions);
+                additionalQuestions.removeAll(middleQuestions);
+                Collections.shuffle(additionalQuestions);
+                middleQuestions.addAll(additionalQuestions.stream()
+                        .limit(3 - middleQuestions.size())
+                        .collect(Collectors.toList()));
+            }
         }
 
         questions.addAll(middleQuestions);
@@ -147,5 +156,8 @@ public class MeetingService {
     }
 
 
-
+    @Transactional
+    public int updateMeetingStatus() {
+        return meetingRepository.updateMeetingStatus();
+    }
 }

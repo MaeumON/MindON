@@ -2,6 +2,7 @@ package com.ssafy.mindon.meeting.controller;
 
 import com.ssafy.mindon.common.error.ErrorCode;
 import com.ssafy.mindon.common.exception.AuthException;
+import com.ssafy.mindon.common.exception.GroupException;
 import com.ssafy.mindon.common.exception.MeetingException;
 import com.ssafy.mindon.meeting.dto.UpcomingMeetingResponseDto;
 import com.ssafy.mindon.common.util.JwtUtil;
@@ -43,15 +44,9 @@ public class MeetingController {
 
     @GetMapping("/upcoming")
     public ResponseEntity<?> getUpcomingMeeting(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
-        try {
-            if (jwtUtil.isTokenExpired(accessToken)) {
-                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-            }
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN); // 원하는 예외 던지기
-        }
-
+        jwtUtil.validateToken(accessToken);
         String userId = jwtUtil.extractUserId(accessToken);
+
         UpcomingMeetingResponseDto upcomingMeetingDto = meetingService.getUpcomingMeetingDto(userId);
         return ResponseEntity.ok(upcomingMeetingDto);
 
@@ -60,23 +55,14 @@ public class MeetingController {
 
     @GetMapping("/ongoing/{groupId}")
     public ResponseEntity<?> getOngoingMeetingId(@PathVariable Integer groupId) {
-        try {
-            if (groupId <= 0) {
-                return ResponseEntity.badRequest()
-                        .body(Map.of("error", "Bad Request", "message", "유효하지 않은 groupId입니다."));
-            }
-
-            Integer ongoingMeetingId = meetingService.getOngoingMeetingId(groupId);
-            if (ongoingMeetingId == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(Map.of("error", "Not Found", "message", "진행 중인 미팅이 없습니다."));
-            }
-
-            return ResponseEntity.ok(Map.of("meetingId", ongoingMeetingId));
-        } catch (Exception e) {
-            log.error("진행 중인 미팅 조회 중 오류 발생: ", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Internal Server Error", "message", "서버 내부 오류가 발생했습니다."));
+        if (groupId <= 0) {
+            throw new GroupException(ErrorCode.GROUP_NOT_FOUND);
         }
+
+        Integer ongoingMeetingId = meetingService.getOngoingMeetingId(groupId);
+        if (ongoingMeetingId == null) {
+            throw new MeetingException(ErrorCode.ONGOING_MEETING_NOT_FOUND);
+        }
+        return ResponseEntity.ok(Map.of("meetingId", ongoingMeetingId));
     }
 }

@@ -6,6 +6,25 @@ export interface UpdateUserData {
   diseaseId?: number;
 }
 
+export interface UserInfo {
+  userId: string;
+  userName: string;
+  phone: string;
+  diseaseId: number;
+  diseaseName: string;
+}
+
+//회원정보 받아오는 함수수
+export const getUserInfoApi = async (): Promise<UserInfo> => {
+  try {
+    const response = await authInstance.get("/api/users/profile");
+    return response.data;
+  } catch (error) {
+    console.error("updateUser error:", error);
+    throw error;
+  }
+};
+
 // updateUser 함수에서 Data를 매개변수로 전달받도록 수정
 const updateUserApi = async (data: UpdateUserData): Promise<void> => {
   try {

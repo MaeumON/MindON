@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class SessionResponse {
+public class SessionResponseDto {
     private String sessionId;
     private boolean isHost;
 }

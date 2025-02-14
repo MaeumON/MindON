@@ -6,7 +6,7 @@ import com.ssafy.mindon.group.repository.GroupRepository;
 import com.ssafy.mindon.group.service.GroupService;
 import com.ssafy.mindon.stt.service.AudioConverterService;
 import com.ssafy.mindon.stt.service.SpeechToTextService;
-import com.ssafy.mindon.video.dto.SessionResponse;
+import com.ssafy.mindon.video.dto.SessionResponseDto;
 import io.openvidu.java.client.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,7 +60,7 @@ public class VideoService {
         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
     }
 
-    public SessionResponse initializeSession(Map<String, Object> params) {
+    public SessionResponseDto initializeSession(Map<String, Object> params) {
         try {
             SessionProperties properties = SessionProperties.fromJson(params).build();
             Session session = openvidu.createSession(properties);
@@ -70,7 +70,7 @@ public class VideoService {
             String sessionId = session.getSessionId();
             boolean isHost = groupService.isHostGroup(session.getSessionId());
 
-            return new SessionResponse(sessionId, isHost);
+            return new SessionResponseDto(sessionId, isHost);
         } catch (OpenViduJavaClientException | OpenViduHttpException e) {
             throw new VideoException(ErrorCode.VIDEO_SERVER_ERROR);
         }
@@ -98,77 +98,81 @@ public class VideoService {
         }
     }
 
-    public void removeUser(Map<String, Object> sessionNameToken) throws Exception{
-        String sessionName = (String) sessionNameToken.get("sessionName");
-        String token = (String) sessionNameToken.get("token");
-        System.out.println("세션 이름: " + sessionName + ", 토큰: " + token);
-        Session session = this.mapSessions.get(sessionName);
-        // 세션이 존재하는 경우
-        if (this.mapSessions.get(sessionName) != null && this.mapSessionNamesTokens.get(sessionName) != null) {
+    public void removeUser(Map<String, Object> sessionNameToken) {
+        try {
+            String sessionName = (String) sessionNameToken.get("sessionName");
+            String token = (String) sessionNameToken.get("token");
+            Session session = this.mapSessions.get(sessionName);
+            // 세션이 존재하는 경우
+            if (this.mapSessions.get(sessionName) != null && this.mapSessionNamesTokens.get(sessionName) != null) {
 
-            // 토큰이 존재하는 경우
-            if (this.mapSessionNamesTokens.get(sessionName).remove(token) != null) {
+                // 토큰이 존재하는 경우
+                if (this.mapSessionNamesTokens.get(sessionName).remove(token) != null) {
 
-                // 참여자 목록에서 유저 제거
-                Set<String> participants = sessionParticipants.get(sessionName);
-                if (participants != null) {
-                    participants.removeIf(userId -> userId.equals(token)); // 토큰과 일치하는 유저 제거
-                    if (participants.isEmpty()) {
-                        sessionParticipants.remove(sessionName); // 모든 유저가 나가면 목록 삭제
+                    // 참여자 목록에서 유저 제거
+                    Set<String> participants = sessionParticipants.get(sessionName);
+                    if (participants != null) {
+                        participants.removeIf(userId -> userId.equals(token)); // 토큰과 일치하는 유저 제거
+                        if (participants.isEmpty()) {
+                            sessionParticipants.remove(sessionName); // 모든 유저가 나가면 목록 삭제
+                        }
                     }
+
+                    List<Connection> activeConnections = session.getConnections();
+                    for (Connection connection : activeConnections) {
+                        if (connection.getToken().equals(token)) {
+                            session.forceDisconnect(connection); // 세션에 입장한 사용자 연결 끊기
+                        }
+                    }
+                    // 마지막 사용자가 나간 경우 세션 삭제
+                    if (this.mapSessionNamesTokens.get(sessionName).isEmpty()) {
+                        session.close();
+                        this.mapSessions.remove(sessionName);
+                    }
+                } else {
+                    // 유효하지 않은 토큰인 경우
+                    throw new VideoException(ErrorCode.INVALID_SESSION_TOKEN);
                 }
 
-                List<Connection> activeConnections = session.getConnections();
-                for (Connection connection : activeConnections) {
-                    if (connection.getToken().equals(token)) {
-                        session.forceDisconnect(connection); // 세션에 입장한 사용자 연결 끊기
-                    }
-                }
-                // 마지막 사용자가 나간 경우 세션 삭제
-                if (this.mapSessionNamesTokens.get(sessionName).isEmpty()) {
-                    session.close();
-                    this.mapSessions.remove(sessionName);
-                }
             } else {
-                // 유효하지 않은 토큰인 경우
-                System.out.println("Problems in the app server: the TOKEN wasn't valid");
-                throw new Exception("The TOKEN wasn't valid");
+                // 세션이 존재하지 않는 경우
+                throw new VideoException(ErrorCode.SESSION_NOT_FOUND);
             }
-
-        } else {
-            // 세션이 존재하지 않는 경우
-            System.out.println("Problems in the app server: the SESSION does not exist");
-            throw new Exception("The SESSION does not exist");
+        } catch (OpenViduJavaClientException | OpenViduHttpException e) {
+            throw new VideoException(ErrorCode.VIDEO_SERVER_ERROR);
         }
     }
 
-    public void closeSession(Map<String, Object> sessionName) throws Exception {
-        // 요청에서 세션 이름 가져오기
-        String session = (String) sessionName.get("sessionName");
+    public void closeSession(Map<String, Object> sessionName) {
+        try {
+            // 요청에서 세션 이름 가져오기
+            String session = (String) sessionName.get("sessionName");
 
-        // 세션이 존재하는 경우
-        if (this.mapSessions.get(session) != null && this.mapSessionNamesTokens.get(session) != null) {
-            Session s = this.mapSessions.get(session);
-            // 세션의 모든 참여자 정보 삭제
-            sessionParticipants.remove(session);
-            mapSessionNamesTokens.get(session).clear();
-            s.close();
-            this.mapSessions.remove(session);
-            this.mapSessionNamesTokens.remove(session);
-        } else {
-            // 세션이 존재하지 않는 경우
-            throw new Exception("The SESSION does not exist");
+            // 세션이 존재하는 경우
+            if (this.mapSessions.get(session) != null && this.mapSessionNamesTokens.get(session) != null) {
+                Session s = this.mapSessions.get(session);
+                // 세션의 모든 참여자 정보 삭제
+                sessionParticipants.remove(session);
+                mapSessionNamesTokens.get(session).clear();
+                s.close();
+                this.mapSessions.remove(session);
+                this.mapSessionNamesTokens.remove(session);
+            } else {
+                // 세션이 존재하지 않는 경우
+                throw new VideoException(ErrorCode.SESSION_NOT_FOUND);
+            }
+        } catch (OpenViduJavaClientException | OpenViduHttpException e) {
+            throw new VideoException(ErrorCode.VIDEO_SERVER_ERROR);
         }
     }
 
-    public Recording startRecording(String sessionId, Map<String, Object> params) throws Exception {
+    public Recording startRecording(String sessionId, Map<String, Object> params) {
         try {
             Recording.OutputMode outputMode = Recording.OutputMode.valueOf((String) params.get("outputMode"));
             boolean hasAudio = (boolean) params.get("hasAudio");
             boolean hasVideo = (boolean) params.get("hasVideo");
             String uuid = UUID.randomUUID().toString().replaceAll("-", ""); // UUID에서 "-" 제거
             String randomString = uuid.substring(0, 5); // 앞 5자리만 사용
-            System.out.println(randomString);
 
             RecordingProperties properties = new RecordingProperties.Builder()
                     .name(randomString)
@@ -219,7 +223,7 @@ public class VideoService {
             in.close();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new VideoException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -237,8 +241,7 @@ public class VideoService {
 
         } catch (Exception e) {
             // 로깅 및 디버깅을 위한 상세 정보 출력
-            System.err.println("비동기 처리 중 오류 발생: sessionId=" + sessionId + ", userId=" + userId + ", questionId=" + questionId);
-            e.printStackTrace();
+            throw new VideoException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -258,10 +261,10 @@ public class VideoService {
     }
 
     // 세션의 참여자 명단을 반환하는 메소드
-    public Set<String> getParticipants(String sessionId) throws Exception {
+    public Set<String> getParticipants(String sessionId) {
         Set<String> participants = sessionParticipants.get(sessionId);
         if (participants == null) {
-            throw new Exception("No participants found for this session");
+            throw new VideoException(ErrorCode.SESSION_NOT_FOUND);
         }
         return participants;
     }

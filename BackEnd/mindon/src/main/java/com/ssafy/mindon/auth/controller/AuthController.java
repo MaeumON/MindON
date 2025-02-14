@@ -17,12 +17,14 @@ public class AuthController {
     private final AuthService authService;
     private final JwtUtil jwtUtil;
 
+    // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignupRequestDto requestDto) {
         authService.signup(requestDto);
         return ResponseEntity.ok().build();
     }
 
+    // 로그인
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequestDto loginRequestDto) {
         Map<String, Object> tokens = authService.login(loginRequestDto); // AuthService에서 로그인 처리
@@ -39,13 +41,16 @@ public class AuthController {
         return ResponseEntity.ok(newTokens);
     }
 
+    // 로그아웃
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String accessToken) {
-        // 액세스 토큰에서 신고한 유저 ID 추출
+        jwtUtil.validateToken(accessToken);
         String userId = jwtUtil.extractUserId(accessToken);
         authService.logout(userId); // 로그아웃 처리 (Redis에서 리프레시 토큰 삭제)
         return ResponseEntity.ok().build();
     }
+
+    // 아이디 찾기
     @PostMapping("/userid")
     public ResponseEntity<Map<String, String>> findUserId(@RequestBody Map<String, String> request) {
         String userName = request.get("userName");
@@ -56,6 +61,7 @@ public class AuthController {
         return ResponseEntity.ok(Map.of("userId", userId));
     }
 
+    // 비밀번호 변경 전 검사
     @PostMapping("/password")
     public ResponseEntity<Map<String, Boolean>> findUser(@RequestBody Map<String, String> request) {
         String userId = request.get("userId");
@@ -66,6 +72,7 @@ public class AuthController {
         return ResponseEntity.ok(Map.of("status", status));
     }
 
+    // 비밀번호 변경
     @PostMapping("/password/reset")
     public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> request) {
         String userId = request.get("userId");
@@ -75,4 +82,12 @@ public class AuthController {
         return ResponseEntity.ok("Password reset successful.");
     }
 
+    // 아이디 중복 검사
+    @PostMapping("/check-id")
+    public ResponseEntity<?> checkId(@RequestBody Map<String, String> request) {
+        String userId = request.get("userId");
+
+        boolean response = authService.isIdAvailable(userId);
+        return ResponseEntity.ok(response);
+    }
 }
