@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { createGroupApi } from "@apis/group/groupCreateApi";
 import { CreateRoomReqestType } from "@utils/groups";
 import React from "react";
+import IconCircle from "@/assets/icons/IconInfo";
 
 // Remove the duplicate disease definitions since they're defined in DiseaseDrop
 const dayMap: Record<string, number> = {
@@ -20,6 +21,16 @@ const dayMap: Record<string, number> = {
   금: 5,
   토: 6,
   일: 7,
+};
+
+const korDayMap: Record<number, string> = {
+  0: "일",
+  1: "월",
+  2: "화",
+  3: "수",
+  4: "목",
+  5: "금",
+  6: "토",
 };
 
 function CreateGroup() {
@@ -42,12 +53,14 @@ function CreateGroup() {
   const handleDateChange = (date: Date | null) => {
     if (date) {
       setSelectedStartDate(date);
+      const selectedDay = date.getDay(); // 숫자로 변환
+      setSelectedDay(korDayMap[selectedDay]);
     }
   };
 
-  const handleDaySelection = (day: string) => {
-    setSelectedDay(day);
-  };
+  // const handleDaySelection = (day: string) => {
+  //   setSelectedDay(day);
+  // };
 
   const handleCloseModal = () => {
     nav(-1);
@@ -87,10 +100,10 @@ function CreateGroup() {
         return;
       }
 
-      if (!selectedDay) {
-        alert("요일을 선택해주세요.");
-        return;
-      }
+      // if (!selectedDay) {
+      //   alert("요일을 선택해주세요.");
+      //   return;
+      // }
 
       if (minMember > maxMember) {
         alert("최소 인원이 최대 인원보다 클 수 없습니다.");
@@ -114,8 +127,9 @@ function CreateGroup() {
         const year = startDateObj.getFullYear();
         const month = String(startDateObj.getMonth() + 1).padStart(2, "0"); // 1월이 0부터 시작하므로 +1
         const day = String(startDateObj.getDate()).padStart(2, "0");
+        const time = selectedStartTime < 10 ? `0${selectedStartTime}` : selectedStartTime.toString();
 
-        return `${year}-${month}-${day}T${selectedStartTime}:00:00Z`;
+        return `${year}-${month}-${day}T${time}:00:00Z`;
       };
 
       const requestData: CreateRoomReqestType = {
@@ -219,18 +233,26 @@ function CreateGroup() {
               </div>
 
               <div className="">
-                <span className="font-suite text-cardTitle text-xl font-bold">요일</span>
+                <div className="flex items-center gap-3">
+                  <span className="font-suite text-cardTitle text-xl font-bold">요일</span>
+                  <div className="flex items-center gap-1">
+                    <IconCircle fillColor="#9D9D9D" />
+                    <span className="font-suite text-cardContent2 text-sm font-bold">
+                      날짜 지정시 자동으로 선택됩니다.
+                    </span>
+                  </div>
+                </div>
                 <div className="font-suite text-cardTitle text-xl font-bold flex gap-2 mt-2">
                   {["월", "화", "수", "목", "금", "토", "일"].map((day) => (
-                    <button
+                    <div
                       key={day}
                       className={`w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold ${
                         selectedDay === day ? "bg-green100 text-white" : "bg-cardSubcontent text-cardLongContent"
                       }`}
-                      onClick={() => handleDaySelection(day)}
+                      // onClick={() => handleDaySelection(day)}
                     >
                       {day}
-                    </button>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -239,7 +261,9 @@ function CreateGroup() {
                 <span className="font-suite text-cardTitle text-xl font-bold">매주 모임시간</span>
                 <select
                   value={selectedStartTime}
-                  onChange={(e) => setSelectedStartTime(Number(e.target.value))}
+                  onChange={(e) => {
+                    setSelectedStartTime(Number(e.target.value));
+                  }}
                   className="px-3 py-2 border border-cardSubcontent rounded-xl font-suite text-cardTitle font-normal"
                 >
                   {[...Array(24)].map((_, i) => (
