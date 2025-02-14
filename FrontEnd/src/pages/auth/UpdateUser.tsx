@@ -6,7 +6,7 @@ import { Wrapper, Form } from "@components/common/DivName";
 import Button from "@components/common/Button";
 import DiseaseDrop from "@components/common/DiseaseDrop";
 import useAuthStore from "@stores/authStore";
-import updateUserApi, { UpdateUserData } from "@apis/auth/updateUserApi";
+import updateUserApi, { getUserInfoApi, UpdateUserData, UserInfo } from "@apis/auth/updateUserApi";
 import deleteUserApi from "@apis/auth/deleteUserApi";
 
 function UpdateUser() {
@@ -132,6 +132,18 @@ function UpdateUser() {
       }
     }
   }, [router]);
+
+  async function fetchUserInfo(): Promise<UserInfo> {
+    const userInfo = await getUserInfoApi();
+
+    setPhone(userInfo.phone);
+    setDiseaseId(userInfo.diseaseId);
+    return userInfo;
+  }
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
 
   return (
     <>
