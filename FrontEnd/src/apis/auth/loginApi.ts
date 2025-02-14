@@ -1,6 +1,5 @@
 // login axios
 
-// import axios from "axios";
 import instance from "../instance";
 
 interface Data {
@@ -10,6 +9,7 @@ interface Data {
   userName: string;
   diseaseId: number;
   diseaseName: string;
+  isAdmin: boolean;
 }
 
 const loginApi = async (userId: string, password: string): Promise<Data> => {
@@ -23,6 +23,7 @@ const loginApi = async (userId: string, password: string): Promise<Data> => {
       userName: result.data.userName,
       diseaseId: result.data.diseaseId,
       diseaseName: result.data.diseaseName,
+      isAdmin: result.data.isAdmin,
     };
   } catch (error) {
     console.error("Login error:", error);

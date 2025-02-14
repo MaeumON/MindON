@@ -18,6 +18,7 @@ import MypageDetail from "@pages/mypage/MypageDetail";
 import MyPageGroupList from "@pages/mypage/MyPageGroupList";
 import UpdateUser from "./pages/auth/UpdateUser";
 import { ProtectRouter } from "./ProtectRouter";
+import Admin from "./pages/admin/Admin";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ function App() {
         {/* 로그인 됐을 때만 접근 가능한 페이지 */}
         <Route element={<ProtectRouter />}>
           <Route path="/main" element={<Main />} />
+          <Route path="/admin" element={<Admin />} />
 
           {/* openvidu */}
           <Route path="/prejoin/:groupId/:groupName" element={<PreJoin />} />
