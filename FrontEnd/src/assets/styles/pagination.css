@@ -1,7 +1,14 @@
+@font-face {
+  font-family: "TheJamsil";
+  src: url("/assets/font/TheJamsil-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
 .pagination {
-  font-size: large;
-  width: 50%;
-  height: 5%;
+  font-size: 1rem;
+  font-family: "TheJamsil";
+  /* width: 100%; */
+  /* height: 5%; */
   display: flex; /* flex row 사용*/
   justify-content: center; /* 수평 중앙 정렬 */
   align-items: center; /* 수직 중앙 정렬 */
@@ -9,9 +16,9 @@
 
   li {
     /* Pagination 컴포넌트의 각 요소들은 li로 묶여있음 */
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 20%;
     display: flex; /* flex 사용 */
     justify-content: center; /* 수평 중앙 정렬 */
     align-items: center; /* 수직 중앙 정렬 */
@@ -21,7 +28,9 @@
     &:active,
     &.active {
       /* 배경색과 요소 색을 바꿔줌 */
-      background-color: #6bb07c;
+      background-color: gray;
+      opacity: 50%;
+      /* border: gray 2px solid; */
       color: white;
     }
   }

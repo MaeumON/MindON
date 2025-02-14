@@ -18,7 +18,7 @@ function Footer() {
 
   return (
     <footer
-      className="flex justify-center gap-7 items-center shadow-md fixed bottom-0 h-[74px] bg-white w-full max-w-[412px] mx-auto pt-1"
+      className="flex justify-around items-center shadow-md fixed bottom-0 h-[74px] bg-white w-full max-w-[412px] mx-auto pt-1 px-1"
       style={{ zIndex: 99999 }}
     >
       {/* 홈 버튼 */}
