@@ -3,7 +3,7 @@ package com.ssafy.mindon.video.controller;
 import com.ssafy.mindon.common.error.ErrorCode;
 import com.ssafy.mindon.common.exception.AuthException;
 import com.ssafy.mindon.common.util.JwtUtil;
-import com.ssafy.mindon.video.dto.SessionResponse;
+import com.ssafy.mindon.video.dto.SessionResponseDto;
 import com.ssafy.mindon.video.service.VideoService;
 import io.openvidu.java.client.Recording;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class VideoController {
 
     // 세션 API
     @PostMapping("/sessions")
-    public ResponseEntity<SessionResponse> initializeSession(@RequestHeader("Authorization") String accessToken, @RequestBody(required = false) Map<String, Object> params) {
+    public ResponseEntity<SessionResponseDto> initializeSession(@RequestHeader("Authorization") String accessToken, @RequestBody(required = false) Map<String, Object> params) {
         try {
             if (jwtUtil.isTokenExpired(accessToken)) {
                 throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
@@ -43,7 +43,7 @@ public class VideoController {
         }
         String customSessionId = (String) params.get("customSessionId");
         String userId = jwtUtil.extractUserId(accessToken);
-        SessionResponse response = videoService.initializeSession(params);
+        SessionResponseDto response = videoService.initializeSession(params);
         videoService.addParticipant(customSessionId, userId);
 
         return new ResponseEntity<>(response, HttpStatus.OK);

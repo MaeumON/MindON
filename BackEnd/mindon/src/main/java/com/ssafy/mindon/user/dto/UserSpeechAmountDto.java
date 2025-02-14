@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UserSpeechAmount {
+public class UserSpeechAmountDto {
     private String userId;
     private Double avgSpeechAmount;
 }

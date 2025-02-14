@@ -1,21 +1,15 @@
 package com.ssafy.mindon.group.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class GroupDetailResponse {
-    private boolean registered;
+public class GroupListResponseDto {
     private Integer groupId;
     private String title;
     private Byte diseaseId;
     private String diseaseName;
-    private String description;
     private Boolean isPrivate;
     private String privatePassword;
     private String inviteCode;
@@ -28,5 +22,4 @@ public class GroupDetailResponse {
     private Byte maxMember;
     private Byte totalMember;
     private Byte groupStatus;
-    private Byte progressWeeks;
 }

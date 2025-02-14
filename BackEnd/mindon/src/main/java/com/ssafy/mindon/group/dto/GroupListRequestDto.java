@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class GroupListRequest {
+public class GroupListRequestDto {
     private String keyword;
     private List<Byte> diseaseId;
     private Boolean isHost;

@@ -1,12 +1,10 @@
 package com.ssafy.mindon.user.controller;
 
 import com.ssafy.mindon.auth.service.AuthService;
-import com.ssafy.mindon.common.error.ErrorCode;
-import com.ssafy.mindon.common.exception.AuthException;
 import com.ssafy.mindon.user.dto.SpeakerListDto;
 import com.ssafy.mindon.user.dto.UserEmotionResponseDto;
 import com.ssafy.mindon.user.dto.UserProfileResponseDto;
-import com.ssafy.mindon.user.dto.UserProfileUpdateRequest;
+import com.ssafy.mindon.user.dto.UserProfileUpdateRequestDto;
 import com.ssafy.mindon.user.service.UserService;
 import com.ssafy.mindon.video.service.VideoService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +14,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.Set;
 
 @Slf4j
@@ -31,14 +28,7 @@ public class UserController {
 
     @GetMapping("/temparature")
     public ResponseEntity<?> getTemparature(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
-        try {
-            if (jwtUtil.isTokenExpired(accessToken)) {
-                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-            }
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN); // 원하는 예외 던지기
-        }
-
+        jwtUtil.validateToken(accessToken);
         String userId = jwtUtil.extractUserId(accessToken);
 
         UserEmotionResponseDto responseDto  = userService.calculateUserEmotionScore(userId);
@@ -48,13 +38,7 @@ public class UserController {
 
     @PatchMapping()
     public ResponseEntity<?> deleteUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
-        try {
-            if (jwtUtil.isTokenExpired(accessToken)) {
-                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-            }
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-        }
+        jwtUtil.validateToken(accessToken);
 
         String userId = jwtUtil.extractUserId(accessToken);
         userService.deleteUser(userId);
@@ -63,28 +47,17 @@ public class UserController {
     }
 
     @GetMapping("/{groupId}/list")
-    public ResponseEntity<?> getSpeakerList(@PathVariable Integer groupId) {
+    public ResponseEntity<?> getSpeakerList(@PathVariable Integer groupId) throws Exception {
         String id = String.valueOf(groupId);
-        try {
-            Set<String> speakerIds = videoService.getParticipants(id);
-            //Set<String> speakerIds = Set.of("user02", "user03");
-            SpeakerListDto speakerListDto = userService.getSpeakerList(groupId,speakerIds);
+        Set<String> speakerIds = videoService.getParticipants(id);
+        SpeakerListDto speakerListDto = userService.getSpeakerList(groupId,speakerIds);
 
-            return ResponseEntity.ok(speakerListDto);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return ResponseEntity.ok(speakerListDto);
     }
 
     @GetMapping("/profile")
     public ResponseEntity<UserProfileResponseDto> getUserProfile(@RequestHeader("Authorization") String accessToken) {
-        try {
-            if (jwtUtil.isTokenExpired(accessToken)) {
-                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-            }
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-        }
+        jwtUtil.validateToken(accessToken);
 
         String userId = jwtUtil.extractUserId(accessToken);
         
@@ -97,14 +70,8 @@ public class UserController {
     @PatchMapping("/profile")
     public ResponseEntity<?> updateUserProfile(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken,
-            @RequestBody UserProfileUpdateRequest request) {
-        try {
-            if (jwtUtil.isTokenExpired(accessToken)) {
-                throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-            }
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            throw new AuthException(ErrorCode.EXPIRED_ACCESS_TOKEN);
-        }
+            @RequestBody UserProfileUpdateRequestDto request) {
+        jwtUtil.validateToken(accessToken);
 
         String userId = jwtUtil.extractUserId(accessToken);
 
