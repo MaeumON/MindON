@@ -115,7 +115,7 @@ function CreateGroup() {
         const month = String(startDateObj.getMonth() + 1).padStart(2, "0"); // 1월이 0부터 시작하므로 +1
         const day = String(startDateObj.getDate()).padStart(2, "0");
 
-        return `${year}-${month}-${day}T00:00:00Z`;
+        return `${year}-${month}-${day}T${selectedStartTime}:00:00Z`;
       };
 
       const requestData: CreateRoomReqestType = {
@@ -136,14 +136,14 @@ function CreateGroup() {
       console.log("Request data:", requestData);
 
       await createGroupApi(requestData);
-      alert("모임이 성공적으로 생성되었습니다.");
-      nav(-1);
+      // alert("모임이 성공적으로 생성되었습니다.");
+      // nav(-1);
     } catch (error: any) {
-      if (error.response?.data?.message === "fail") {
-        alert("해당 시간에 이미 예정된 모임이 있습니다.");
-      } else {
-        alert("모임 생성에 실패했습니다. 다시 시도해 주세요.");
-      }
+      // if (error.response?.data?.message === "fail") {
+      //   alert("해당 시간에 이미 예정된 모임이 있습니다.");
+      // } else {
+      //   alert("모임 생성에 실패했습니다. 다시 시도해 주세요.");
+      // }
       console.error("모임생성 오류:", error);
     }
   };
