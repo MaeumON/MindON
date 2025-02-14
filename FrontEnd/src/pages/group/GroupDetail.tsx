@@ -276,7 +276,7 @@ function GroupDetail() {
             text={isRegi ? "취소하기" : "참여하기"}
             type={isRegi ? "ORANGE" : "GREEN"}
             onClick={onClickJoin}
-            className="fixed justify-center mb-10 bottom-[60px]  left-1/2 -translate-x-1/2 w-[calc(100%-40px)] max-w-[392px] w-auto shadow-lg mx-10"
+            className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-50px)] max-w-[390px] w-auto shadow-lg"
           />
         </div>
       </div>
