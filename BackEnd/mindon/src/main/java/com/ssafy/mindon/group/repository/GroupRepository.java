@@ -55,7 +55,11 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
 
     @Modifying(clearAutomatically = true)  // 변경 사항을 영속성 컨텍스트에 즉시 반영
     @Transactional
-    @Query("UPDATE Group g SET g.groupStatus = 1 WHERE g.startDate <= :now AND g.groupStatus = 0")
+    @Query(value = "UPDATE `groups` " +
+            "SET group_status = 1 " +
+            "WHERE start_date <= :now " +
+            "AND group_status = 0",
+            nativeQuery = true)
     int updateGroupStatusToOngoing(@Param("now") LocalDateTime now);
 
     @Modifying(clearAutomatically = true)
