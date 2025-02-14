@@ -1,10 +1,7 @@
 package com.ssafy.mindon.user.controller;
 
 import com.ssafy.mindon.auth.service.AuthService;
-import com.ssafy.mindon.user.dto.SpeakerListDto;
-import com.ssafy.mindon.user.dto.UserEmotionResponseDto;
-import com.ssafy.mindon.user.dto.UserProfileResponseDto;
-import com.ssafy.mindon.user.dto.UserProfileUpdateRequestDto;
+import com.ssafy.mindon.user.dto.*;
 import com.ssafy.mindon.user.service.UserService;
 import com.ssafy.mindon.video.service.VideoService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -80,4 +78,14 @@ public class UserController {
         return ResponseEntity.ok("회원 정보가 수정되었습니다.");
     }
 
+    @GetMapping("/reportlist")
+    public ResponseEntity<?> getReportedUsers(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken) {
+        // 토큰 검증
+        jwtUtil.validateToken(accessToken);
+
+        // 신고된 유저 목록 조회
+        List<ReportedUserResponseDto> reportedUsers = userService.getReportedUsers();
+
+        return ResponseEntity.ok(reportedUsers);
+    }
 }
