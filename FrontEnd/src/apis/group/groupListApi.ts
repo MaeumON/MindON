@@ -8,7 +8,7 @@ import { RequestData, ApiResponse } from "@utils/groups";
 // }
 
 interface GroupStatusRequest {
-  groupStatus: string;
+  groupStatus?: string;
   keyword?: string;
 }
 

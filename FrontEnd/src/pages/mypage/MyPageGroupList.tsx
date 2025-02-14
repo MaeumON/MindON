@@ -18,9 +18,9 @@ const PaginationComponent = Pagination as unknown as React.ComponentType<ReactJs
 function MyPageGroupList() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [keyword, setKeyword] = useState<string>("");
-  const { groupStatus: rawGroupStatus } = useParams<string>();
+  let { groupStatus } = useParams<{ groupStatus: string }>();
   // groupstatus만 추출
-  const groupStatus = rawGroupStatus?.split("")[0];
+  groupStatus = groupStatus?.split("")[0] ?? "0";
   console.log("맨처음", groupStatus);
   const nav = useNavigate();
 
