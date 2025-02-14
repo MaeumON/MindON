@@ -137,23 +137,22 @@ function CreateGroup() {
 
       await createGroupApi(requestData);
       // alert("모임이 성공적으로 생성되었습니다.");
-      // nav(-1);
+      nav(-1);
     } catch (error: any) {
       // if (error.response?.data?.message === "fail") {
       //   alert("해당 시간에 이미 예정된 모임이 있습니다.");
       // } else {
-      //   alert("모임 생성에 실패했습니다. 다시 시도해 주세요.");
-      // }
+      alert("모임 생성에 실패했습니다. 다시 시도해 주세요.");
       console.error("모임생성 오류:", error);
     }
   };
 
   return (
     <div>
-      <Header title="모임 만들기" isicon={false} />
-      <div className="fixed bg-black/50">
-        <div className="w-[95%] overflow-y-auto">
-          <div className="max-w-3xl bg-offWhite rounded-[12px] p-4 my-4">
+      <div className="h-screen flex justify-center bg-black/50">
+        <div className="mx-1 overflow-y-auto">
+          <Header title="모임 만들기" isicon={false} />
+          <div className="max-w-3xl bg-offWhite rounded-[12px] p-4 mt-[-10px] mb-5">
             <div onClick={handleCloseModal} className="flex justify-end mb-2">
               <IconExit width={20} height={20} fillColor="" />
             </div>
