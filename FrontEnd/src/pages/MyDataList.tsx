@@ -29,7 +29,7 @@ function MyDataList() {
       const result = await groupStatusApi({ groupStatus, keyword });
       console.log("group status : ", groupStatus);
       console.log("📌 API 응답 데이터:", result);
-      setGroups(result);
+      setGroups(result.content);
       console.log("📌 setGroup 이후 :", groups);
     } catch (error) {
       console.error("초기 그룹 목록 요청 실패:", error);
@@ -77,7 +77,7 @@ function MyDataList() {
     try {
       const result = await groupStatusApi({ groupStatus, keyword });
       console.log("📌 검색 API 응답:", result);
-      setGroups(result);
+      setGroups(result.content);
     } catch (error) {
       console.log("검색 요청 실패 : ", error);
     }

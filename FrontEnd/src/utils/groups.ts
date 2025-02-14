@@ -48,11 +48,11 @@ export interface CreateRoomReqestType {
   isPrivate: boolean;
   privatePassword: string;
   isHost: boolean;
-  startDate: Date;
+  startDate: string;
   period: number;
   meetingTime: number;
   dayOfWeek: number;
-  minMembers: number;
-  maxMembers: number;
+  minMember: number;
+  maxMember: number;
   description: string;
 }
