@@ -28,7 +28,7 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
             "(:startTime IS NULL OR g.meetingTime >= :startTime) AND " +
             "(:endTime IS NULL OR g.meetingTime <= :endTime) AND " +
             "(:dayOfWeek IS NULL OR g.dayOfWeek IN :dayOfWeek)"+
-            "ORDER BY g.startDate ASC")
+            "ORDER BY g.startDate ASC, g.groupId ASC")
     Page<Group> findGroupsByCriteria(
             @Param("keyword") String keyword,
             @Param("diseaseId") List<Byte> diseaseId,
@@ -75,9 +75,11 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     @Query("SELECT g FROM Group g WHERE g.groupId IN :groupIds " +
             "AND g.groupStatus = :groupStatus " +
             "AND (:keyword IS NULL OR g.title LIKE %:keyword% OR g.inviteCode LIKE %:keyword%)")
-    List<Group> findGroupsByKeywordAndStatus(@Param("groupIds") List<Integer> groupIds,
+    Page<Group> findGroupsByKeywordAndStatus(@Param("groupIds") List<Integer> groupIds,
                                              @Param("groupStatus") Byte groupStatus,
-                                             @Param("keyword") String keyword);
+                                             @Param("keyword") String keyword,
+                                             Pageable pageable
+    );
 
     @Modifying(clearAutomatically = true)
     @Transactional

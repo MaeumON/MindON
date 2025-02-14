@@ -1,6 +1,7 @@
 package com.ssafy.mindon.user.service;
 
 import com.ssafy.mindon.common.error.ErrorCode;
+import com.ssafy.mindon.common.exception.AuthException;
 import com.ssafy.mindon.common.exception.BusinessBaseException;
 import com.ssafy.mindon.common.exception.NotFoundException;
 import com.ssafy.mindon.common.util.PasswordUtil;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -174,5 +176,29 @@ public class UserService {
         }
 
         userRepository.save(user); // JPA는 변경 감지로 update 처리
+    }
+
+    public List<ReportedUserResponseDto> getReportedUsers() {
+        // userStatus가 2인 유저들 조회
+        List<User> reportedUsers = userRepository.findByUserStatus((byte) 2);
+
+        return reportedUsers.stream()
+                .map(user -> ReportedUserResponseDto.builder()
+                        .userId(user.getUserId())
+                        .userName(user.getUserName())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public void resetUserStatus(String userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user == null) {
+            throw new AuthException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        user.setUserStatus((byte) 0);
+        user.setReportedCnt(0);
+
+        userRepository.save(user);
     }
 }
