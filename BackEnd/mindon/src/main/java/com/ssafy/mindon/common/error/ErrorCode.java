@@ -14,6 +14,7 @@ public enum ErrorCode {
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "U3", "유효하지 않은 리프레시 토큰입니다."),
     EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "U4", "엑세스 토큰이 만료되었습니다."),
     ACCOUNT_SUSPENDED(HttpStatus.FORBIDDEN, "U5", "계정이 정지되었습니다."),
+    DEACTIVATED_ACCOUNT(HttpStatus.GONE, "U6", "사용 불가능한 계정입니다."),
     INVALID_MEETING_ID(HttpStatus.BAD_REQUEST, "M1", "유효하지 않은 meetingId입니다."),
     MEETING_NOT_FOUND(HttpStatus.NOT_FOUND, "M2", "해당 미팅을 찾을 수 없습니다."),
     GROUP_NOT_FOUND(HttpStatus.NOT_FOUND, "G1", "유효하지 않은 groupId 입니다."),
