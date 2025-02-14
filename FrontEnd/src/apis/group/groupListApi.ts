@@ -38,9 +38,21 @@ const groupListApi = async (
 
 export default groupListApi;
 
-export const groupStatusApi = async ({ groupStatus, keyword }: GroupStatusRequest): Promise<ApiResponse> => {
+export const groupStatusApi = async (
+  { groupStatus, keyword }: GroupStatusRequest,
+  page: number = 1,
+  size: number = 10,
+  sort: string = "startDate,asc"
+): Promise<ApiResponse> => {
   try {
-    const result = await authInstance.post<ApiResponse>(`/api/groups/${groupStatus}/list`, { keyword: keyword });
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      size: size.toString(),
+      sort: sort,
+    }).toString();
+    const result = await authInstance.post<ApiResponse>(`/api/groups/${groupStatus}/list?${queryParams}`, {
+      keyword: keyword,
+    });
 
     console.log("result data : ", result.data);
     return result.data;
