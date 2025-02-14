@@ -90,7 +90,8 @@ public class VideoController {
     }
 
     @GetMapping("/sessions/{sessionId}/participants")
-    public ResponseEntity<Set<String>> getParticipants(@PathVariable("sessionId") String sessionId) {
+    public ResponseEntity<Set<String>> getParticipants(@RequestHeader("Authorization") String accessToken, @PathVariable("sessionId") String sessionId) {
+        jwtUtil.validateToken(accessToken);
         Set<String> participants = videoService.getParticipants(sessionId);
         return new ResponseEntity<>(participants, HttpStatus.OK);
     }
