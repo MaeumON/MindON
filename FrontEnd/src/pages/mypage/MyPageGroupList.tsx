@@ -18,13 +18,14 @@ const PaginationComponent = Pagination as unknown as React.ComponentType<ReactJs
 function MyPageGroupList() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [keyword, setKeyword] = useState<string>("");
-  const { groupStatus } = useParams();
-
-  console.log(groupStatus);
+  const { groupStatus: rawGroupStatus } = useParams<string>();
+  // groupstatus만 추출
+  const groupStatus = rawGroupStatus?.split("")[0];
+  console.log("맨처음", groupStatus);
   const nav = useNavigate();
 
   // ✅ 마운트 API 요청
-  const fetchInitialGroups = async (groupStatus: string | undefined, keyword: string) => {
+  const fetchInitialGroups = async (groupStatus: string, keyword: string) => {
     try {
       console.log("마운트 api 요청중");
 
@@ -69,7 +70,7 @@ function MyPageGroupList() {
   // ✅ 그룹 목록을 가져오는 API 함수
   async function fetchGroups() {
     try {
-      const result = await groupStatusApi({ groupStatus, keyword }, page, size, sort);
+      const result = await groupStatusApi({ groupStatus, keyword });
       console.log("📌 그룹 목록 API 응답:", result);
       setGroups(result.content);
       setTotalItems(result.totalElements);
