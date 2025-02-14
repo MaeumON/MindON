@@ -70,6 +70,11 @@ public class AuthService {
         int diseaseId = user.getDiseaseId();
         String diseaseName = user.getDisease().getDiseaseName();
 
+        boolean isAdmin = false;
+        if(user.getUserStatus() == 3){
+            isAdmin = true;
+        }
+
         // JWT 토큰 생성
         String accessToken = jwtUtil.generateAccessToken(user.getUserId());
         String refreshToken = jwtUtil.generateRefreshToken(user.getUserId());
@@ -85,6 +90,8 @@ public class AuthService {
         tokens.put("userName", userName);
         tokens.put("diseaseId", diseaseId);
         tokens.put("diseaseName", diseaseName);
+        tokens.put("isAdmin", isAdmin);
+
         return tokens;
     }
 
