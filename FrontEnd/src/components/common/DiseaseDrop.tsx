@@ -51,7 +51,7 @@ function DiseaseDrop({ title, value = null, onSelect }: DropdownProps) {
             <MenuItem key={id}>
               <button
                 type="button"
-                className={"text-gray-700 block w-full px-4 py-3 text-left text-sm"}
+                className={"text-gray-700 block w-full px-4 py-3 text-left text-lg"}
                 onClick={() => onSelect?.(Number(id))}
               >
                 {disease}
