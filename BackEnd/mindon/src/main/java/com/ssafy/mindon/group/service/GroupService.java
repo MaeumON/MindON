@@ -291,7 +291,8 @@ public class GroupService {
         }
 
         // 초대코드 검색인 경우
-        Page<Group> groups = groupRepository.findByInviteCode(keyword, PageRequest.of(0, 1));
+        Byte status = 0; // 진행 예정 상태만 조회
+        Page<Group> groups = groupRepository.findByInviteCodeAndGroupStatus(keyword, status, pageable);
 
         // 초대코드가 아닌 경우
         if (!groups.hasContent()) {
