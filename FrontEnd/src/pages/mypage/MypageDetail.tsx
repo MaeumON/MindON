@@ -270,6 +270,12 @@ function MypageDetail() {
                     <span className="text-[#d98600] text-lg font-bold leading-[35px]">{group?.progressWeeks}회 </span>
                     <span className="text-cardLongContent text-lg font-medium leading-[35px]">동안 함께 했어요</span>
                     <br />
+                    <span className="text-cardLongContent text-lg font-medium leading-[35px]">모임은 </span>
+                    <span className="text-[#d98600] text-lg font-bold leading-[35px]">
+                      총 {group?.period}주
+                      <span className="text-cardLongContent text-lg font-medium leading-[35px]">동안 진행돼요</span>
+                    </span>
+                    <br />
                     <span className="text-[#d98600] text-lg font-bold ">&quot;{group?.diseaseName}&quot;</span>
                     <span className="text-cardLongContent text-lg font-medium">
                       라는 주제로 이야기해요

@@ -333,23 +333,25 @@ function GroupsList() {
       </div>
 
       {/* 검색 필터 */}
-      <button onClick={() => setIsFilterOpen(true)}>
-        <div className="flex flex-1 left-[30px] my-5 ml-6">
-          <img src={SeachFilter} className="w-[20px] h-[20px]" />
-          <div className="ms-3 text-cardLongContent text-base font-bold font-suite">검색 필터</div>
-        </div>
-      </button>
+      <div className="flex w-full item-center justify-between px-5 font-suite">
+        <button onClick={() => setIsFilterOpen(true)}>
+          <div className="flex flex-1 left-[30px] my-5">
+            <img src={SeachFilter} className="w-[20px] h-[20px]" />
+            <div className="ms-3 text-cardLongContent text-base font-bold">검색 필터</div>
+          </div>
+        </button>
+        {/* 전체 해제 버튼 */}
+        <button onClick={clearAllFilters} className="text-cardContent flex items-center gap-1 ">
+          <img src={FilterReset} className="w-[20px] h-[20px] text-cardContent" />
+          <span className="mr-2  text-sm">필터 해제</span>
+        </button>
+      </div>
 
       {/* 적용된 필터 UI */}
       <div className="flex flex-col w-full item-center pb-5">
         {/* 위쪽 수평선 */}
         <hr className="w-[90%] border-cardSubcontent mb-2 self-center" />
         <div className="flex flex-wrap items-center gap-2 p-2 rounded-lg font-suite px-5 border-t-5 border-cardContent2">
-          {/* 전체 해제 버튼 */}
-          <button onClick={clearAllFilters} className="text-cardContent flex items-center justify-start gap-1">
-            <img src={FilterReset} className="w-[20px] h-[20px] text-cardContent" />
-            <span className="mr-2">전체해제</span>
-          </button>
           {/* 적용된 필터 표시 */}
           {Object.entries(appliedFilters).map(([key, value]) => (
             <div
