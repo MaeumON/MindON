@@ -290,19 +290,20 @@ public class GroupService {
             throw new GroupException(ErrorCode.INVALID_INPUT_VALUE);
         }
 
-        // 초대코드 검색인 경우
         Byte status = 0; // 진행 예정 상태만 조회
+
+        // 초대코드 검색 먼저 시도
         Page<Group> groups = groupRepository.findByInviteCodeAndGroupStatus(keyword, status, pageable);
 
-        // 초대코드가 아닌 경우
+        // 초대코드 검색 결과가 없는 경우 → 일반 검색 수행 (is_private = 1 제외)
         if (!groups.hasContent()) {
             int currentPage = pageable.getPageNumber(); // 현재 페이지 번호 가져오기
             int newPage = currentPage > 0 ? currentPage - 1 : 0; // 0보다 작을 수 없으므로, 최소 0으로 설정
 
             Pageable newPageable = PageRequest.of(newPage, pageable.getPageSize(), pageable.getSort()); // 새로운 pageable 생성
 
-            groups = groupRepository.findGroupsByCriteria(keyword, diseaseId, isHost, startDate, period, startTime, endTime, dayOfWeek, newPageable);
-            System.out.println(pageable);
+            groups = groupRepository.findGroupsByCriteriaExcludingPrivate(
+                    keyword, diseaseId, isHost, startDate, period, startTime, endTime, dayOfWeek, newPageable);
         }
 
         return groups.map(this::mapToDto);
