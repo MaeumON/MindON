@@ -32,7 +32,7 @@ export interface VideoRoomState {
 }
 
 export interface QuestionChangedData {
-  userId: string;
+  buttonClickedUserId: string;
 }
 
 export //참여자 목록

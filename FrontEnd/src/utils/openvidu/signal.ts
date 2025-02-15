@@ -3,6 +3,7 @@ import { QuestionChangedData, QuestionSpeakingOrderType } from "./openviduTypes"
 import { useQuestionStore } from "@/stores/questionStore";
 import { startInitialTimer } from "./timer";
 import { startRecording, stopRecording } from "@/apis/openvidu/recordingApi";
+import useAuthStore from "@/stores/authStore";
 
 //질문 시작 시, 참가자 리스트 보내는 시그널
 export function sendSignalQuestionChanged({ data, session }: { data: QuestionChangedData; session: Session }) {
@@ -16,6 +17,10 @@ export function sendSignalQuestionChanged({ data, session }: { data: QuestionCha
 export function subscribeToQuestionChanged({ session }: { session: Session }) {
   session.on("signal:questionChanged", (event) => {
     const store = useQuestionStore.getState();
+    const userStore = useAuthStore.getState();
+
+    const { userId } = userStore;
+
     const {
       questions,
       speakingOrder,
@@ -38,7 +43,7 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
 
     const data = JSON.parse(event.data || "");
     // const speakingOrder = data.speakingOrder;
-    const userId = data.userId;
+    const buttonClickedUserId = data.buttonClickedUserId;
 
     if (speakingOrder.length === 0) {
       alert("in question changed 발언자 순서를 받아오는데 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
@@ -60,24 +65,42 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
     //질문 중
     if (isMeetingStart === 1 && isQuestionStart === 1) {
       //답변 시작
-      if (currentUserId === userId && !isSpeaking) {
-        setIsSpeaking(true);
+      console.log(
+        "답변 시작 , currentUserId : ",
+        currentUserId,
+        "buttonClickedUserId : ",
+        buttonClickedUserId,
+        "userId : ",
+        userId,
+        "isSpeaking : ",
+        isSpeaking
+      );
+
+      //현재 유저가 말할 때, 그 유저만 녹음 시작 api 호출출
+      if (currentUserId === buttonClickedUserId && buttonClickedUserId === userId && !isSpeaking) {
         //녹음 시작 API 호출
+        console.log("녹음 시작");
         startRecording({ sessionID: session.sessionId })
           .then(() => console.log("녹음 시작 성공"))
           .catch((error) => {
             console.log("녹음 시작 실패", error);
           });
-
-        return;
-      } else if (currentUserId === userId && isSpeaking) {
-        setIsSpeaking(false);
-        //녹음 종료 API 호출
+      } else if (currentUserId === buttonClickedUserId && buttonClickedUserId === userId && isSpeaking) {
+        console.log("녹음 종료");
         stopRecording({ sessionID: session.sessionId, questionId: questions[currentQuestionNumber].questionId })
           .then(() => console.log("녹음 종료 성공"))
           .catch((error) => {
             console.log("녹음 종료 실패", error);
           });
+      }
+
+      if (currentUserId === buttonClickedUserId && !isSpeaking) {
+        console.log("답변 시작");
+        setIsSpeaking(true);
+        return;
+      } else if (currentUserId === buttonClickedUserId && isSpeaking) {
+        console.log("답변 중단");
+        setIsSpeaking(false);
 
         //답변이 끝나면 질문 바꾸는 로직 진행
         setTotalAnswerPerQuestion(totalAnswerPerQuestion + 1);
@@ -91,6 +114,7 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
 
         //하나의 질문 종료
         if (totalAnswerPerQuestion === speakingOrder.length - 1) {
+          console.log("하나의 질문 종료");
           // 다음 질문 번호를 직접 계산
           const nextQuestionNumber = currentQuestionNumber + 1;
           const nextQuestionId = questions[nextQuestionNumber].questionId;
@@ -102,8 +126,10 @@ export function subscribeToQuestionChanged({ session }: { session: Session }) {
           setCurrentQuestionText(`Q${nextQuestionNumber + 1}.\n${questions[nextQuestionNumber].detail}`);
           setTotalAnswerPerQuestion(0);
         } else {
+          console.log("다음 사용자 계산");
           const nextUser = (currentUser + 1) % speakingOrder.length;
 
+          console.log("nextUser : ", nextUser);
           setCurrentUser(nextUser);
           setCurrentUserId(speakingOrder[nextUser].userId);
           setTotalAnswerPerQuestion(totalAnswerPerQuestion + 1);
