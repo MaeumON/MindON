@@ -235,8 +235,12 @@ function GroupDetail() {
                   <div className="grow shrink basis-0 px-3">
                     <span className="text-cardLongContent text-lg font-medium leading-[35px]">주제는 </span>
                     <span className="text-[#d98600] text-lg font-bold ">&quot;{group?.diseaseName}&quot;</span>
+                    <span className="text-cardLongContent text-lg font-medium">에요</span>
+                    <br></br>
+                    <span className="text-cardLongContent text-lg font-medium leading-[35px]">모임은 </span>
+                    <span className="text-[#d98600] text-lg font-bold ">{group?.period}주</span>
                     <span className="text-cardLongContent text-lg font-medium">
-                      에요
+                      동안 진행해요
                       <br />
                       매주{" "}
                     </span>
