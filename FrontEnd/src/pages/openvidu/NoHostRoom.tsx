@@ -67,15 +67,15 @@ const NoHostRoom = ({
 
   return (
     <section className="w-full h-[calc(100vh-80px)] px-[20px] flex flex-col justify-center items-center bg-offWhite font-suite">
-      <div id="layout" className="w-full h-[80%]">
+      <div className="w-full h-[80%] grid grid-cols-3 gap-4">
         {localUser && localUser.getStreamManager() && (
-          <div className="w-[45%] h-[45%]" id="localUser">
+          <div className="w-full h-full">
             <StreamComponent user={localUser} />
           </div>
         )}
 
         {subscribers.map((sub, i) => (
-          <div key={i} className="w-[50%] h-[50%]" id="remoteUsers">
+          <div key={i} className="w-full h-full">
             <StreamComponent
               user={new UserModel(sub)}
               session={session}
