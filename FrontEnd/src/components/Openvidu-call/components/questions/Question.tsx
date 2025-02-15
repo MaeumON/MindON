@@ -41,13 +41,29 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
   const [btnDisabled, setBtnDisabled] = useState<boolean>(false);
   const [isSpeakerModalOpen, setIsSpeakerModalOpen] = useState<boolean>(false);
 
-  function stateChanger() {
+  async function stateChanger() {
     if (isMeetingStart === 0) {
-      fetchOrder().then(() => {
-        sendSignalStartMeeting({ session });
-      });
+      try {
+        const response = await fetchQuestionSpeakingOrder({ groupId: mySessionId });
+        const sortedResponse = response.sort((a, b) => a.no - b.no);
+        setSpeakingOrder(sortedResponse);
+
+        // 상태 업데이트가 반영될 때까지 잠시 대기
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        sendSignalStartMeeting({
+          data: { speakingOrder: sortedResponse }, // 직접 정렬된 응답을 전달
+          session,
+        });
+      } catch (error) {
+        console.error("Error fetching speaking order:", error);
+        alert("발언자 순서를 가져오는데 실패했습니다.");
+      }
     } else {
-      const signalData: QuestionChangedData = { userId: userId };
+      const signalData: QuestionChangedData = {
+        userId: userId,
+        // speakingOrder: speakingOrder, // 현재 전역 상태의 speakingOrder 전달
+      };
       sendSignalQuestionChanged({ data: signalData, session });
     }
   }
@@ -75,14 +91,6 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
     }
     return currentBtnText;
   }
-
-  const fetchOrder = async () => {
-    const response = await fetchQuestionSpeakingOrder({ groupId: mySessionId });
-    const sortedResponse = response.sort((a, b) => a.no - b.no);
-    setSpeakingOrder(sortedResponse);
-
-    console.log("fetchOrder 끝");
-  };
 
   function showSpeakerModal() {
     setIsSpeakerModalOpen(true);
