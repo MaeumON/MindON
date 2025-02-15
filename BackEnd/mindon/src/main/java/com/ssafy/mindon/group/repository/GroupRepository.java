@@ -19,7 +19,7 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     boolean existsByInviteCode(String inviteCode);
 
     // 특정 파라미터가 NULL이면 해당 조건을 무시하고 다른 조건들만 적용
-    @Query("SELECT g FROM Group g WHERE g.groupStatus = 0 AND " +
+    @Query("SELECT g FROM Group g WHERE g.groupStatus = 0 AND g.isPrivate = false AND " +
             "(:keyword IS NULL OR g.title LIKE %:keyword%) AND " +
             "(:diseaseId IS NULL OR g.disease.diseaseId IN :diseaseId) AND " +
             "(:isHost IS NULL OR g.isHost = :isHost) AND " +
@@ -51,7 +51,7 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
 
     Group findByGroupId(Integer groupId);
 
-    Page<Group> findByInviteCode(String inviteCode, Pageable pageable);
+    Page<Group> findByInviteCodeAndGroupStatus(String inviteCode, Byte groupStatus, Pageable pageable);
 
     @Modifying(clearAutomatically = true)  // 변경 사항을 영속성 컨텍스트에 즉시 반영
     @Transactional
