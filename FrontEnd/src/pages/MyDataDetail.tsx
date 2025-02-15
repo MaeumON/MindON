@@ -13,6 +13,7 @@ import loudspeaker from "@/assets/icons/loudspeaker.png";
 import chat from "@/assets/icons/chat.png";
 import NoneEmotion from "@/assets/images/feeling/noneEmotion.png";
 import SpeechAmountChart from "@/components/Mydata/SpeechAmountChart";
+// import LoadingSpinner from "@/components/common/LoadingSpinner";
 
 import useAuthStore from "@/stores/authStore";
 import { useEffect, useState } from "react";
@@ -25,7 +26,7 @@ function MyDataDetail() {
 
   const [reviews, setReviews] = useState<ReviewType[]>([]);
   const [emotionAvg, setEmotionAvg] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(true);
+  // const [loading, setLoading] = useState<boolean>(true);
   const [weekNum, setWeekNum] = useState<number>(1);
   const [eachReview, setEachReview] = useState<ReviewType | null>(null); // weeknum과 일치하는 리뷰 저장장
   const [speechAmount, setSpeechAmount] = useState<number>(0); // speechAmount 상태 추가
@@ -54,7 +55,7 @@ function MyDataDetail() {
           setEachReview(null);
         }
       }
-      setLoading(false);
+      // setLoading(false);
     };
     loadReviews();
   }, [weekNum]); // weeknum 변경되면 다시 필터링
@@ -65,19 +66,14 @@ function MyDataDetail() {
     setWeekNum(week); // 클릭한 인덱스로 weekNum 변경
   };
 
-  if (loading)
-    return (
-      <div className="flex flex-col mt-20 justify-center text-cardTitle text-32px font-jamsilRegular text-center">
-        로딩 중입니다! <br /> 조금만 기다려주세요!
-      </div>
-    );
+  // if (loading) return <LoadingSpinner />;
   // 모임 감정 총평
   const emotionTitle = (() => {
     if (emotionAvg === 999) {
       return "아직 모름";
-    } else if (emotionAvg > 3) {
+    } else if (emotionAvg > 0) {
       return "훌륭함";
-    } else if (emotionAvg === 3) {
+    } else if (emotionAvg === 0) {
       return "괜찮음";
     } else {
       return "차디참";
@@ -197,7 +193,9 @@ function MyDataDetail() {
             <div className="flex flex-col basis-3/5">
               <div className="font-jamsilMedium text-20px">온이의 한 마디</div>
               <div className="font-suite text-16px break-keep">
-                {eachReview?.cheeringMessage}
+                {eachReview?.cheeringMessage ?? (
+                  <div className="text-cardContent font-jamsilRegular mt-2">온이는 생각 중이에요...</div>
+                )}
                 {/* 혼자서 모든 것을 해결하지 않고 사람들과 함께 어려움을 나누는 것도 중요해요. 함께 힘내요 💪 */}
               </div>
             </div>
@@ -213,7 +211,9 @@ function MyDataDetail() {
               <div className="flex justify-center py-3">
                 <div className="p-4 w-[95%] bg-white rounded-lg">
                   <div className=" text-cardLongContent font-suite leading-normal">
-                    {eachReview?.summation}
+                    {eachReview?.summation ?? (
+                      <div className="text-cardContent font-jamsilRegular">분석이 아직 완료되지 않았어요!</div>
+                    )}
                     {/* 1회차 모임은 하영님이 경청을 한 날이었어요. 많은 사람들이 따뜻해졌대요.
                     <br /> 트라우마에 대한 이야기를 털어놓고, 감정을 마주보는 시간을 가졌습니다.
                     <br /> 수연님의 질문은 “그 날을 떠올렸을때 가장 먼저 드는 감정은 무엇인가요?”였습니다. 수연님은
@@ -231,8 +231,14 @@ function MyDataDetail() {
               </div>
               <div className="flex justify-center py-3">
                 <div className="p-4 w-[95%] bg-white rounded-lg">
-                  {/* {eachReview?.speechAmount} */}
-                  <SpeechAmountChart percentage={speechAmount} />
+                  {speechAmount ? (
+                    <SpeechAmountChart percentage={speechAmount} />
+                  ) : (
+                    <div className="text-cardContent font-jamsilRegular">계산 중이에요!</div>
+                  )}
+                  {/* {speechAmount ?? 
+                  (<SpeechAmountChart percentage={speechAmount} />) : <div>생각중중</div>
+                  } */}
                 </div>
               </div>
             </div>
