@@ -62,27 +62,27 @@ function GroupsList() {
       nav(`/groups/${groupId}`);
     }
   }
-  // ✅ 메인페이지에서 그룹 연결
-  // 파라미터 추출
-
-  const isHostParam = queryParams.get("isHost");
-
-  // 파라미터 boolean 타입으로 변환
-  const isHost: boolean | null = isHostParam === "1" ? true : isHostParam === "0" ? false : null;
 
   // ✅ 그룹 목록을 가져오는 API 함수
   async function fetchGroups() {
     try {
-      const filters: Partial<RequestData> = {};
+      //  sessionStorage에서 필터 값 가져오기
+      const storedFilters = sessionStorage.getItem("groupFilters");
+      const savedFilters: Partial<RequestData> = storedFilters ? JSON.parse(storedFilters) : {};
 
-      // `isHost` 파라미터 처리
+      const filters: Partial<RequestData> = { ...savedFilters };
+
+      // ✅ 메인페이지에서 그룹 연결
+      //  `isHost` 파라미터 처리 (sessionStorage와 URL 중 URL을 우선 적용)
       const isHostParam = queryParams.get("isHost");
-      const isHost: boolean | null = isHostParam === "1" ? true : isHostParam === "0" ? false : null;
-
-      if (isHost !== null) {
-        filters.isHost = isHost;
+      if (isHostParam !== null) {
+        filters.isHost = isHostParam === "1" ? true : isHostParam === "0" ? false : null;
       }
 
+      // sessionStorage에 업데이트된 필터 값 저장
+      sessionStorage.setItem("groupFilters", JSON.stringify(filters));
+
+      // ✅ API 요청
       const result = await groupListApi(filters, page, size, sort);
       console.log("📌 그룹 목록 API 응답:", result);
       setGroups(result.content);
@@ -93,27 +93,14 @@ function GroupsList() {
     }
   }
 
-  // ✅ useEffect에서 fetchGroups() 호출
+  // ✅ useEffect에서 fetchGroups() 호출 (sessionStorage 값 반영)
   useEffect(() => {
     fetchGroups();
   }, [page, size, sort]);
 
-  // ✅ 필터
-  // 필터 상태 관리를 위한 변수들
-  const [selectedFilters, setSelectedFilters] = useState<RequestData>({
-    diseaseId: [],
-    isHost: isHost,
-    startDate: new Date().toISOString().split("T")[0] + "T00:00:00Z",
-    period: 0,
-    startTime: 0,
-    endTime: 23,
-    dayOfWeek: [],
-  });
-
-  // 필터가 적용된 API 요청을 받으면 실행됨
+  // 적용하기 클릭 시 시행
   async function handleApplyFilter(filters: Partial<RequestData>) {
     try {
-      setSelectedFilters(filters); // 필터 상태 저장
       const result = await groupListApi(filters);
       setGroups(result.content); // 기존 그룹 목록을 새로운 목록으로 갱신
       // console.log("📌 필터 적용 API 응답:", result);
@@ -141,21 +128,21 @@ function GroupsList() {
   }
 
   // 검색 입력값 업데이트
-  const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  function onChangeSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setKeyword(e.target.value);
-  };
+  }
 
   // 검색 실행(아이콘)
-  const onClickSearchIcon = () => {
+  function onClickSearchIcon() {
     fetchSearchGroups();
-  };
+  }
 
   // 검색 실행(엔터키)
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       fetchSearchGroups();
     }
-  };
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -225,14 +212,9 @@ function GroupsList() {
         )}
       </div>
 
-      {/* 모달 */}
+      {/* 필터 모달 */}
       {isFilterOpen && (
-        <GroupsFilter
-          isOpen={isFilterOpen}
-          onClose={() => setIsFilterOpen(false)}
-          onApplyFilter={handleApplyFilter}
-          selectedFilters={selectedFilters}
-        />
+        <GroupsFilter isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} onApplyFilter={handleApplyFilter} />
       )}
 
       {/* 비밀번호 모달 */}

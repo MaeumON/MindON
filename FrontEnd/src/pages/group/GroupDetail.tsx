@@ -171,16 +171,19 @@ function GroupDetail() {
   }
 
   // 로딩중이거나 에러 발생했을 때 처리
-  if (isLoading) return <div className="flex flex-col text-center items-center justify-center mt-10">로딩 중...</div>;
+  if (isLoading)
+    return (
+      <div className="flex flex-col text-center text-2xl font-suite items-center justify-center mt-10">로딩 중...</div>
+    );
   if (error)
     return (
-      <div className="flex flex-col text-center items-center text-center mt-10 text-red-500">
+      <div className="flex flex-col text-center justify-center text-2xl font-suite items-center text-center mt-10 text-red-500">
         그룹 정보를 불러오는 데 실패했습니다.
       </div>
     );
   if (!group)
     return (
-      <div className="flex flex-col text-center items-center text-center mt-10 text-gray-500">
+      <div className="flex flex-col text-center  justify-center text-2xl font-suite items-center text-center mt-10 text-gray-500">
         그룹 정보를 찾을 수 없습니다.
       </div>
     ); // 예외처리 추가

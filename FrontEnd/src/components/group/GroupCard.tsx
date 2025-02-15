@@ -11,7 +11,7 @@ const GroupCard = ({ group, onClick }: GroupCardProps) => {
   // console.log("📌 GroupCard Props:", group);
 
   // const router = useNavigate();
-  console.log(group);
+  // console.log(group);
 
   // 12시간제로 변경해주는 함수
   const correctionHour = () => {
