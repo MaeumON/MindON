@@ -51,4 +51,11 @@ public interface MeetingRepository extends JpaRepository<Meeting, Integer> {
         WHERE meeting_status < 2
     """, nativeQuery = true)
     int updateMeetingStatus();
+
+    @Query("SELECT m FROM Meeting m " +
+            "WHERE m.group.groupId = :groupId " +
+            "AND (m.meetingStatus = 0 OR m.meetingStatus = 1) " +
+            "ORDER BY m.date ASC LIMIT 1")
+    Meeting findNearestUpcomingOrOngoingMeeting(@Param("groupId") Integer groupId);
+
 }
