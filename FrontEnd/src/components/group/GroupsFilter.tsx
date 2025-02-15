@@ -9,10 +9,9 @@ interface GroupsFilterProps {
   isOpen: boolean;
   onClose: () => void;
   onApplyFilter: (selectedFilters: RequestData) => Promise<void>;
-  selectedFilters: RequestData;
 }
 
-function GroupsFilter({ isOpen, onClose, onApplyFilter, selectedFilters }: GroupsFilterProps) {
+function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
   const [maxWidth, setMaxWidth] = useState(412);
 
   // ✅ 카테고리 변환
@@ -55,30 +54,63 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter, selectedFilters }: Group
     일: 7,
   };
 
-  // ✅ 초기값을 부모에서 받은 selectedFilters로 설정
+  // ✅ sessionStorage에서 필터 값을 직접 불러오기
+  //  필터 기본값 설정(내부 값 undefined 방지)
+  const DEFAULT_FILTERS: RequestData = {
+    diseaseId: [],
+    isHost: null,
+    startDate: new Date().toISOString().split("T")[0] + "T00:00:00Z",
+    period: 0,
+    startTime: 0,
+    endTime: 23,
+    dayOfWeek: [],
+  };
+  const storedFilters = sessionStorage.getItem("groupFilters");
+  const initialFilters: RequestData = storedFilters ? JSON.parse(storedFilters) : DEFAULT_FILTERS;
+
+  //  필터 상태 관리
   const [selectedDiseases, setSelectedDiseases] = useState<string[]>(
-    selectedFilters.diseaseId
-      ? selectedFilters.diseaseId.map((id) => Object.keys(diseaseMap).find((key) => diseaseMap[key] === id) || "")
-      : []
+    (initialFilters.diseaseId ?? []).map((id) => Object.keys(diseaseMap).find((key) => diseaseMap[key] === id) || "")
   );
-  const [selectedPeriod, setSelectedPeriod] = useState<number>(selectedFilters.period ?? 0);
+  const [selectedPeriod, setSelectedPeriod] = useState<number>(initialFilters.period ?? 0);
   const [startDate, setStartDate] = useState<Date | null>(
-    selectedFilters.startDate ? new Date(selectedFilters.startDate) : new Date()
+    initialFilters.startDate && typeof initialFilters.startDate === "string"
+      ? new Date(initialFilters.startDate)
+      : new Date()
   );
   const [selectedDays, setSelectedDays] = useState<string[]>(
-    selectedFilters.dayOfWeek
-      ? selectedFilters.dayOfWeek.map((day) => Object.keys(dayMap).find((key) => dayMap[key] === day) || "")
-      : []
+    (initialFilters.dayOfWeek ?? []).map((day) => Object.keys(dayMap).find((key) => dayMap[key] === day) || "")
   );
-  const [selectedStartTime, setSelectedStartTime] = useState<string>(
-    selectedFilters.startTime ? `${selectedFilters.startTime}:00` : "00:00"
-  );
-  const [selectedEndTime, setSelectedEndTime] = useState<string>(
-    selectedFilters.endTime ? `${selectedFilters.endTime}:00` : "23:00"
-  );
+  const [selectedStartTime, setSelectedStartTime] = useState<string>(`${initialFilters.startTime ?? 0}:00`);
+  const [selectedEndTime, setSelectedEndTime] = useState<string>(`${initialFilters.endTime ?? 23}:00`);
   const [selectedHost, setSelectedHost] = useState<string | null>(
-    selectedFilters.isHost === true ? "유" : selectedFilters.isHost === false ? "무" : null
+    initialFilters.isHost === true ? "유" : initialFilters.isHost === false ? "무" : null
   );
+
+  // // ✅ 초기값을 부모에서 받은 selectedFilters로 설정
+  // const [selectedDiseases, setSelectedDiseases] = useState<string[]>(
+  //   selectedFilters.diseaseId
+  //     ? selectedFilters.diseaseId.map((id) => Object.keys(diseaseMap).find((key) => diseaseMap[key] === id) || "")
+  //     : []
+  // );
+  // const [selectedPeriod, setSelectedPeriod] = useState<number>(selectedFilters.period ?? 0);
+  // const [startDate, setStartDate] = useState<Date | null>(
+  //   selectedFilters.startDate ? new Date(selectedFilters.startDate) : new Date()
+  // );
+  // const [selectedDays, setSelectedDays] = useState<string[]>(
+  //   selectedFilters.dayOfWeek
+  //     ? selectedFilters.dayOfWeek.map((day) => Object.keys(dayMap).find((key) => dayMap[key] === day) || "")
+  //     : []
+  // );
+  // const [selectedStartTime, setSelectedStartTime] = useState<string>(
+  //   selectedFilters.startTime ? `${selectedFilters.startTime}:00` : "00:00"
+  // );
+  // const [selectedEndTime, setSelectedEndTime] = useState<string>(
+  //   selectedFilters.endTime ? `${selectedFilters.endTime}:00` : "23:00"
+  // );
+  // const [selectedHost, setSelectedHost] = useState<string | null>(
+  //   selectedFilters.isHost === true ? "유" : selectedFilters.isHost === false ? "무" : null
+  // );
 
   // ✅ 반응형 화면 구현
   useEffect(() => {
@@ -94,26 +126,26 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter, selectedFilters }: Group
     };
   }, []);
 
-  // ✅ 모달이 열릴 때 기존 필터 값을 반영
-  useEffect(() => {
-    if (isOpen) {
-      setSelectedDiseases(
-        selectedFilters.diseaseId
-          ? selectedFilters.diseaseId.map((id) => Object.keys(diseaseMap).find((key) => diseaseMap[key] === id) || "")
-          : []
-      );
-      setSelectedPeriod(selectedFilters.period ?? 0);
-      setStartDate(selectedFilters.startDate ? new Date(selectedFilters.startDate) : new Date());
-      setSelectedDays(
-        selectedFilters.dayOfWeek
-          ? selectedFilters.dayOfWeek.map((day) => Object.keys(dayMap).find((key) => dayMap[key] === day) || "")
-          : []
-      );
-      setSelectedStartTime(selectedFilters.startTime ? `${selectedFilters.startTime}:00` : "00:00");
-      setSelectedEndTime(selectedFilters.endTime ? `${selectedFilters.endTime}:00` : "23:00");
-      setSelectedHost(selectedFilters.isHost === true ? "유" : selectedFilters.isHost === false ? "무" : null);
-    }
-  }, [isOpen, selectedFilters]);
+  // // ✅ 모달이 열릴 때 기존 필터 값을 반영
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     setSelectedDiseases(
+  //       selectedFilters.diseaseId
+  //         ? selectedFilters.diseaseId.map((id) => Object.keys(diseaseMap).find((key) => diseaseMap[key] === id) || "")
+  //         : []
+  //     );
+  //     setSelectedPeriod(selectedFilters.period ?? 0);
+  //     setStartDate(selectedFilters.startDate ? new Date(selectedFilters.startDate) : new Date());
+  //     setSelectedDays(
+  //       selectedFilters.dayOfWeek
+  //         ? selectedFilters.dayOfWeek.map((day) => Object.keys(dayMap).find((key) => dayMap[key] === day) || "")
+  //         : []
+  //     );
+  //     setSelectedStartTime(selectedFilters.startTime ? `${selectedFilters.startTime}:00` : "00:00");
+  //     setSelectedEndTime(selectedFilters.endTime ? `${selectedFilters.endTime}:00` : "23:00");
+  //     setSelectedHost(selectedFilters.isHost === true ? "유" : selectedFilters.isHost === false ? "무" : null);
+  //   }
+  // }, [isOpen, selectedFilters]);
 
   // ✅버튼
   // 필터 적용하기 버튼 클릭 시 실행
@@ -138,6 +170,10 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter, selectedFilters }: Group
       endTime: Number(selectedEndTime.split(":")[0]),
       dayOfWeek: selectedDays.map((day) => dayMap[day] ?? null).filter((id) => id !== null),
     };
+
+    //  필터 값을 sessionStorage에 저장
+    sessionStorage.setItem("groupFilters", JSON.stringify(filterData));
+
     console.log("FilterData : ", filterData);
     onApplyFilter(filterData);
     onClose();
