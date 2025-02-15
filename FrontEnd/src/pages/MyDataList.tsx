@@ -1,18 +1,17 @@
 import Header from "@components/Layout/Header";
 import GroupCard from "@/components/group/GroupCard";
-// import GroupsFilter from "@components/group/GroupsFilter";
 import Footer from "@components/Layout/Footer";
 import { Group } from "@utils/groups";
 import React from "react";
-
 import IconSearch from "@assets/icons/IconSearch";
-// import SeachFilter from "@assets/images/SeachFilter.png";
 
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { groupStatusApi } from "@/apis/group/groupListApi";
 import Pagination from "react-js-pagination";
 import { ReactJsPaginationProps } from "react-js-pagination";
+
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 
 const PaginationComponent = Pagination as unknown as React.ComponentType<ReactJsPaginationProps>;
 
@@ -21,12 +20,13 @@ function MyDataList() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [keyword, setKeyword] = useState<string>("");
   const { groupStatus } = useParams();
-
+  const [loading, setLoading] = useState(true);
   console.log(groupStatus);
   const nav = useNavigate();
 
   // ✅ 마운트 API 요청
   const fetchInitialGroups = async (groupStatus: string | undefined, keyword: string) => {
+    setLoading(true); // api 호출 전 true로 변경해서 로딩화면 띄우기
     try {
       console.log("마운트 api 요청중");
 
@@ -35,6 +35,7 @@ function MyDataList() {
       console.log("📌 API 응답 데이터:", result);
       setGroups(result.content);
       console.log("📌 setGroup 이후 :", groups);
+      setLoading(false); // 호출 완료되면 false 로 변환환
     } catch (error) {
       console.error("초기 그룹 목록 요청 실패:", error);
       setGroups([]); // 에러 발생 시 빈 배열 설정
@@ -89,9 +90,11 @@ function MyDataList() {
   // ✅검색창
   // 검색 기능 API 호출
   const fetchSearchGroups = async () => {
+    setLoading(true);
     if (!keyword.trim()) {
       // 빈 값으로 검색하면 전체 목록 조회
       fetchInitialGroups(groupStatus, "");
+      setLoading(false);
       return;
     }
     try {
@@ -123,71 +126,76 @@ function MyDataList() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header title={"모임목록보기"} isicon={true} className="bg-yellow100" />
-      {/* 검색창 */}
-      <div className="h-[85px] px-5 py-3 flex-col justify-start items-start gap-2.5 flex bg-yellow100">
-        <div className="self-stretch h-[46px] px-4 py-2 bg-offWhite rounded-lg justify-start items-center gap-5 inline-flex overflow-hidden">
-          <div className="grow shrink basis-0 h-5 justify-start items-center gap-2.5 flex">
-            <input
-              value={keyword}
-              onChange={onChangeSearch}
-              onKeyDown={handleKeyDown}
-              className="bg-offWhite grow shrink basis-0 text-cardLongContent text-base font-bold font-suite offWhite"
-              placeholder="원하는 모임을 검색해보세요"
-            ></input>
+    <div>
+      {/* <LoadingSpinner /> */}
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <div className="flex flex-col min-h-screen">
+          <Header title={"모임목록보기"} isicon={true} className="bg-yellow100" />
+          {/* 검색창 */}
+          <div className="h-[85px] px-5 py-3 flex-col justify-start items-start gap-2.5 flex bg-yellow100">
+            <div className="self-stretch h-[46px] px-4 py-2 bg-offWhite rounded-lg justify-start items-center gap-5 inline-flex overflow-hidden">
+              <div className="grow shrink basis-0 h-5 justify-start items-center gap-2.5 flex">
+                <input
+                  value={keyword}
+                  onChange={onChangeSearch}
+                  onKeyDown={handleKeyDown}
+                  className="bg-offWhite grow shrink basis-0 text-cardLongContent text-base font-bold font-suite offWhite"
+                  placeholder="원하는 모임을 검색해보세요"
+                ></input>
+              </div>
+              <button onClick={onClickSearchIcon}>
+                <IconSearch />
+              </button>
+            </div>
           </div>
-          <button onClick={onClickSearchIcon}>
-            <IconSearch />
-          </button>
-        </div>
-      </div>
-      {/* 검색 필터 */}
-      {/* <button onClick={() => setIsFilterOpen(true)}>
+          {/* 검색 필터 */}
+          {/* <button onClick={() => setIsFilterOpen(true)}>
         <div className="flex flex-1 left-[30px] my-5 ml-6">
           <img src={SeachFilter} className="w-[20px] h-[20px]" />
           <div className="ms-3 text-cardLongContent text-base font-bold font-suite">검색 필터</div>
         </div>
       </button> */}
-      <br />
-      {/* 그룹 목록 */}
-      <div className="flex flex-col gap-5 pb-20">
-        {groups.length > 0 ? (
-          groups.map((group) => (
-            <GroupCard
-              key={group.groupId}
-              group={group}
-              onClick={() => onClickReviewDetail(group.groupId)} // onClick 전달
-            />
-          ))
-        ) : (
-          <div className="flex m-6 justify-center items-center h-80 font-suite text-18px font-[600] text-cardLongContent leading-8">
-            아직 그룹이 없어요
-            <br />
-            아래 + 버튼을 눌러
-            <br />
-            그룹을 생성해보세요!
+          <br />
+          {/* 그룹 목록 */}
+          <div className="flex flex-col gap-5 pb-20">
+            {groups.length > 0 ? (
+              groups.map((group) => (
+                <GroupCard
+                  key={group.groupId}
+                  group={group}
+                  onClick={() => onClickReviewDetail(group.groupId)} // onClick 전달
+                />
+              ))
+            ) : (
+              <div className="flex m-6 justify-center items-center h-80 font-suite text-18px font-[600] text-cardLongContent leading-8">
+                아직 그룹이 없어요
+                <br />
+                아래 + 버튼을 눌러
+                <br />
+                그룹을 생성해보세요!
+              </div>
+            )}
           </div>
-        )}
-      </div>
-      {/* 페이지네이션 */}
-      <div className="flex justify-center items-center mb-[100px]">
-        {totalItems > 0 && (
-          <PaginationComponent
-            activePage={page}
-            itemsCountPerPage={size}
-            totalItemsCount={totalItems}
-            pageRangeDisplayed={5}
-            onChange={handlePageChange}
-            prevPageText={"‹"}
-            nextPageText={"›"}
-            firstPageText={"«"}
-            lastPageText={"»"}
-          />
-        )}
-      </div>
-      {/* 모달 */}
-      {/* {isFilterOpen && (
+          {/* 페이지네이션 */}
+          <div className="flex justify-center items-center mb-[100px]">
+            {totalItems > 0 && (
+              <PaginationComponent
+                activePage={page}
+                itemsCountPerPage={size}
+                totalItemsCount={totalItems}
+                pageRangeDisplayed={5}
+                onChange={handlePageChange}
+                prevPageText={"‹"}
+                nextPageText={"›"}
+                firstPageText={"«"}
+                lastPageText={"»"}
+              />
+            )}
+          </div>
+          {/* 모달 */}
+          {/* {isFilterOpen && (
         <GroupsFilter
           isOpen={isFilterOpen}
           onClose={() => setIsFilterOpen(false)}
@@ -195,7 +203,9 @@ function MyDataList() {
           selectedFilters={selectedFilters}
         />
       )} */}
-      <Footer />
+          <Footer />
+        </div>
+      )}
     </div>
   );
 }
