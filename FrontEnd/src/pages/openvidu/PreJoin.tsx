@@ -167,10 +167,10 @@ const Prejoin = () => {
       }));
 
       // 모든 참가자가 나갔는지 확인 (remoteUsers가 비어있고 localUser도 없는 경우)
-      if (remoteUsers.length === 0 && !state.localUser) {
-        console.log("마지막 참가자가 나갔습니다. 세션을 종료합니다.");
-        await closeSession(state.sessionId);
-      }
+      // if (remoteUsers.length === 0 && !state.localUser) {
+      //   console.log("마지막 참가자가 나갔습니다. 세션을 종료합니다.");
+      //   await closeSession(state.sessionId);
+      // }
     },
     [state.subscribers, state.localUser, state.sessionId]
   );
@@ -351,7 +351,7 @@ const Prejoin = () => {
       // window.removeEventListener("resize", updateLayout);
       if (token && state.sessionId) removeUser({ sessionName: state.sessionId, token: token });
       if (state.subscribers.length === 0 && !state.localUser) {
-        console.log("마지막 참가자가 나갔습니다. 세션을 종료합니다.");
+        // console.log("마지막 참가자가 나갔습니다. 세션을 종료합니다.");
         // handleCloseSession();
         console.log("questionStore 초기화");
         resetQuestionStore();
