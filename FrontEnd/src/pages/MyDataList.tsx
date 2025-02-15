@@ -62,7 +62,7 @@ function MyDataList() {
     searchParams.set("size", size.toString());
     searchParams.set("sort", sort);
 
-    nav(`/mypage/groupslist?${searchParams.toString()}`);
+    nav(`/mydata/grouplist/${groupStatus}?${searchParams.toString()}`);
   }
 
   // ✅ 그룹 목록을 가져오는 API 함수
@@ -134,7 +134,7 @@ function MyDataList() {
               onChange={onChangeSearch}
               onKeyDown={handleKeyDown}
               className="bg-offWhite grow shrink basis-0 text-cardLongContent text-base font-bold font-suite offWhite"
-              placeholder="원하는 모임이나 초대코드를 검색해보세요"
+              placeholder="원하는 모임을 검색해보세요"
             ></input>
           </div>
           <button onClick={onClickSearchIcon}>
