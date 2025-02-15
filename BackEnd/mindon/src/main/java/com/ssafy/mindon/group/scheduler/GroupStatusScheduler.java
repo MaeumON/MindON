@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class GroupStatusScheduler {
 
     private final GroupService groupService;
-    @Scheduled(cron = "0 * * * * ?")  // 매 정각 실행
+    @Scheduled(cron = "0 0 * * * ?")  // 매 정각 실행
     public void scheduleUpdateGroupStatusToOngoing() {
         try {
             log.info("그룹 상태 업데이트 시작 (진행 중)");
@@ -29,7 +29,7 @@ public class GroupStatusScheduler {
         }
     }
 
-    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void scheduleUpdateGroupStatusToEnded() {
         try {
             int updatedCount = groupService.updateGroupStatusToEnded();
@@ -40,7 +40,7 @@ public class GroupStatusScheduler {
             log.error("종료 상태로 변경하는 중 오류 발생: {}", e.getMessage(), e);
         }
     }
-    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void scheduleUpdateProgressWeeks() {
         try {
             int updatedCount = groupService.updateProgressWeeks();

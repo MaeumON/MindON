@@ -61,7 +61,7 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
       }
     } else {
       const signalData: QuestionChangedData = {
-        userId: userId,
+        buttonClickedUserId: userId,
         // speakingOrder: speakingOrder, // 현재 전역 상태의 speakingOrder 전달
       };
       sendSignalQuestionChanged({ data: signalData, session });
