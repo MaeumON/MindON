@@ -3,6 +3,7 @@ import "./index.css";
 import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
 import { worker } from "./mocks/browser";
+import ScrollToTop from "./components/common/ScrollTop.tsx";
 
 async function deferRender() {
   //개발모드 확인
@@ -25,7 +26,9 @@ async function deferRender() {
 deferRender().then(() => {
   createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
-      <App />
+      <ScrollToTop>
+        <App />
+      </ScrollToTop>
     </BrowserRouter>
   );
 });

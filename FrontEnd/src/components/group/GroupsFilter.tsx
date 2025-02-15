@@ -56,10 +56,11 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
 
   // ✅ sessionStorage에서 필터 값을 직접 불러오기
   //  필터 기본값 설정(내부 값 undefined 방지)
+  // new Date().toISOString().split("T")[0] + "T00:00:00Z",
   const DEFAULT_FILTERS: RequestData = {
     diseaseId: [],
     isHost: null,
-    startDate: new Date().toISOString().split("T")[0] + "T00:00:00Z",
+    startDate: undefined,
     period: 0,
     startTime: 0,
     endTime: 23,
@@ -74,9 +75,7 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
   );
   const [selectedPeriod, setSelectedPeriod] = useState<number>(initialFilters.period ?? 0);
   const [startDate, setStartDate] = useState<Date | null>(
-    initialFilters.startDate && typeof initialFilters.startDate === "string"
-      ? new Date(initialFilters.startDate)
-      : new Date()
+    initialFilters.startDate && typeof initialFilters.startDate === "string" ? new Date(initialFilters.startDate) : null
   );
   const [selectedDays, setSelectedDays] = useState<string[]>(
     (initialFilters.dayOfWeek ?? []).map((day) => Object.keys(dayMap).find((key) => dayMap[key] === day) || "")
@@ -86,31 +85,6 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
   const [selectedHost, setSelectedHost] = useState<string | null>(
     initialFilters.isHost === true ? "유" : initialFilters.isHost === false ? "무" : null
   );
-
-  // // ✅ 초기값을 부모에서 받은 selectedFilters로 설정
-  // const [selectedDiseases, setSelectedDiseases] = useState<string[]>(
-  //   selectedFilters.diseaseId
-  //     ? selectedFilters.diseaseId.map((id) => Object.keys(diseaseMap).find((key) => diseaseMap[key] === id) || "")
-  //     : []
-  // );
-  // const [selectedPeriod, setSelectedPeriod] = useState<number>(selectedFilters.period ?? 0);
-  // const [startDate, setStartDate] = useState<Date | null>(
-  //   selectedFilters.startDate ? new Date(selectedFilters.startDate) : new Date()
-  // );
-  // const [selectedDays, setSelectedDays] = useState<string[]>(
-  //   selectedFilters.dayOfWeek
-  //     ? selectedFilters.dayOfWeek.map((day) => Object.keys(dayMap).find((key) => dayMap[key] === day) || "")
-  //     : []
-  // );
-  // const [selectedStartTime, setSelectedStartTime] = useState<string>(
-  //   selectedFilters.startTime ? `${selectedFilters.startTime}:00` : "00:00"
-  // );
-  // const [selectedEndTime, setSelectedEndTime] = useState<string>(
-  //   selectedFilters.endTime ? `${selectedFilters.endTime}:00` : "23:00"
-  // );
-  // const [selectedHost, setSelectedHost] = useState<string | null>(
-  //   selectedFilters.isHost === true ? "유" : selectedFilters.isHost === false ? "무" : null
-  // );
 
   // ✅ 반응형 화면 구현
   useEffect(() => {
@@ -125,27 +99,6 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
       window.removeEventListener("resize", updateMaxWidth); // 클린업
     };
   }, []);
-
-  // // ✅ 모달이 열릴 때 기존 필터 값을 반영
-  // useEffect(() => {
-  //   if (isOpen) {
-  //     setSelectedDiseases(
-  //       selectedFilters.diseaseId
-  //         ? selectedFilters.diseaseId.map((id) => Object.keys(diseaseMap).find((key) => diseaseMap[key] === id) || "")
-  //         : []
-  //     );
-  //     setSelectedPeriod(selectedFilters.period ?? 0);
-  //     setStartDate(selectedFilters.startDate ? new Date(selectedFilters.startDate) : new Date());
-  //     setSelectedDays(
-  //       selectedFilters.dayOfWeek
-  //         ? selectedFilters.dayOfWeek.map((day) => Object.keys(dayMap).find((key) => dayMap[key] === day) || "")
-  //         : []
-  //     );
-  //     setSelectedStartTime(selectedFilters.startTime ? `${selectedFilters.startTime}:00` : "00:00");
-  //     setSelectedEndTime(selectedFilters.endTime ? `${selectedFilters.endTime}:00` : "23:00");
-  //     setSelectedHost(selectedFilters.isHost === true ? "유" : selectedFilters.isHost === false ? "무" : null);
-  //   }
-  // }, [isOpen, selectedFilters]);
 
   // ✅버튼
   // 필터 적용하기 버튼 클릭 시 실행
@@ -184,7 +137,7 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
     setSelectedDays([]);
     setSelectedHost(null);
     setSelectedDiseases([]);
-    setStartDate(new Date());
+    setStartDate(null);
     setSelectedPeriod(0);
     setSelectedStartTime("00:00");
     setSelectedEndTime("23:00");
