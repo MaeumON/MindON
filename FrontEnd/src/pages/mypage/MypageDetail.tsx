@@ -206,7 +206,7 @@ function MypageDetail() {
           text="취소하기"
           type="ORANGE"
           onClick={onClickJoin}
-          className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-40px)] max-w-[392px] w-auto shadow-lg"
+          className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-50px)] max-w-[392px] w-auto shadow-lg"
         />
       );
     }
@@ -216,7 +216,7 @@ function MypageDetail() {
           text="참여하기"
           type="GREEN"
           onClick={enterVideoCall}
-          className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-40px)] max-w-[392px] w-auto shadow-lg"
+          className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-50px)] max-w-[390px] w-auto shadow-lg"
         />
       );
     }
