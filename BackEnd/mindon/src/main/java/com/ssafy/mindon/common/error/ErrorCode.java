@@ -23,11 +23,11 @@ public enum ErrorCode {
     VIDEO_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "O1", "OpenVidu 서버에서 오류가 발생했습니다."),
     SESSION_NOT_FOUND(HttpStatus.NOT_FOUND, "O2", "해당 세션을 찾을 수 없습니다."),
     INVALID_SESSION_TOKEN(HttpStatus.UNAUTHORIZED, "O3", "유효하지 않은 세션 토큰입니다."),
-    GROUP_CREATION_FAILED(HttpStatus.BAD_REQUEST, "G2", "그룹 생성에 실패했습니다."),
+    GROUP_CREATION_FAILED(HttpStatus.CREATED, "G2", "그룹 생성에 실패했습니다."),
     GROUP_JOIN_SAME_TIME(HttpStatus.OK, "G3", "동일한 시간에 가입된 그룹이 있어 그룹 가입에 실패했습니다."),
     GROUP_FULL(HttpStatus.OK, "G4", "그룹 정원이 초과되어 그룹 가입에 실패했습니다."),
-    USER_NOT_IN_GROUP(HttpStatus.BAD_REQUEST, "G5", "그룹에 해당 회원이 가입되어 있지 않아 탈퇴할 수 없습니다.");
-
+    USER_NOT_IN_GROUP(HttpStatus.BAD_REQUEST, "G5", "그룹에 해당 회원이 가입되어 있지 않아 탈퇴할 수 없습니다."),
+    TIME_OVER(HttpStatus.CREATED, "G6", "시간이 지난 경우 그룹을 생성할 수 없습니다.");
 
     private final String message;
     private final String code;
