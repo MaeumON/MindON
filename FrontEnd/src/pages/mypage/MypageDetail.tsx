@@ -12,6 +12,7 @@ import GroupJoinModal from "@components/group/GroupJoinModal";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "@components/common/LoadingSpinner";
+import GroupMessage from "@components/group/GroupMessage";
 
 function MypageDetail() {
   const { groupId } = useParams();
@@ -22,7 +23,7 @@ function MypageDetail() {
 
   // React 쿼리로 그룹 상세 정보 가져오기
   // undefined일 경우 API 요청 안함(타입 가드)
-  const fetchGroupDetail = async () => {
+  async function fetchGroupDetail() {
     if (!groupId) {
       return Promise.reject(new Error("groupId가 없습니다.")); // ✅ 예외 처리
     }
@@ -31,7 +32,7 @@ function MypageDetail() {
     console.log("리액트쿼리", groupId);
     console.log("fetchGroupDetail API 응답:", response);
     return response;
-  };
+  }
 
   const {
     data: group,
@@ -56,11 +57,12 @@ function MypageDetail() {
   }, [group]);
 
   // 참여/취소 버튼 클릭 시 API 요청
-  const onClickJoin = async () => {
+  async function onClickJoin() {
     if (!groupId) {
       return Promise.reject(new Error("groupId가 없습니다."));
     }
     try {
+      // 미가입 상태일 때 가입 모달 띄우기
       if (!isRegi) {
         const result = await groupDetailJoinApi(groupId);
         if (result.message === "success") {
@@ -79,7 +81,9 @@ function MypageDetail() {
         } else {
           alert("그룹 참여 인원이 가득찼습니다");
         }
-      } else {
+      }
+      // 가입 상태일 때 취소 모달 띄우기
+      else {
         await groupDetailLeaveApi(groupId);
         setIsRegi(false);
         // 캐시 업데이트
@@ -96,7 +100,7 @@ function MypageDetail() {
       console.error("API 요청 중 오류 발생:", error);
       alert("요청을 처리하는 중 오류가 발생했습니다. 잠시후 다시 시도해주세요.");
     }
-  };
+  }
   // 12시간제로 변경해주는 함수
   function correctionHour() {
     if (!group || group.meetingTime === undefined) return ""; // group `undefined 방지
@@ -116,13 +120,13 @@ function MypageDetail() {
     if (!group?.dayOfWeek) return "요일 미정"; // group이 없거나 dayOfWeek가 undefined일 경우 기본값 설정
 
     const weekDays: { [key: number]: string } = {
+      0: "일요일",
       1: "월요일",
       2: "화요일",
       3: "수요일",
       4: "목요일",
       5: "금요일",
       6: "토요일",
-      7: "일요일",
     };
 
     return weekDays[group.dayOfWeek] || "요일 미정"; // 유효하지 않은 값 예외 처리
@@ -204,8 +208,8 @@ function MypageDetail() {
     if (groupStatus === 0) {
       return (
         <Button
-          text="취소하기"
-          type="ORANGE"
+          text={isRegi ? "취소하기" : "참여하기"}
+          type={isRegi ? "ORANGE" : "GREEN"}
           onClick={onClickJoin}
           className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-50px)] max-w-[392px] w-auto shadow-lg"
         />
@@ -316,10 +320,7 @@ function MypageDetail() {
                 </div>
               </div>
               <div className="flex inline-flex justify-center items-center mx-5 gap-3">
-                <div className="flex text-cardLongContent text-base font-medium leading-tight px-10 py-3 bg-yellow100 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl justify-center items-center gap-2.5 ">
-                  함께 마음의 온기를
-                  <br /> 나누러 가볼까요??
-                </div>
+                <GroupMessage groupStatus={group?.groupStatus} />
                 <div className="flex flex-col justify-center items-center inline-flex">
                   <img src={Introbear} alt="온이" className="sm:w-[113px] sm:h-[120px] w-[93px] h-[100px]" />
                 </div>
