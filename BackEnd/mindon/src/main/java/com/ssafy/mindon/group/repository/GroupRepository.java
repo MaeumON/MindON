@@ -45,15 +45,6 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
             nativeQuery = true)
     int updateGroupStatusToEnded(@Param("now") LocalDateTime now);
 
-
-    @Query("SELECT g FROM Group g WHERE g.groupId IN :groupIds " +
-            "AND g.groupStatus = :groupStatus " +
-            "AND (:keyword IS NULL OR g.title LIKE %:keyword% OR g.inviteCode LIKE %:keyword%)")
-    Page<Group> findGroupsByKeywordAndStatus(@Param("groupIds") List<Integer> groupIds,
-                                             @Param("groupStatus") Byte groupStatus,
-                                             @Param("keyword") String keyword,
-                                             Pageable pageable
-    );
     @Query("SELECT g " +
             "FROM Group g, UserGroup ug " +
             "WHERE ug.group.groupId = g.groupId " +
