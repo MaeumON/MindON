@@ -211,14 +211,25 @@ function MypageDetail() {
       );
     }
     if (groupStatus === 1) {
-      return (
-        <Button
-          text="참여하기"
-          type="GREEN"
-          onClick={enterVideoCall}
-          className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-50px)] max-w-[390px] w-auto shadow-lg"
-        />
-      );
+      if (meetingStatus === 1) {
+        return (
+          <Button
+            text="참여하기"
+            type="GREEN"
+            onClick={enterVideoCall}
+            className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-50px)] max-w-[390px] w-auto shadow-lg"
+          />
+        );
+      } else {
+        return (
+          <Button
+            text="아직 모임 시간이 아니에요"
+            type="GRAY"
+            disabled={true}
+            className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-50px)] max-w-[390px] w-auto shadow-lg"
+          />
+        );
+      }
     }
     return null; // groupStatus === 2일 때 버튼 렌더링 안 함
   };
