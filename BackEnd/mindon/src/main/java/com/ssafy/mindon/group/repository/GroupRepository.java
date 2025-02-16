@@ -12,36 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Integer> {
     boolean existsByInviteCode(String inviteCode);
-
-    // 특정 파라미터가 NULL이면 해당 조건을 무시하고 다른 조건들만 적용
-    @Query("SELECT g FROM Group g WHERE g.groupStatus = 0 AND " +
-            "(:keyword IS NULL OR g.title LIKE %:keyword%) AND " +
-            "(:diseaseId IS NULL OR g.disease.diseaseId IN :diseaseId) AND " +
-            "(:isHost IS NULL OR g.isHost = :isHost) AND " +
-            "(:startDate IS NULL OR g.startDate >= :startDate) AND " +
-            "(:period IS NULL OR g.period = :period) AND " +
-            "(:startTime IS NULL OR g.meetingTime >= :startTime) AND " +
-            "(:endTime IS NULL OR g.meetingTime <= :endTime) AND " +
-            "(:dayOfWeek IS NULL OR g.dayOfWeek IN :dayOfWeek)"+
-            "ORDER BY g.startDate ASC, g.groupId ASC")
-    Page<Group> findGroupsByCriteria(
-            @Param("keyword") String keyword,
-            @Param("diseaseId") List<Byte> diseaseId,
-            @Param("isHost") Boolean isHost,
-            @Param("startDate") LocalDateTime startDate,
-            @Param("period") Byte period,
-            @Param("startTime") Byte startTime,
-            @Param("endTime") Byte endTime,
-            @Param("dayOfWeek") List<Byte> dayOfWeek,
-            Pageable pageable
-    );
-
-    void deleteByGroupId(int groupId);
 
     List<Group> findTop5ByDiseaseDiseaseIdAndGroupStatusOrderByCreatedDateDesc(Byte diseaseId, Byte groupStatus);
 
@@ -51,13 +25,12 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
 
     Group findByGroupId(Integer groupId);
 
-    Page<Group> findByInviteCode(String inviteCode, Pageable pageable);
+    Page<Group> findByInviteCodeAndGroupStatus(String inviteCode, Byte groupStatus, Pageable pageable);
 
     @Modifying(clearAutomatically = true)  // 변경 사항을 영속성 컨텍스트에 즉시 반영
     @Transactional
     @Query(value = "UPDATE `groups` " +
             "SET group_status = 1 " +
-            //"WHERE start_date <= :now " +
            "WHERE start_date <= NOW() " +
             "AND group_status = 0",
             nativeQuery = true)
@@ -67,7 +40,6 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     @Transactional
     @Query(value = "UPDATE `groups` " +
             "SET group_status = 2 " +
-            //"WHERE DATE_ADD(end_date, INTERVAL 1 HOUR) < :now " +
             "WHERE DATE_ADD(end_date, INTERVAL 1 HOUR) < NOW() " +
             "AND group_status = 1",
             nativeQuery = true)
@@ -91,4 +63,25 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
             "AND NOW() >= DATE_ADD(start_date, INTERVAL progress_weeks WEEK)",
             nativeQuery = true)
     int updateProgressWeeks();
+
+    @Query("SELECT g FROM Group g WHERE g.groupStatus = 0 AND g.isPrivate = false " +
+            "AND (:keyword IS NULL OR g.title LIKE %:keyword%) " +
+            "AND (:diseaseId IS NULL OR g.disease.diseaseId IN :diseaseId) " +
+            "AND (:isHost IS NULL OR g.isHost = :isHost) " +
+            "AND (:startDate IS NULL OR g.startDate >= :startDate) " +
+            "AND (:period IS NULL OR g.period = :period) " +
+            "AND (:startTime IS NULL OR g.meetingTime >= :startTime) " +
+            "AND (:endTime IS NULL OR g.meetingTime <= :endTime) " +
+            "AND (:dayOfWeek IS NULL OR g.dayOfWeek IN :dayOfWeek)" +
+            "ORDER BY g.startDate ASC, g.groupId ASC")
+    Page<Group> findGroupsByCriteriaExcludingPrivate(
+            @Param("keyword") String keyword,
+            @Param("diseaseId") List<Byte> diseaseId,
+            @Param("isHost") Boolean isHost,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("period") Byte period,
+            @Param("startTime") Byte startTime,
+            @Param("endTime") Byte endTime,
+            @Param("dayOfWeek") List<Byte> dayOfWeek,
+            Pageable pageable);
 }

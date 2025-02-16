@@ -290,18 +290,20 @@ public class GroupService {
             throw new GroupException(ErrorCode.INVALID_INPUT_VALUE);
         }
 
-        // 초대코드 검색인 경우
-        Page<Group> groups = groupRepository.findByInviteCode(keyword, PageRequest.of(0, 1));
+        Byte status = 0; // 진행 예정 상태만 조회
 
-        // 초대코드가 아닌 경우
+        // 초대코드 검색 먼저 시도
+        Page<Group> groups = groupRepository.findByInviteCodeAndGroupStatus(keyword, status, pageable);
+
+        // 초대코드 검색 결과가 없는 경우 → 일반 검색 수행 (is_private = 1 제외)
         if (!groups.hasContent()) {
             int currentPage = pageable.getPageNumber(); // 현재 페이지 번호 가져오기
             int newPage = currentPage > 0 ? currentPage - 1 : 0; // 0보다 작을 수 없으므로, 최소 0으로 설정
 
             Pageable newPageable = PageRequest.of(newPage, pageable.getPageSize(), pageable.getSort()); // 새로운 pageable 생성
 
-            groups = groupRepository.findGroupsByCriteria(keyword, diseaseId, isHost, startDate, period, startTime, endTime, dayOfWeek, newPageable);
-            System.out.println(pageable);
+            groups = groupRepository.findGroupsByCriteriaExcludingPrivate(
+                    keyword, diseaseId, isHost, startDate, period, startTime, endTime, dayOfWeek, newPageable);
         }
 
         return groups.map(this::mapToDto);
@@ -349,6 +351,18 @@ public class GroupService {
         dto.setMaxMember(group.getMaxMember());
         dto.setTotalMember(group.getTotalMember());
         dto.setGroupStatus(group.getGroupStatus());
+
+        // meetingStatus가 0(예정) 또는 1(진행 중)인 미팅 중 가장 가까운 시간의 미팅 가져오기
+        Meeting nearestMeeting = meetingRepository.findNearestUpcomingOrOngoingMeeting(group.getGroupId());
+
+        if (nearestMeeting != null) {
+            dto.setMeetingStatus(nearestMeeting.getMeetingStatus()); // 0(예정), 1(진행중)
+            dto.setMeetingId(nearestMeeting.getMeetingId());
+        } else {
+            dto.setMeetingStatus(null);
+            dto.setMeetingId(null);
+        }
+
         return dto;
     }
 

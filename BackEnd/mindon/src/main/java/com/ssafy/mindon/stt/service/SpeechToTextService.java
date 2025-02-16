@@ -79,6 +79,17 @@ public class SpeechToTextService {
             logger.error("STT 변환 중 오류 발생: 파일 경로={}, sessionId={}, userId={}, questionId={}",
                     audioFile.getPath(), sessionId, userId, questionId, e);
             throw new IOException("STT 변환 실패: " + e.getMessage(), e);
+        } finally {
+            // 작업 후 WAV 파일 삭제 로직
+            try {
+                if (audioFile.exists() && Files.deleteIfExists(audioFile.toPath())) {
+                    logger.info("WAV 파일 삭제 성공: {}", audioFile.getAbsolutePath());
+                } else {
+                    logger.warn("WAV 파일이 존재하지 않거나 삭제할 수 없습니다: {}", audioFile.getAbsolutePath());
+                }
+            } catch (IOException deletionEx) {
+                logger.error("WAV 파일 삭제 중 예외 발생: {}", audioFile.getAbsolutePath(), deletionEx);
+            }
         }
     }
 
