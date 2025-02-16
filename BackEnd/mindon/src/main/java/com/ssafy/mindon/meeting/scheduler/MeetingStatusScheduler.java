@@ -19,7 +19,9 @@ public class MeetingStatusScheduler {
      * - meeting_status 0 → 1 (현재 시간이 meeting 시작 시간 이상인 경우)
      * - meeting_status 1 → 2 (현재 시간이 meeting 시작 시간 + 50분 이상인 경우)
      */
-    @Scheduled(cron = "0 0,50 * * * ?")  // 매 정각과 50분에 실행
+//    @Scheduled(cron = "0 0,50 * * * ?")  // 매 정각과 50분에 실행
+    @Scheduled(cron = "0 * * * * ?")
+
     public void scheduleUpdateMeetingStatus() {
         try {
             int updatedCount = meetingService.updateMeetingStatus();
