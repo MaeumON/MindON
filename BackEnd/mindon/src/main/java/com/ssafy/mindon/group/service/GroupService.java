@@ -327,19 +327,12 @@ public class GroupService {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
         }
 
-        // 사용자가 가입된 그룹 목록 조회
-        List<UserGroup> userGroups = userGroupRepository.findByUser_UserId(userId);
-
-        // 그룹 ID를 이용해 그룹 정보 조회
-        List<Integer> groupIds = userGroups.stream()
-                .map(userGroup -> userGroup.getGroup().getGroupId()) // groupId를 직접 참조
-                .toList();
-
         if (groupStatus == null || groupStatus < 0 || groupStatus > 2) {
             throw new GroupException(ErrorCode.INVALID_INPUT_VALUE);
         }
 
-        Page<Group> filteredGroups = groupRepository.findGroupsByKeywordAndStatus(groupIds, groupStatus, keyword, pageable);
+        // 직접 사용자와 조인하여 그룹을 조회
+        Page<Group> filteredGroups = groupRepository.findGroupsByUserAndStatus(userId, groupStatus, keyword, pageable);
 
         return filteredGroups.map(this::mapToDto);
     }
