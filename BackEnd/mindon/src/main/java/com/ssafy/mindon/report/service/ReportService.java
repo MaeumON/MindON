@@ -2,17 +2,21 @@ package com.ssafy.mindon.report.service;
 
 import com.ssafy.mindon.meeting.entity.Meeting;
 import com.ssafy.mindon.meeting.repository.MeetingRepository;
+import com.ssafy.mindon.report.dto.ReportReasonDto;
 import com.ssafy.mindon.report.entity.Reason;
 import com.ssafy.mindon.report.entity.Report;
 import com.ssafy.mindon.report.repository.ReasonRepository;
 import com.ssafy.mindon.report.repository.ReportRepository;
+import com.ssafy.mindon.user.dto.ReportedUserResponseDto;
 import com.ssafy.mindon.user.entity.User;
 import com.ssafy.mindon.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,5 +58,17 @@ public class ReportService {
         if (reportedUser.getReportedCnt() >= 3) {
             reportedUser.setUserStatus((byte) 2); // 정지 상태
         }
+    }
+
+    public List<ReportReasonDto> getReportsByReportedUserId(String userId){
+        List<Report> reportList = reportRepository.findAllByReportedUserUserId(userId);
+
+        return reportList.stream()
+                .map(report -> new ReportReasonDto(
+                        report.getReasonEntity().getReasonId().intValue(),
+                        report.getReasonEntity().getReasonName(),
+                        report.getReason()
+                ))
+                .collect(Collectors.toList());
     }
 }
