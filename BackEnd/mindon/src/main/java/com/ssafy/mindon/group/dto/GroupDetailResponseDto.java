@@ -29,4 +29,6 @@ public class GroupDetailResponseDto {
     private Byte totalMember;
     private Byte groupStatus;
     private Byte progressWeeks;
+    private Byte meetingStatus;
+    private Integer meetingId;
 }

@@ -22,6 +22,4 @@ public class GroupListResponseDto {
     private Byte maxMember;
     private Byte totalMember;
     private Byte groupStatus;
-    private Byte meetingStatus;
-    private Integer meetingId;
 }
