@@ -4,8 +4,8 @@ import IconMic from "@assets/icons/IconMic";
 import IconVideo from "@assets/icons/IconVideo";
 import IconChat from "@assets/icons/IconChat";
 import IconExit from "@assets/icons/IconExit";
-import IconCamOff from "@/assets/icons/IconCamOff";
-import IconMicOff from "@/assets/icons/IconMicOff";
+import IconCamOff from "@assets/icons/IconCamOff";
+import IconMicOff from "@assets/icons/IconMicOff";
 
 const ToolbarComponent: React.FC<ToolbarComponentProps> = ({
   user,
@@ -13,6 +13,7 @@ const ToolbarComponent: React.FC<ToolbarComponentProps> = ({
   micStatusChanged,
   toggleChat,
   setIsCloseModalOpen,
+  showNotification,
 }) => {
   //감정 기록 모달 띄우기
   function handleLeaveSession() {
@@ -48,7 +49,10 @@ const ToolbarComponent: React.FC<ToolbarComponentProps> = ({
           className="m-1 w-[50px] h-[50px] flex justify-center items-center bg-white shadow-md rounded-[100px] cursor-pointer"
           onClick={() => toggleChat(true)}
         >
-          {<IconChat width={20} height={20} fillColor={"#000"} />}
+          <div className="relative">
+            <IconChat width={20} height={20} fillColor={"#000"} />
+            {showNotification && <div className="absolute -top-2 -right-2 w-3 h-3 bg-red-500 rounded-full shadow-xl" />}
+          </div>
         </button>
 
         <button
