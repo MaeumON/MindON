@@ -54,8 +54,17 @@ public class GroupController {
             @PathVariable Integer groupId) {
 
         jwtUtil.validateToken(accessToken);
-        groupService.joinGroup(accessToken, groupId);
-        return ResponseEntity.ok("{\"message\": \"success\"}");
+
+        try {
+            groupService.joinGroup(accessToken, groupId);
+            return ResponseEntity.ok("{\"message\": \"success\"}");
+        } catch (GroupException e) {
+            if(e.getErrorCode() == ErrorCode.GROUP_JOIN_SAME_TIME) {
+                return ResponseEntity.ok("{\"message\": \"GroupJoinSameTime\"}");
+            } else {
+                return ResponseEntity.ok("{\"message\": \"GroupFull\"}");
+            }
+        }
     }
 
     @PostMapping("/list")
