@@ -1,6 +1,8 @@
 package com.ssafy.mindon.user.controller;
 
 import com.ssafy.mindon.auth.service.AuthService;
+import com.ssafy.mindon.report.dto.ReportReasonDto;
+import com.ssafy.mindon.report.service.ReportService;
 import com.ssafy.mindon.user.dto.*;
 import com.ssafy.mindon.user.service.UserService;
 import com.ssafy.mindon.video.service.VideoService;
@@ -24,6 +26,7 @@ public class UserController {
     private final UserService userService;
     private final AuthService authService;
     private final VideoService videoService;
+    private final ReportService reportService;
 
     @GetMapping("/temparature")
     public ResponseEntity<?> getTemparature(@RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
@@ -102,4 +105,14 @@ public class UserController {
 
         return ResponseEntity.ok("사용자 상태가 정상으로 변경되었습니다.");
     }
+
+    @GetMapping("/{userId}/reasonlist")
+    public ResponseEntity<?> getReasonList(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken,
+            @PathVariable String userId){
+
+        jwtUtil.validateToken(accessToken);
+
+        List<ReportReasonDto> result = reportService.getReportsByReportedUserId(userId);
+        return ResponseEntity.ok(result);    }
 }
