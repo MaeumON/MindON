@@ -14,13 +14,13 @@ import IconCircle from "@/assets/icons/IconInfo";
 
 // Remove the duplicate disease definitions since they're defined in DiseaseDrop
 const dayMap: Record<string, number> = {
+  일: 0,
   월: 1,
   화: 2,
   수: 3,
   목: 4,
   금: 5,
   토: 6,
-  일: 7,
 };
 
 const korDayMap: Record<number, string> = {
@@ -55,6 +55,7 @@ function CreateGroup() {
       setSelectedStartDate(date);
       const selectedDay = date.getDay(); // 숫자로 변환
       setSelectedDay(korDayMap[selectedDay]);
+      console.log("selectedday", selectedDay);
     }
   };
 
