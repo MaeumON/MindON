@@ -66,7 +66,7 @@ function GroupsList() {
   const DEFAULT_FILTERS: RequestData = {
     diseaseId: [],
     isHost: null,
-    startDate: new Date().toISOString().split("T")[0] + "T00:00:00Z",
+    startDate: null,
     period: 0,
     startTime: 0,
     endTime: 23,
@@ -152,16 +152,11 @@ function GroupsList() {
           filteredFilters.isHost = newIsHostValue;
         }
       }
-      console.log("🔹 savedFilters 필터 저장1:", savedFilters);
-      console.log("🔹 filteredFilters 필터 저장1:", filteredFilters);
-      console.log("🔹 appliedFilters 필터 저장1:", appliedFilters);
-      console.log("🔹 필터 저장1:", sessionStorage);
+
       // 현재 appliedFilters와 다를 때만 업데이트 (무한 렌더링 방지)
       if (JSON.stringify(filteredFilters) !== JSON.stringify(appliedFilters)) {
         setAppliedFilters(filteredFilters);
       }
-      console.log("🔹 appliedFilters 필터 저장2:", appliedFilters);
-      console.log("🔹 필터 저장2:", sessionStorage);
 
       if (Object.keys(filteredFilters).length > 0) {
         console.log("🔹 필터 저장 (정상 값):", filteredFilters);
@@ -171,8 +166,6 @@ function GroupsList() {
       }
 
       // sessionStorage에 업데이트된 필터 값 저장
-      console.log("🔹 필터 저장3:", sessionStorage);
-      console.log("🔹 appliedFilters 필터 저장3:", appliedFilters);
       sessionStorage.setItem("groupFilters", JSON.stringify(filteredFilters));
 
       // ✅ API 요청
@@ -222,9 +215,12 @@ function GroupsList() {
   // 기본값이 아닌 필터만 저장하는 함수
   const getNonDefaultFilters = (filters: Partial<RequestData>) => {
     return Object.fromEntries(
-      Object.entries(filters).filter(
-        ([key, value]) => JSON.stringify(value) !== JSON.stringify(DEFAULT_FILTERS[key as keyof RequestData])
-      )
+      Object.entries(filters).filter(([key, value]) => {
+        if (key === "startDate" && (value === null || value === DEFAULT_FILTERS.startDate)) {
+          return false;
+        }
+        return JSON.stringify(value) !== JSON.stringify(DEFAULT_FILTERS[key as keyof RequestData]);
+      })
     );
   };
   const [appliedFilters, setAppliedFilters] = useState<Partial<RequestData>>(() => {
