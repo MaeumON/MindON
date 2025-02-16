@@ -19,10 +19,13 @@ import useAuthStore from "@/stores/authStore";
 import { useEffect, useState } from "react";
 import { fetchReviews, ReviewType } from "@/apis/meetingDetail";
 import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 function MyDataDetail() {
   const { userName } = useAuthStore();
   const username = userName || "사용자";
+  const location = useLocation();
+  const title = location.state?.title;
 
   const [reviews, setReviews] = useState<ReviewType[]>([]);
   const [emotionAvg, setEmotionAvg] = useState<number>(0);
@@ -106,7 +109,7 @@ function MyDataDetail() {
       <div className="p-[20px]">
         <div className="whitespace-nowrap flex flex-col items-center rounded-[8px] bg-white h-[220px]  shadow-[0px_1px_3px_0px_rgba(221,221,221,1.00)]  overflow-hidden px-4 py-6 ]">
           <div>
-            <span className="text-cardTitle text-center font-jamsilMedium text-22px">치매환자 가족모임 자조모임</span>
+            <span className="text-cardTitle text-center font-jamsilMedium text-22px">{title}</span>
             <span className="text-cardTitle font-jamsilRegular text-16px">
               {" "}
               후
