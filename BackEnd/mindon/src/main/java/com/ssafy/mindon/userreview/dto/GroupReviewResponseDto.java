@@ -29,5 +29,6 @@ public class GroupReviewResponseDto {
         private LocalDateTime date;
         private Byte period;
         private Byte progressWeeks;
+        private Byte meetingWeek;
     }
 }

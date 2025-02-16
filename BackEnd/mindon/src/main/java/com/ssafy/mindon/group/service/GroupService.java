@@ -171,6 +171,17 @@ public class GroupService {
         dto.setGroupStatus(group.getGroupStatus());
         dto.setProgressWeeks(group.getProgressWeeks());
 
+        // meetingStatus가 0(예정) 또는 1(진행 중)인 미팅 중 가장 가까운 시간의 미팅 가져오기
+        Meeting nearestMeeting = meetingRepository.findNearestUpcomingOrOngoingMeeting(group.getGroupId());
+
+        if (nearestMeeting != null) {
+            dto.setMeetingStatus(nearestMeeting.getMeetingStatus()); // 0(예정), 1(진행중)
+            dto.setMeetingId(nearestMeeting.getMeetingId());
+        } else {
+            dto.setMeetingStatus(null);
+            dto.setMeetingId(null);
+        }
+
         return dto;
     }
 
@@ -351,17 +362,6 @@ public class GroupService {
         dto.setMaxMember(group.getMaxMember());
         dto.setTotalMember(group.getTotalMember());
         dto.setGroupStatus(group.getGroupStatus());
-
-        // meetingStatus가 0(예정) 또는 1(진행 중)인 미팅 중 가장 가까운 시간의 미팅 가져오기
-        Meeting nearestMeeting = meetingRepository.findNearestUpcomingOrOngoingMeeting(group.getGroupId());
-
-        if (nearestMeeting != null) {
-            dto.setMeetingStatus(nearestMeeting.getMeetingStatus()); // 0(예정), 1(진행중)
-            dto.setMeetingId(nearestMeeting.getMeetingId());
-        } else {
-            dto.setMeetingStatus(null);
-            dto.setMeetingId(null);
-        }
 
         return dto;
     }
