@@ -2,7 +2,7 @@ import { SyncLoader } from "react-spinners";
 
 function LoadingSpinner() {
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center h-screen">
       <SyncLoader
         color="#6BB07C"
         cssOverride={{
