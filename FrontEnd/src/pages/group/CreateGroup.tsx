@@ -41,8 +41,8 @@ function CreateGroup() {
   const [description, setDescription] = useState<string>("");
   const [selectedDiseaseId, setSelectedDiseaseId] = useState<number | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState<number>(6);
-  const [selectedStartDate, setSelectedStartDate] = useState<Date>(today);
-  const [selectedDay, setSelectedDay] = useState<string>("월");
+  const [selectedStartDate, setSelectedStartDate] = useState<Date>();
+  const [selectedDay, setSelectedDay] = useState<string>("");
   const [selectedStartTime, setSelectedStartTime] = useState<number>(18);
   const [minMember, setminMember] = useState<number>(2);
   const [maxMember, setmaxMember] = useState<number>(8);
@@ -150,9 +150,14 @@ function CreateGroup() {
 
       console.log("Request data:", requestData);
 
-      await createGroupApi(requestData);
-      // alert("모임이 성공적으로 생성되었습니다.");
-      nav(-1);
+      const result = await createGroupApi(requestData);
+
+      if (result === "success") {
+        alert("모임이 생성되었습니다.");
+        nav(-1); // 페이지 이동
+      } else {
+        alert("해당 시간에 이미 예정된 모임이 존재합니다."); // 실패 시 알림
+      }
     } catch (error: any) {
       // if (error.response?.data?.message === "fail") {
       //   alert("해당 시간에 이미 예정된 모임이 있습니다.");
