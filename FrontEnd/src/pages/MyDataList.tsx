@@ -121,8 +121,8 @@ function MyDataList() {
   };
 
   // 마이데이터 상세로 이동하는 함수
-  const onClickReviewDetail = (groupId: number) => {
-    nav(`/mydata/${groupId}`);
+  const onClickReviewDetail = (groupId: number, title: string) => {
+    nav(`/mydata/${groupId}`, { state: { title } });
   };
 
   return (
@@ -165,7 +165,7 @@ function MyDataList() {
                 <GroupCard
                   key={group.groupId}
                   group={group}
-                  onClick={() => onClickReviewDetail(group.groupId)} // onClick 전달
+                  onClick={() => onClickReviewDetail(group.groupId, group.title)} // onClick 전달
                 />
               ))
             ) : (

@@ -10,6 +10,7 @@ export interface ReviewType {
   date: string;
   period: number;
   progressWeeks: number;
+  meetingWeek: number;
 }
 interface ReviewsResponse {
   emotionAvg: number;

@@ -10,7 +10,7 @@ const TempertureChart = ({ username }: TempertureChartProps) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [pathLength, setPathLength] = useState(0);
   const [pointPosition, setPointPosition] = useState({ cx: 100, cy: 180 });
-  const [temperture, setTemperture] = useState(40); // 기본 값 40°C
+  const [temperture, setTemperture] = useState(); // 기본 값 40°C
   const [currentTemp, setCurrentTemp] = useState(0); // 초기 온도 0으로 설정
 
   useEffect(() => {
@@ -36,7 +36,7 @@ const TempertureChart = ({ username }: TempertureChartProps) => {
   // 온도 값에 비례하여 점을 3도씩 이동하도록 설정
   useEffect(() => {
     const interval = setInterval(() => {
-      if (currentTemp < temperture) {
+      if (temperture && currentTemp < temperture) {
         setCurrentTemp((prevTemp) => Math.min(prevTemp + 1, temperture)); // 1도씩 증가
       }
     }, 20); // 100ms 간격으로 온도값을 1도씩 증가
@@ -46,7 +46,7 @@ const TempertureChart = ({ username }: TempertureChartProps) => {
 
   // 점의 위치를 계산하여 업데이트
   useEffect(() => {
-    if (pathRef.current && currentTemp <= temperture) {
+    if (temperture && pathRef.current && currentTemp <= temperture) {
       const progress = (currentTemp / 100) * pathLength; // 온도에 비례해서 위치 변경
       const point = pathRef.current.getPointAtLength(progress); // 해당 길이에서 좌표 가져오기
       setPointPosition({ cx: point.x, cy: point.y }); // 점의 위치 업데이트
@@ -54,12 +54,14 @@ const TempertureChart = ({ username }: TempertureChartProps) => {
   }, [currentTemp, pathLength]); // `currentTemp`가 변경될 때마다 점 위치 업데이트
 
   let warmtitle: string = "OFF";
-  if (temperture >= 50) {
-    warmtitle = "뜨끈한 온돌";
-  } else if (temperture >= 30) {
-    warmtitle = "따뜻한 핫팩";
-  } else {
-    warmtitle = "데워지는 중";
+  if (temperture) {
+    if (temperture >= 50) {
+      warmtitle = "뜨끈한 온돌";
+    } else if (temperture >= 30) {
+      warmtitle = "따뜻한 핫팩";
+    } else {
+      warmtitle = "데워지는 중";
+    }
   }
 
   return (

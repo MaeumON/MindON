@@ -15,7 +15,7 @@ function LoadingSpinner() {
         size={25}
         speedMultiplier={1.5}
       />
-      <div className="p-20 font-suite font-bold text-center text-20px">정보를 불러오고 있어요!</div>
+      <div className="p-20 font-suite font-bold text-center text-20px whitespace-nowrap">정보를 불러오고 있어요!</div>
     </div>
   );
 }
