@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class GroupStatusScheduler {
 
     private final GroupService groupService;
-    @Scheduled(cron = "0 * * * * ?")  // 매 정각 실행
+    @Scheduled(cron = "0 0 * * * ?")  // 매 정각 실행
     public void scheduleUpdateGroupStatusToOngoing() {
         try {
             log.info("그룹 상태 업데이트 시작 (진행 중)");
