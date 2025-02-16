@@ -51,17 +51,20 @@ public class GroupService {
         String userId = jwtUtil.extractUserId(accessToken);
         Optional<User> userOpt = userRepository.findById(userId);
         if (userOpt.isEmpty()) {
-            return false;
+            throw new GroupException(ErrorCode.GROUP_CREATION_FAILED);
         }
 
         Optional<Disease> diseaseOpt = diseaseRepository.findById(request.getDiseaseId().byteValue());
         if (diseaseOpt.isEmpty()) {
-            return false;
+            throw new GroupException(ErrorCode.GROUP_CREATION_FAILED);
+        }
+
+        if (request.getStartDate().isBefore(LocalDateTime.now())) {
+            throw new GroupException(ErrorCode.TIME_OVER);
         }
 
         User user = userOpt.get();
         Disease disease = diseaseOpt.get();
-
 
         // 사용자가 가입된 그룹 ID 조회
         List<Integer> joinedGroupIds = userGroupRepository.findByUser_UserId(user.getUserId())
@@ -76,9 +79,8 @@ public class GroupService {
         );
 
         if (hasConflict) {
-            return false;
+            throw new GroupException(ErrorCode.GROUP_CREATION_FAILED);
         }
-
 
         Group group = new Group();
         group.setTitle(request.getTitle());
