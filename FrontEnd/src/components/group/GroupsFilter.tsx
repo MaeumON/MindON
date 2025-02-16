@@ -14,7 +14,7 @@ interface GroupsFilterProps {
 function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
   const [maxWidth, setMaxWidth] = useState(412);
 
-  // ✅ 카테고리 변환
+  // ⭐ 카테고리 변환
   // 필터 표시용 질병
   const diseases = [
     "유전 및 희귀 질환",
@@ -54,13 +54,13 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
     일: 7,
   };
 
-  // ✅ sessionStorage에서 필터 값을 직접 불러오기
+  // ⭐ sessionStorage에서 필터 값을 직접 불러오기
   //  필터 기본값 설정(내부 값 undefined 방지)
   // new Date().toISOString().split("T")[0] + "T00:00:00Z",
   const DEFAULT_FILTERS: RequestData = {
     diseaseId: [],
     isHost: null,
-    startDate: undefined,
+    startDate: null,
     period: 0,
     startTime: 0,
     endTime: 23,
@@ -86,7 +86,7 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
     initialFilters.isHost === true ? "유" : initialFilters.isHost === false ? "무" : null
   );
 
-  // ✅ 반응형 화면 구현
+  // ⭐ 반응형 화면 구현
   useEffect(() => {
     const updateMaxWidth = () => {
       setMaxWidth(Math.min(412, window.innerWidth - 32)); // 화면 너비보다 커지지 않도록 제한
@@ -100,18 +100,23 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
     };
   }, []);
 
-  // ✅버튼
+  // ⭐ 버튼
   // 필터 적용하기 버튼 클릭 시 실행
   const applyFilter = () => {
-    const startDateObj = startDate ? new Date(startDate) : new Date();
-    startDateObj.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정 (로컬 시간 유지)
+    let formattedStartDateString: string | null = null;
 
-    // YYYY-MM-DD 형식으로 변환 (UTC 변환 없이 로컬 시간 유지)
-    const year = startDateObj.getFullYear();
-    const month = String(startDateObj.getMonth() + 1).padStart(2, "0"); // 1월이 0부터 시작하므로 +1
-    const day = String(startDateObj.getDate()).padStart(2, "0");
+    // startDate가 선택되었을 경우, 로컬 시간 기준으로 변환
+    if (startDate) {
+      const localDate = new Date(startDate);
+      localDate.setHours(12, 0, 0, 0); // 🔥 12:00:00으로 설정 (UTC 변환 오류 방지)
 
-    const formattedStartDateString = `${year}-${month}-${day}T00:00:00Z`;
+      const year = localDate.getFullYear();
+      const month = String(localDate.getMonth() + 1).padStart(2, "0");
+      const day = String(localDate.getDate()).padStart(2, "0");
+
+      formattedStartDateString = `${year}-${month}-${day}T00:00:01Z`;
+      console.log("formattedStartDateString : ", formattedStartDateString);
+    }
 
     // const formattedStartDateString = formattedStartDate.toISOString().split("T")[0] + "T00:00:00Z";
     const filterData: RequestData = {
@@ -218,11 +223,11 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
           <div className="flex items-center gap-2">
             <span className="text-lg font-bold text-cardTitle">시작 날짜</span>
             <DatePicker
-              selected={startDate}
+              selected={startDate ?? new Date()}
               onChange={(date: Date | null) => setStartDate(date)}
               className="px-3 py-2 border border-cardSubcontent rounded-xl text-lg w-28"
               dateFormat="yy-MM-dd"
-              minDate={new Date(new Date().setDate(new Date().getDate() + 1))} // 내일부터 선택 가능
+              // minDate={new Date(new Date().setDate(new Date().getDate()))} // 내일부터 선택 가능
             />
           </div>
         </div>

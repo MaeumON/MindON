@@ -57,7 +57,7 @@ const GroupCard = ({ group, onClick }: GroupCardProps) => {
           <div className="flex flex-wrap justify-start items-center gap-x-2 gap-y-1 w-full">
             <div className="text-cardContent2 text-sm md:text-base font-semibold">일정</div>
             <div className="text-cardTitle text-sm md:text-base font-semibold">
-              {new Date(group.startDate).toISOString().split("T")[0]}
+              {new Date(group.startDate).toLocaleDateString("ko-KR").replace(/\. /g, "-").slice(0, -1)}
             </div>
             <div className="text-cardContent2 text-sm md:text-base font-semibold">시작 매주</div>
             <div className="text-[#d98600] text-sm md:text-base font-semibold">{dayOfWeekStr()}</div>
