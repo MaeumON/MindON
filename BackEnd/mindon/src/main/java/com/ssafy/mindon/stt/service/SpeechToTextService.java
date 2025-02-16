@@ -91,6 +91,20 @@ public class SpeechToTextService {
                 logger.error("WAV 파일 삭제 중 예외 발생: {}", audioFile.getAbsolutePath(), deletionEx);
             }
         }
+        String fileName = audioFile.getName();
+        int dotIndex = fileName.lastIndexOf('.');
+        String baseName = (dotIndex > 0) ? fileName.substring(0, dotIndex) : fileName;
+        File webmFile = new File(audioFile.getParent(), baseName + ".webm");
+
+        try {
+            if (webmFile.exists() && Files.deleteIfExists(webmFile.toPath())) {
+                logger.info("WEBM 파일 삭제 성공: {}", webmFile.getAbsolutePath());
+            } else {
+                logger.warn("WEBM 파일이 존재하지 않거나 삭제할 수 없습니다: {}", webmFile.getAbsolutePath());
+            }
+        } catch (IOException e) {
+            logger.error("WEBM 파일 삭제 중 예외 발생: {}", webmFile.getAbsolutePath(), e);
+        }
     }
 
     private RecognitionConfig createRecognitionConfig() {
