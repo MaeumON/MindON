@@ -71,7 +71,8 @@ public class GroupReviewService {
                             review.getSpeechAmount(),
                             (meeting != null) ? meeting.getDate() : null,
                             group.getPeriod(),
-                            group.getProgressWeeks()
+                            group.getProgressWeeks(),
+                            review.getMeetingWeek()
                     );
                 })
                 .collect(Collectors.toList());
