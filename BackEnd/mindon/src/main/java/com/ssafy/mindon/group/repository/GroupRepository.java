@@ -31,7 +31,7 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
     @Transactional
     @Query(value = "UPDATE `groups` " +
             "SET group_status = 1 " +
-           "WHERE start_date <= NOW() " +
+            "WHERE start_date <= NOW() " +
             "AND group_status = 0",
             nativeQuery = true)
     int updateGroupStatusToOngoing(@Param("now") LocalDateTime now);
