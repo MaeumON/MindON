@@ -29,7 +29,7 @@ public class GroupStatusScheduler {
         }
     }
 
-    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void scheduleUpdateGroupStatusToEnded() {
         try {
             int updatedCount = groupService.updateGroupStatusToEnded();
@@ -40,7 +40,7 @@ public class GroupStatusScheduler {
             log.error("종료 상태로 변경하는 중 오류 발생: {}", e.getMessage(), e);
         }
     }
-    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void scheduleUpdateProgressWeeks() {
         try {
             int updatedCount = groupService.updateProgressWeeks();
