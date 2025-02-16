@@ -211,7 +211,7 @@ function MypageDetail() {
       );
     }
     if (groupStatus === 1) {
-      if (meetingStatus === 1) {
+      if (group?.meetingStatus === 1) {
         return (
           <Button
             text="참여하기"
