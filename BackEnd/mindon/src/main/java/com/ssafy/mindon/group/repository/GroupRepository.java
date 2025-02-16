@@ -54,6 +54,17 @@ public interface GroupRepository extends JpaRepository<Group, Integer> {
                                              @Param("keyword") String keyword,
                                              Pageable pageable
     );
+    @Query("SELECT g " +
+            "FROM Group g, UserGroup ug " +
+            "WHERE ug.group.groupId = g.groupId " +
+            "  AND ug.user.userId = :userId " +
+            "  AND g.groupStatus = :groupStatus " +
+            "  AND (:keyword IS NULL OR g.title LIKE CONCAT('%', :keyword, '%') " +
+            "       OR g.inviteCode LIKE CONCAT('%', :keyword, '%'))")
+    Page<Group> findGroupsByUserAndStatus(@Param("userId") String userId,
+                                          @Param("groupStatus") Byte groupStatus,
+                                          @Param("keyword") String keyword,
+                                          Pageable pageable);
 
     @Modifying(clearAutomatically = true)
     @Transactional
