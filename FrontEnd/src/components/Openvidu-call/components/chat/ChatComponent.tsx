@@ -77,6 +77,11 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ user, close, messageList,
             placeholder="메시지를 입력하세요"
             value={message}
             onChange={handleChange}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                sendMessage();
+              }
+            }}
             className="w-[85%] py-[12px] px-[8px] rounded-[12px] "
           />
           <div className="w-[10%] px-[5px]" onClick={sendMessage}>

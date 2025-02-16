@@ -15,8 +15,6 @@ interface RoomProps {
   mySessionId: string;
   localUser: UserModel;
   subscribers: UserModelType[];
-  showNotification?: boolean;
-  checkNotification?: () => void;
   camStatusChanged: () => void;
   micStatusChanged: () => void;
   handleRemoveUser: () => void;
@@ -39,6 +37,14 @@ function Room({
   const [reportedUserName, setReportedUserName] = useState<string>("");
   const [messageList, setMessageList] = useState<Message[]>([]);
   const chatScroll = useRef<HTMLDivElement>(null);
+  const [messageReceived, setMessageReceived] = useState<boolean>(false);
+
+  // isChatModalOpen 상태가 변경될 때마다 messageReceived 초기화
+  useEffect(() => {
+    if (isChatModalOpen) {
+      setMessageReceived(false);
+    }
+  }, [isChatModalOpen]);
 
   useEffect(() => {
     if (session) {
@@ -51,12 +57,15 @@ function Room({
         };
         setMessageList((prev) => [...prev, newMessage]);
 
-        // 스크롤 처리
-        setTimeout(() => {
-          if (chatScroll.current) {
-            chatScroll.current.scrollTop = chatScroll.current.scrollHeight;
-          }
-        }, 20);
+        // 메시지를 보낸 사람이 자신이 아니고, 채팅창이 닫혀있을 때만 알림 표시
+        if (event.from.connectionId !== localUser.getConnectionId() && !isChatModalOpen) {
+          setTimeout(() => {
+            if (chatScroll.current) {
+              chatScroll.current.scrollTop = chatScroll.current.scrollHeight;
+            }
+            setMessageReceived(true);
+          }, 20);
+        }
       };
 
       session.on("signal:chat", handleChatMessage);
@@ -65,11 +74,7 @@ function Room({
         session.off("signal:chat", handleChatMessage);
       };
     }
-  }, [session, chatScroll]);
-
-  useEffect(() => {
-    console.log("subscibers", subscribers);
-  }, []);
+  }, [session, chatScroll, localUser, isChatModalOpen]);
 
   return (
     <section className="w-full h-[calc(100vh-80px)] px-[20px] flex flex-col justify-center items-center bg-offWhite font-suite">
@@ -104,6 +109,7 @@ function Room({
           micStatusChanged={micStatusChanged}
           toggleChat={setIsChatModalOpen}
           setIsCloseModalOpen={setIsEmotionModalOpen}
+          showNotification={messageReceived}
         />
       </div>
 

@@ -28,7 +28,6 @@ export interface VideoRoomState {
   localUser?: UserModelType;
   subscribers: UserModelType[];
   currentVideoDevice?: Device;
-  messageReceived: boolean;
 }
 
 export interface QuestionChangedData {
