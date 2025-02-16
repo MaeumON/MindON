@@ -211,14 +211,25 @@ function MypageDetail() {
       );
     }
     if (groupStatus === 1) {
-      return (
-        <Button
-          text="참여하기"
-          type="GREEN"
-          onClick={enterVideoCall}
-          className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-50px)] max-w-[390px] w-auto shadow-lg"
-        />
-      );
+      if (group?.meetingStatus === 1) {
+        return (
+          <Button
+            text="참여하기"
+            type="GREEN"
+            onClick={enterVideoCall}
+            className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-50px)] max-w-[390px] w-auto shadow-lg"
+          />
+        );
+      } else {
+        return (
+          <Button
+            text="아직 모임 시간이 아니에요"
+            type="GRAY"
+            disabled={true}
+            className="mb-10 fixed bottom-[60px] left-1/2 -translate-x-1/2 w-[calc(100%-50px)] max-w-[390px] w-auto shadow-lg"
+          />
+        );
+      }
     }
     return null; // groupStatus === 2일 때 버튼 렌더링 안 함
   };
@@ -269,6 +280,12 @@ function MypageDetail() {
                     <span className="text-cardLongContent text-lg font-medium leading-[35px]">지금까지 </span>
                     <span className="text-[#d98600] text-lg font-bold leading-[35px]">{group?.progressWeeks}회 </span>
                     <span className="text-cardLongContent text-lg font-medium leading-[35px]">동안 함께 했어요</span>
+                    <br />
+                    <span className="text-cardLongContent text-lg font-medium leading-[35px]">모임은 </span>
+                    <span className="text-[#d98600] text-lg font-bold leading-[35px]">
+                      총 {group?.period}주
+                      <span className="text-cardLongContent text-lg font-medium leading-[35px]">동안 진행돼요</span>
+                    </span>
                     <br />
                     <span className="text-[#d98600] text-lg font-bold ">&quot;{group?.diseaseName}&quot;</span>
                     <span className="text-cardLongContent text-lg font-medium">

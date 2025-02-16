@@ -64,9 +64,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ user, close, messageList,
                 className={`px-[20px] py-[10px] rounded-[12px] ${data.connectionId !== user?.getConnectionId() ? "bg-white" : "bg-[#DDE9EC]"} shadow-[0px_0px_4px_0px_rgba(0,0,0,0.25)] `}
               >
                 <div className="text-14px font-bold">
-                  {/* <p>{data.nickname}</p> */}
-
-                  <p>사용자</p>
+                  <p>{data.nickname}</p>
                 </div>
                 <p className="text-14px font-medium">{data.message}</p>
               </div>

@@ -29,7 +29,7 @@ const groupListApi = async (
 
     // const result = await authInstance.post<Group[]>("/api/groups/list", payload);
     console.log("📌 전체 API 응답 without data:", result);
-    console.log("📌 전체 API 응답:", result.data);
+    // console.log("📌 전체 API 응답:", result.data);
     return result.data;
   } catch (error) {
     console.error("groupList axios error:", error);

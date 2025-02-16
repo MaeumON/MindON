@@ -40,6 +40,8 @@ export interface GroupDetail extends Group {
   registered: boolean;
   description: string;
   progressWeeks?: number;
+  meetingStatus?: number;
+  meetingId?: number;
 }
 
 export interface CreateRoomReqestType {

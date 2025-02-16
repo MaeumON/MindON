@@ -11,6 +11,7 @@ import groupDetailLeaveApi from "@/apis/group/groupDetailLeaveApi";
 import GroupJoinModal from "@components/group/GroupJoinModal";
 import ChatImg from "@assets/icons/chat.png";
 import LoudSpeakerImg from "@assets/icons/loudspeaker.png";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 
 function GroupDetail() {
   const { groupId } = useParams();
@@ -171,16 +172,20 @@ function GroupDetail() {
   }
 
   // 로딩중이거나 에러 발생했을 때 처리
-  if (isLoading) return <div className="flex flex-col text-center items-center justify-center mt-10">로딩 중...</div>;
+  if (isLoading)
+    return (
+      // <div className="flex flex-col text-center text-2xl font-suite items-center justify-center mt-10">로딩 중...</div>
+      <LoadingSpinner />
+    );
   if (error)
     return (
-      <div className="flex flex-col text-center items-center text-center mt-10 text-red-500">
+      <div className="flex flex-col text-center justify-center text-2xl font-suite items-center text-center mt-10 text-red-500">
         그룹 정보를 불러오는 데 실패했습니다.
       </div>
     );
   if (!group)
     return (
-      <div className="flex flex-col text-center items-center text-center mt-10 text-gray-500">
+      <div className="flex flex-col text-center  justify-center text-2xl font-suite items-center text-center mt-10 text-gray-500">
         그룹 정보를 찾을 수 없습니다.
       </div>
     ); // 예외처리 추가
@@ -232,8 +237,12 @@ function GroupDetail() {
                   <div className="grow shrink basis-0 px-3">
                     <span className="text-cardLongContent text-lg font-medium leading-[35px]">주제는 </span>
                     <span className="text-[#d98600] text-lg font-bold ">&quot;{group?.diseaseName}&quot;</span>
+                    <span className="text-cardLongContent text-lg font-medium">에요</span>
+                    <br></br>
+                    <span className="text-cardLongContent text-lg font-medium leading-[35px]">모임은 </span>
+                    <span className="text-[#d98600] text-lg font-bold ">{group?.period}주</span>
                     <span className="text-cardLongContent text-lg font-medium">
-                      에요
+                      동안 진행해요
                       <br />
                       매주{" "}
                     </span>
