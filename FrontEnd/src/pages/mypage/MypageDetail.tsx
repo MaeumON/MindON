@@ -11,6 +11,7 @@ import groupDetailLeaveApi from "@/apis/group/groupDetailLeaveApi";
 import GroupJoinModal from "@components/group/GroupJoinModal";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "@components/common/LoadingSpinner";
 
 function MypageDetail() {
   const { groupId } = useParams();
@@ -178,7 +179,7 @@ function MypageDetail() {
   }
 
   // 로딩중이거나 에러 발생했을 때 처리
-  if (isLoading) return <div className="flex flex-col text-center items-center justify-center mt-10">로딩 중...</div>;
+  if (isLoading) return <LoadingSpinner />;
   if (error)
     return (
       <div className="flex flex-col text-center items-center text-center mt-10 text-red-500">

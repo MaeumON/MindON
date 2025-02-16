@@ -121,9 +121,7 @@ function GroupsList() {
     try {
       //  sessionStorage에서 필터 값 가져오기
       const storedFilters = sessionStorage.getItem("groupFilters");
-      console.log("🔹 storedFilters 필터 저장0:", storedFilters);
       const savedFilters: Partial<RequestData> = storedFilters ? JSON.parse(storedFilters) : {};
-      console.log("🔹 savedFilters 필터 저장0:", savedFilters);
 
       let filters: Partial<RequestData> = { ...appliedFilters };
 
@@ -136,9 +134,6 @@ function GroupsList() {
       if (newIsHostValue !== null) {
         filters = { ...filters, isHost: newIsHostValue };
       }
-      console.log("🔹 newIsHostValue 필터 저장1:", appliedFilters);
-
-      console.log("🔹 적용된 필터값 (API 요청 전):", filters);
 
       const filteredFilters = Object.fromEntries(
         Object.entries(savedFilters).filter(([key, value]) => {

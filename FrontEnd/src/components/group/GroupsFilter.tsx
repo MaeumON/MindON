@@ -227,7 +227,7 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
               onChange={(date: Date | null) => setStartDate(date)}
               className="px-3 py-2 border border-cardSubcontent rounded-xl text-lg w-28"
               dateFormat="yy-MM-dd"
-              minDate={new Date(new Date().setDate(new Date().getDate() + 1))} // 내일부터 선택 가능
+              // minDate={new Date(new Date().setDate(new Date().getDate()))} // 내일부터 선택 가능
             />
           </div>
         </div>
