@@ -31,13 +31,13 @@ const GroupCard = ({ group, onClick }: GroupCardProps) => {
     if (!group?.dayOfWeek) return "요일 미정"; // group이 없거나 dayOfWeek가 undefined일 경우 기본값 설정
 
     const weekDays: { [key: number]: string } = {
+      0: "일요일",
       1: "월요일",
       2: "화요일",
       3: "수요일",
       4: "목요일",
       5: "금요일",
       6: "토요일",
-      7: "일요일",
     };
 
     return weekDays[group.dayOfWeek] || "요일 미정"; // 유효하지 않은 값 예외 처리
@@ -57,7 +57,7 @@ const GroupCard = ({ group, onClick }: GroupCardProps) => {
           <div className="flex flex-wrap justify-start items-center gap-x-2 gap-y-1 w-full">
             <div className="text-cardContent2 text-sm md:text-base font-semibold">일정</div>
             <div className="text-cardTitle text-sm md:text-base font-semibold">
-              {new Date(group.startDate).toLocaleDateString("ko-KR").replace(/\. /g, "-").slice(0, -1)}
+              {new Date(group.startDate).toLocaleDateString("ko-KR").slice(0, -1)}
             </div>
             <div className="text-cardContent2 text-sm md:text-base font-semibold">시작 매주</div>
             <div className="text-[#d98600] text-sm md:text-base font-semibold">{dayOfWeekStr()}</div>

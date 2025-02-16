@@ -45,13 +45,13 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
 
   // 숫자 요일로 변환
   const dayMap: Record<string, number> = {
+    일: 0,
     월: 1,
     화: 2,
     수: 3,
     목: 4,
     금: 5,
     토: 6,
-    일: 7,
   };
 
   // ⭐ sessionStorage에서 필터 값을 직접 불러오기

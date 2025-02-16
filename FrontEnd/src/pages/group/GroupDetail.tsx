@@ -109,13 +109,13 @@ function GroupDetail() {
     if (!group?.dayOfWeek) return "요일 미정"; // group이 없거나 dayOfWeek가 undefined일 경우 기본값 설정
 
     const weekDays: { [key: number]: string } = {
+      0: "일요일",
       1: "월요일",
       2: "화요일",
       3: "수요일",
       4: "목요일",
       5: "금요일",
       6: "토요일",
-      7: "일요일",
     };
 
     return weekDays[group.dayOfWeek] || "요일 미정"; // 유효하지 않은 값 예외 처리
@@ -200,7 +200,7 @@ function GroupDetail() {
         <div className="flex flex-col font-suite items-start justify-center mx-5  mb-[100px] pt-6 bg-white rounded-xl gap-5 inline-flex overflow-hidden">
           <div className="px-5 justify-start items-center gap-1 inline-flex">
             {/* 질병 버튼 */}
-            <div className="relative w-fit px- py-1 bg-white rounded-2xl border border-cardSubcontent">
+            <div className="relative w-fit px-2.5 py-1 bg-white rounded-2xl border border-cardSubcontent">
               <div className="text-center text-cardContent text-sm md:text-base font-bold">{group?.diseaseName}</div>
             </div>
             <div className="relative w-fit px-2.5 py-1 bg-white rounded-2xl border border-cardSubcontent">
