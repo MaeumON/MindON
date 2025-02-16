@@ -196,12 +196,12 @@ public class GroupService {
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new GroupException(ErrorCode.GROUP_NOT_FOUND));
 
-        // 같은 시간대 그룹 가입 여부 체크
+        // 같은 시간대에 다른 모임에 가입한 경우
         if (isGroupAtSameTime(userId, group)) {
             throw new GroupException(ErrorCode.GROUP_JOIN_SAME_TIME);
         }
 
-        // 그룹 정원 초과 여부 체크
+        // 그룹 정원 초과인 경우
         if (isGroupFull(group)) {
             throw new GroupException(ErrorCode.GROUP_FULL);
         }
