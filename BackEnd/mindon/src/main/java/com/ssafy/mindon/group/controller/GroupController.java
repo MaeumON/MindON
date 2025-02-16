@@ -38,13 +38,16 @@ public class GroupController {
             @RequestBody @Valid CreateGroupRequestDto request) {
 
         jwtUtil.validateToken(accessToken);  // 토큰 검증
-        boolean isCreated = groupService.createGroup(accessToken, request);
-        if (isCreated) {
-            return ResponseEntity.status(201).body("{\"message\": \"success\"}");
-        } else {
-            return ResponseEntity.status(201).body("{\"message\": \"fail\"}");
+        try {
+            groupService.createGroup(accessToken, request);
+                return ResponseEntity.status(201).body("{\"message\": \"success\"}");
+        } catch (GroupException e) {
+            if (e.getErrorCode() == ErrorCode.TIME_OVER) {
+                return ResponseEntity.status(201).body("{\"message\": \"timeOver\"}");
+            } else {
+                return ResponseEntity.status(201).body("{\"message\": \"fail\"}");
+            }
         }
-
     }
 
     @PostMapping("/{groupId}/members")
