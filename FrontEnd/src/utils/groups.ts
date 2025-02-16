@@ -2,7 +2,7 @@ export interface RequestData {
   keyword?: string;
   diseaseId?: number[];
   isHost?: boolean | null; // 진행자 여부 (true, false, null)
-  startDate?: string; // 날짜 (YYYY-MM-DD 00-00-00)
+  startDate?: string | null; // 날짜 (YYYY-MM-DD 00-00-00)
   period?: number; // 기간 (1~8주)
   startTime?: number; // 시작 시간 (HH)
   endTime?: number; // 종료 시간 (HH)
