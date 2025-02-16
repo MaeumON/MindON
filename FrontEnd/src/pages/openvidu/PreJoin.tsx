@@ -1,18 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { OpenVidu, Publisher } from "openvidu-browser";
+import { useNavigate, useParams } from "react-router-dom";
+import { createSessionResponse, UserModelType, VideoRoomState } from "@utils/openvidu/openviduTypes";
 import Room from "@pages/openvidu/Room";
-import { createSessionResponse, UserModelType, VideoRoomState } from "@/utils/openvidu/openviduTypes";
+import NoHostRoom from "@pages/openvidu/NoHostRoom";
 import UserModel from "@components/Openvidu-call/models/user-model";
-// import OpenViduLayout from "@components/Openvidu-call/layout/openvidu-layout";
 import Button from "@components/common/Button";
+import OpenViduLayout from "@components/Openvidu-call/layout/openvidu-layout";
+import IconCheck from "@assets/icons/IconCheck";
+import { fetchMeetingId } from "@apis/openvidu/questionApi";
 import { closeSession, createSession, createToken, removeUser } from "@apis/openvidu/openviduApi";
 import useAuthStore from "@stores/authStore";
-import IconCheck from "@assets/icons/IconCheck";
-import NoHostRoom from "./NoHostRoom";
-import { useNavigate, useParams } from "react-router-dom";
-import { fetchMeetingId } from "@/apis/openvidu/questionApi";
 import { useQuestionStore } from "@stores/questionStore";
-import OpenViduLayout from "@/components/Openvidu-call/layout/openvidu-layout";
 
 /*
 실제 화상채팅으로 진입하기 전에,
@@ -42,7 +41,6 @@ const Prejoin = () => {
     localUser: undefined, //publisher
     subscribers: [],
     currentVideoDevice: undefined,
-    messageReceived: false,
   });
 
   const [OV, setOV] = useState<OpenVidu | null>(null);
@@ -276,13 +274,6 @@ const Prejoin = () => {
       setState((prev) => ({ ...prev, localUser: localUser as UserModelType }));
     }
   }, []);
-
-  // const checkNotification = useCallback(() => {
-  //   setState((prev) => ({
-  //     ...prev,
-  //     messageReceived: prev.chatDisplay === "none",
-  //   }));
-  // }, []);
 
   // 타이머 종료 시 closeSession 호출 , 임시 console.log
   console.log(closeSession);
