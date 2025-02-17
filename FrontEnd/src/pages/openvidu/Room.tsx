@@ -80,7 +80,7 @@ function Room({
     <section className="w-full h-[calc(100vh-80px)] px-[20px] flex flex-col justify-center items-center bg-offWhite font-suite">
       <Question meetingId={meetingId} session={session} mySessionId={mySessionId} />
 
-      <div className="w-full h-[80%] grid grid-cols-3 gap-4">
+      <div className="w-full h-[620px] grid grid-cols-3 grid-rows-3 gap-4">
         {localUser && localUser.getStreamManager() && (
           <div className="w-full h-full">
             <StreamComponent user={localUser} session={session} />
