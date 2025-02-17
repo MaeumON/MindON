@@ -51,17 +51,20 @@ public class GroupService {
         String userId = jwtUtil.extractUserId(accessToken);
         Optional<User> userOpt = userRepository.findById(userId);
         if (userOpt.isEmpty()) {
-            return false;
+            throw new GroupException(ErrorCode.GROUP_CREATION_FAILED);
         }
 
         Optional<Disease> diseaseOpt = diseaseRepository.findById(request.getDiseaseId().byteValue());
         if (diseaseOpt.isEmpty()) {
-            return false;
+            throw new GroupException(ErrorCode.GROUP_CREATION_FAILED);
+        }
+
+        if (request.getStartDate().isBefore(LocalDateTime.now())) {
+            throw new GroupException(ErrorCode.TIME_OVER);
         }
 
         User user = userOpt.get();
         Disease disease = diseaseOpt.get();
-
 
         // 사용자가 가입된 그룹 ID 조회
         List<Integer> joinedGroupIds = userGroupRepository.findByUser_UserId(user.getUserId())
@@ -76,9 +79,8 @@ public class GroupService {
         );
 
         if (hasConflict) {
-            return false;
+            throw new GroupException(ErrorCode.GROUP_CREATION_FAILED);
         }
-
 
         Group group = new Group();
         group.setTitle(request.getTitle());
@@ -196,12 +198,12 @@ public class GroupService {
         Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new GroupException(ErrorCode.GROUP_NOT_FOUND));
 
-        // 같은 시간대 그룹 가입 여부 체크
+        // 같은 시간대에 다른 모임에 가입한 경우
         if (isGroupAtSameTime(userId, group)) {
             throw new GroupException(ErrorCode.GROUP_JOIN_SAME_TIME);
         }
 
-        // 그룹 정원 초과 여부 체크
+        // 그룹 정원 초과인 경우
         if (isGroupFull(group)) {
             throw new GroupException(ErrorCode.GROUP_FULL);
         }
@@ -303,20 +305,19 @@ public class GroupService {
 
         Byte status = 0; // 진행 예정 상태만 조회
 
+        int currentPage = pageable.getPageNumber(); // 현재 페이지 번호 가져오기
+        int newPage = currentPage > 0 ? currentPage - 1 : 0; // 0보다 작을 수 없으므로, 최소 0으로 설정
+
+        Pageable newPageable = PageRequest.of(newPage, pageable.getPageSize(), pageable.getSort()); // 새로운 pageable 생성
+
         // 초대코드 검색 먼저 시도
-        Page<Group> groups = groupRepository.findByInviteCodeAndGroupStatus(keyword, status, pageable);
+        Page<Group> groups = groupRepository.findByInviteCodeAndGroupStatus(keyword, status, newPageable);
 
         // 초대코드 검색 결과가 없는 경우 → 일반 검색 수행 (is_private = 1 제외)
         if (!groups.hasContent()) {
-            int currentPage = pageable.getPageNumber(); // 현재 페이지 번호 가져오기
-            int newPage = currentPage > 0 ? currentPage - 1 : 0; // 0보다 작을 수 없으므로, 최소 0으로 설정
-
-            Pageable newPageable = PageRequest.of(newPage, pageable.getPageSize(), pageable.getSort()); // 새로운 pageable 생성
-
             groups = groupRepository.findGroupsByCriteriaExcludingPrivate(
                     keyword, diseaseId, isHost, startDate, period, startTime, endTime, dayOfWeek, newPageable);
         }
-
         return groups.map(this::mapToDto);
     }
 
@@ -327,19 +328,16 @@ public class GroupService {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
         }
 
-        // 사용자가 가입된 그룹 목록 조회
-        List<UserGroup> userGroups = userGroupRepository.findByUser_UserId(userId);
-
-        // 그룹 ID를 이용해 그룹 정보 조회
-        List<Integer> groupIds = userGroups.stream()
-                .map(userGroup -> userGroup.getGroup().getGroupId()) // groupId를 직접 참조
-                .toList();
-
         if (groupStatus == null || groupStatus < 0 || groupStatus > 2) {
             throw new GroupException(ErrorCode.INVALID_INPUT_VALUE);
         }
+        int currentPage = pageable.getPageNumber(); // 현재 페이지 번호 가져오기
+        int newPage = currentPage > 0 ? currentPage - 1 : 0; // 0보다 작을 수 없으므로, 최소 0으로 설정
 
-        Page<Group> filteredGroups = groupRepository.findGroupsByKeywordAndStatus(groupIds, groupStatus, keyword, pageable);
+        Pageable newPageable = PageRequest.of(newPage, pageable.getPageSize(), pageable.getSort()); // 새로운 pageable 생성
+
+        // 직접 사용자와 조인하여 그룹을 조회
+        Page<Group> filteredGroups = groupRepository.findGroupsByUserAndStatus(userId, groupStatus, keyword, newPageable);
 
         return filteredGroups.map(this::mapToDto);
     }

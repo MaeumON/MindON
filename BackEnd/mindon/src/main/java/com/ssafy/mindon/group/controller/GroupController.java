@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,13 +38,16 @@ public class GroupController {
             @RequestBody @Valid CreateGroupRequestDto request) {
 
         jwtUtil.validateToken(accessToken);  // 토큰 검증
-        boolean isCreated = groupService.createGroup(accessToken, request);
-        if (isCreated) {
-            return ResponseEntity.status(201).body("{\"message\": \"success\"}");
-        } else {
-            return ResponseEntity.status(201).body("{\"message\": \"fail\"}");
+        try {
+            groupService.createGroup(accessToken, request);
+                return ResponseEntity.status(201).body("{\"message\": \"success\"}");
+        } catch (GroupException e) {
+            if (e.getErrorCode() == ErrorCode.TIME_OVER) {
+                return ResponseEntity.status(201).body("{\"message\": \"timeOver\"}");
+            } else {
+                return ResponseEntity.status(201).body("{\"message\": \"fail\"}");
+            }
         }
-
     }
 
     @PostMapping("/{groupId}/members")
@@ -54,8 +56,17 @@ public class GroupController {
             @PathVariable Integer groupId) {
 
         jwtUtil.validateToken(accessToken);
-        groupService.joinGroup(accessToken, groupId);
-        return ResponseEntity.ok("{\"message\": \"success\"}");
+
+        try {
+            groupService.joinGroup(accessToken, groupId);
+            return ResponseEntity.ok("{\"message\": \"success\"}");
+        } catch (GroupException e) {
+            if(e.getErrorCode() == ErrorCode.GROUP_JOIN_SAME_TIME) {
+                return ResponseEntity.ok("{\"message\": \"GroupJoinSameTime\"}");
+            } else {
+                return ResponseEntity.ok("{\"message\": \"GroupFull\"}");
+            }
+        }
     }
 
     @PostMapping("/list")
