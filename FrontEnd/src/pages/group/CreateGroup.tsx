@@ -41,21 +41,25 @@ function CreateGroup() {
   const [description, setDescription] = useState<string>("");
   const [selectedDiseaseId, setSelectedDiseaseId] = useState<number | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState<number>(6);
-  const [selectedStartDate, setSelectedStartDate] = useState<Date>(today);
-  const [selectedDay, setSelectedDay] = useState<string>("월");
+  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
+  const [selectedDay, setSelectedDay] = useState<string>("");
   const [selectedStartTime, setSelectedStartTime] = useState<number>(18);
   const [minMember, setminMember] = useState<number>(2);
   const [maxMember, setmaxMember] = useState<number>(8);
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const [privatePassword, setPrivatePassword] = useState<string>("");
   const [isHost, setIsHost] = useState<boolean>(true);
+  // const [isDateVisible, setIsDateVisible] = useState<boolean>(false);
 
   const handleDateChange = (date: Date | null) => {
     if (date) {
       setSelectedStartDate(date);
+      // setIsDateVisible(true);
       const selectedDay = date.getDay(); // 숫자로 변환
       setSelectedDay(korDayMap[selectedDay]);
       console.log("selectedday", selectedDay);
+    } else {
+      // setIsDateVisible(false);
     }
   };
 
@@ -120,7 +124,7 @@ function CreateGroup() {
       // const startDateTime = new Date(selectedStartDate);
       // startDateTime.setHours(selectedStartTime, 0, 0, 0);
 
-      const formatStartDate = (date: Date): string => {
+      const formatStartDate = (date: Date | null): string => {
         const startDateObj = date ? new Date(date) : new Date();
         startDateObj.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정 (로컬 시간 유지)
 
@@ -150,9 +154,16 @@ function CreateGroup() {
 
       console.log("Request data:", requestData);
 
-      await createGroupApi(requestData);
-      // alert("모임이 성공적으로 생성되었습니다.");
-      nav(-1);
+      const result = await createGroupApi(requestData);
+
+      if (result === "success") {
+        alert("모임이 생성되었습니다.");
+        nav(-1); // 페이지 이동
+      } else if (result === "fail") {
+        alert("해당 시간에 이미 예정된 모임이 존재합니다."); // 실패 시 알림
+      } else if (result === "timeOver") {
+        alert("선택한 일정이 현재시간보다 빠릅니다. 시간을 다시 선택해주세요.");
+      }
     } catch (error: any) {
       // if (error.response?.data?.message === "fail") {
       //   alert("해당 시간에 이미 예정된 모임이 있습니다.");
@@ -229,6 +240,7 @@ function CreateGroup() {
                     className="px-3 py-2 border border-cardSubcontent rounded-xl font-suite text-cardTitle w-28"
                     dateFormat="yy-MM-dd"
                     minDate={today}
+                    placeholderText={selectedStartDate ? "" : "선택해주세요"} // 조건부로 placeholder 설정
                   />
                 </div>
               </div>
