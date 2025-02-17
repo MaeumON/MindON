@@ -90,7 +90,7 @@ public class MeetingService {
         List<QuestionDto> questions = new ArrayList<>();
 
         // 시작 메시지 추가
-        questions.add(new QuestionDto(100, "안녕하세요. 간단하게 오늘의 다짐을 말해볼까요??"));
+        questions.add(new QuestionDto(100, "간단하게 오늘의 다짐을 말해볼까요??"));
 
         // 중간 질문들 가져오기
         List<QuestionDto> middleQuestions;
