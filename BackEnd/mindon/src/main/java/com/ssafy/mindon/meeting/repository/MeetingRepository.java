@@ -45,7 +45,7 @@ public interface MeetingRepository extends JpaRepository<Meeting, Integer> {
         UPDATE meetings
         SET meeting_status = CASE
             WHEN meeting_status = 0 AND NOW() >= date THEN 1
-            WHEN meeting_status = 1 AND NOW() >= DATE_ADD(date, INTERVAL 50 MINUTE) THEN 2
+            WHEN meeting_status = 1 AND NOW() >= DATE_ADD(date, INTERVAL 1 HOUR) THEN 2
             ELSE meeting_status
         END
         WHERE meeting_status < 2
