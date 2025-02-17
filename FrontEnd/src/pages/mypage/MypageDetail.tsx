@@ -94,6 +94,9 @@ function MypageDetail() {
         setShowJoinModal(true);
         setTimeout(() => {
           setShowJoinModal(false);
+          if (group?.totalMember === 1) {
+            router("/groupslist");
+          }
         }, 2000);
       }
     } catch (error) {

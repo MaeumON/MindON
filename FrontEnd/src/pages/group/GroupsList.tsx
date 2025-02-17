@@ -119,53 +119,32 @@ function GroupsList() {
   // ✅ 그룹 목록을 가져오는 API 함수
   async function fetchGroups() {
     try {
-      //  sessionStorage에서 필터 값 가져오기
       const storedFilters = sessionStorage.getItem("groupFilters");
       const savedFilters: Partial<RequestData> = storedFilters ? JSON.parse(storedFilters) : {};
-
-      let filters: Partial<RequestData> = { ...appliedFilters };
 
       // URL 파라미터에서 isHost 값 가져오기
       const isHostParam = queryParams.get("isHost");
       const newIsHostValue =
         isHostParam !== null ? (isHostParam === "1" ? true : isHostParam === "0" ? false : null) : null;
 
-      // isHostParam이 존재하면 appliedFilters에도 반영
-      if (newIsHostValue !== null) {
-        filters = { ...filters, isHost: newIsHostValue };
+      // 현재 적용된 필터와 URL의 isHost 값 합치기
+      let currentFilters = { ...savedFilters };
+      if (newIsHostValue !== null && !reset) {
+        currentFilters.isHost = newIsHostValue;
       }
 
-      const filteredFilters = Object.fromEntries(
-        Object.entries(savedFilters).filter(([key, value]) => {
-          return JSON.stringify(value) !== JSON.stringify(DEFAULT_FILTERS[key as keyof RequestData]);
-        })
-      );
-      // 🔹 URL에서 가져온 isHost 값을 적용(이거추가하니 적용됨!)
-      console.log("reset", reset);
-      if (!reset) {
-        if (newIsHostValue !== null) {
-          filteredFilters.isHost = newIsHostValue;
-        }
+      // 키워드 검색이 있는 경우
+      if (keyword.trim()) {
+        currentFilters = { keyword: keyword.trim() };
       }
 
-      // 현재 appliedFilters와 다를 때만 업데이트 (무한 렌더링 방지)
-      if (JSON.stringify(filteredFilters) !== JSON.stringify(appliedFilters)) {
-        setAppliedFilters(filteredFilters);
+      // 필터가 하나라도 있는 경우에만 sessionStorage 업데이트
+      if (Object.keys(currentFilters).length > 0) {
+        sessionStorage.setItem("groupFilters", JSON.stringify(currentFilters));
       }
 
-      if (Object.keys(filteredFilters).length > 0) {
-        console.log("🔹 필터 저장 (정상 값):", filteredFilters);
-        sessionStorage.setItem("groupFilters", JSON.stringify(filteredFilters));
-      } else {
-        console.log("⚠️ 필터 저장 중단: 빈 값 감지됨");
-      }
-
-      // sessionStorage에 업데이트된 필터 값 저장
-      sessionStorage.setItem("groupFilters", JSON.stringify(filteredFilters));
-
-      // ✅ API 요청
-      const result = await groupListApi(filters, page, size, sort);
-      console.log("📌 그룹 목록 API 응답:", result);
+      // API 호출
+      const result = await groupListApi(currentFilters, page, size, sort);
       setGroups(result.content);
       setTotalItems(result.totalElements);
     } catch (error) {
@@ -178,6 +157,7 @@ function GroupsList() {
     const queryParams = new URLSearchParams(location.search);
     const isHostParam = queryParams.get("isHost");
 
+    console.log("🔹 isHostParam:", isHostParam);
     // isHost 값을 boolean 또는 null로 변환
     const newIsHostValue =
       isHostParam !== null ? (isHostParam === "1" ? true : isHostParam === "0" ? false : null) : null;
@@ -211,16 +191,39 @@ function GroupsList() {
   const getNonDefaultFilters = (filters: Partial<RequestData>) => {
     return Object.fromEntries(
       Object.entries(filters).filter(([key, value]) => {
+        // 빈 배열이거나 null, undefined, 0인 경우 제외
+        if (!value || (Array.isArray(value) && value.length === 0)) {
+          return false;
+        }
+
+        // startDate가 null이거나 기본값인 경우 제외
         if (key === "startDate" && (value === null || value === DEFAULT_FILTERS.startDate)) {
           return false;
         }
+
+        // period가 0인 경우 제외
+        if (key === "period" && value === 0) {
+          return false;
+        }
+
+        // startTime이 0이고 endTime이 23인 경우 제외
+        if (key === "startTime" && value === 0) {
+          return false;
+        }
+        if (key === "endTime" && value === 23) {
+          return false;
+        }
+
+        // 기본값과 다른 경우만 포함
         return JSON.stringify(value) !== JSON.stringify(DEFAULT_FILTERS[key as keyof RequestData]);
       })
     );
   };
+
   const [appliedFilters, setAppliedFilters] = useState<Partial<RequestData>>(() => {
     const storedFilters = sessionStorage.getItem("groupFilters");
     const parsedFilters = storedFilters ? JSON.parse(storedFilters) : {};
+
     // 기존 저장된 필터 값에서 기본값과 다른 필터만 유지
     const nonDefaultFilters = getNonDefaultFilters(parsedFilters);
 
@@ -229,7 +232,13 @@ function GroupsList() {
     const newIsHostValue =
       isHostParam !== null ? (isHostParam === "1" ? true : isHostParam === "0" ? false : null) : null;
 
-    return getNonDefaultFilters({ ...nonDefaultFilters, isHost: newIsHostValue });
+    // isHost 값이 있는 경우에만 포함
+    const filters = getNonDefaultFilters({ ...nonDefaultFilters });
+    if (newIsHostValue !== null) {
+      filters.isHost = newIsHostValue;
+    }
+
+    return filters;
   });
 
   // 개별 필터 제거
@@ -267,37 +276,18 @@ function GroupsList() {
   }, [page, size, sort, appliedFilters]);
 
   // ✅검색창
-  // 검색 기능 API 호출
-  async function fetchSearchGroups() {
-    if (!keyword.trim()) {
-      // 빈 값으로 검색하면 전체 목록 조회
-      fetchGroups();
-      return;
-    }
-
-    try {
-      const result = await groupListApi({ keyword });
-      console.log("📌 검색 API 응답:", result);
-      setGroups(result.content);
-    } catch (error) {
-      console.log("검색 요청 실패 : ", error);
-    }
-  }
-
-  // 검색 입력값 업데이트
+  // 검색 기능 처리
   function onChangeSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setKeyword(e.target.value);
   }
 
-  // 검색 실행(아이콘)
   function onClickSearchIcon() {
-    fetchSearchGroups();
+    fetchGroups(); // 기존 fetchSearchGroups() 대신 fetchGroups() 사용
   }
 
-  // 검색 실행(엔터키)
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
-      fetchSearchGroups();
+      fetchGroups(); // 기존 fetchSearchGroups() 대신 fetchGroups() 사용
     }
   }
 
@@ -340,48 +330,53 @@ function GroupsList() {
 
       {/* 적용된 필터 UI */}
       <div className="flex flex-col w-full item-center pb-5">
-        {/* 위쪽 수평선 */}
         <hr className="w-[90%] border-cardSubcontent mb-2 self-center" />
         <div className="flex flex-wrap items-center gap-2 p-2 rounded-lg font-suite px-5 border-t-5 border-cardContent2">
           {/* 적용된 필터 표시 */}
-          {Object.entries(appliedFilters).map(([key, value]) => (
-            <div
-              key={key}
-              className="flex items-center bg-white border rounded-full px-3 py-1 text-sm text-cardContent2 gap-1.5"
-            >
-              <span>
-                {key === "isHost"
-                  ? value
-                    ? "진행자 있음"
-                    : "진행자 없음"
-                  : key === "dayOfWeek"
-                    ? Array.isArray(value)
-                      ? value.map((num) => reverseDayMap[num]).join(", ")
-                      : reverseDayMap[value as number]
-                    : key === "diseaseId"
-                      ? Array.isArray(value)
-                        ? value.map((num) => reverseDiseaseMap[num]).join(", ")
-                        : reverseDiseaseMap[value as number]
-                      : key === "startTime"
-                        ? `시작 시간 : ${value}시 이후`
-                        : key === "endTime"
-                          ? `종료 시간 : ${value}시 이전`
-                          : key === "startDate" && typeof value === "string" && value.includes("T")
-                            ? `시작일 : ${value.split("T")[0]} 이후`
-                            : key === "period"
-                              ? `기간 : ${value}주`
-                              : value}
-              </span>
-              <button
-                onClick={() => removeFilter(key as keyof RequestData)}
-                className="text-gray-500 hover:text-cardContent2"
+          {Object.entries(appliedFilters).map(([key, value]) => {
+            // isHost가 null인 경우 렌더링하지 않음
+            if (key === "isHost" && value === null) {
+              return null;
+            }
+
+            return (
+              <div
+                key={key}
+                className="flex items-center bg-white border rounded-full px-3 py-1 text-sm text-cardContent2 gap-1.5"
               >
-                ✕
-              </button>
-            </div>
-          ))}
+                <span>
+                  {key === "isHost"
+                    ? value
+                      ? "진행자 있음"
+                      : "진행자 없음"
+                    : key === "dayOfWeek"
+                      ? Array.isArray(value)
+                        ? value.map((num) => reverseDayMap[num]).join(", ")
+                        : reverseDayMap[value as number]
+                      : key === "diseaseId"
+                        ? Array.isArray(value)
+                          ? value.map((num) => reverseDiseaseMap[num]).join(", ")
+                          : reverseDiseaseMap[value as number]
+                        : key === "startTime"
+                          ? `시작 시간 : ${value}시 이후`
+                          : key === "endTime"
+                            ? `종료 시간 : ${value}시 이전`
+                            : key === "startDate" && typeof value === "string" && value.includes("T")
+                              ? `시작일 : ${value.split("T")[0]} 이후`
+                              : key === "period"
+                                ? `기간 : ${value}주`
+                                : value}
+                </span>
+                <button
+                  onClick={() => removeFilter(key as keyof RequestData)}
+                  className="text-gray-500 hover:text-cardContent2"
+                >
+                  ✕
+                </button>
+              </div>
+            );
+          })}
         </div>
-        {/* 아래쪽 수평선 */}
         <hr className="w-[90%] border-cardSubcontent mt-2 self-center" />
       </div>
 
