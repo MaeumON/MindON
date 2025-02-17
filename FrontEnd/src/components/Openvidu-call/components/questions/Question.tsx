@@ -83,9 +83,9 @@ const Question = ({ meetingId, session, mySessionId }: QuestionProps) => {
 
     if (isMeetingStart === 1 && isQuestionStart === 1) {
       if (currentUserId === userId && !isSpeaking) {
-        return "답변 시작하기";
+        return "발언 시작하기";
       } else if (currentUserId === userId && isSpeaking) {
-        return "답변 중단하기";
+        return "발언 끝내기";
       }
       return `${speakingOrder[currentUser].userName}님이 발언 중이에요`;
     }
