@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import OvVideoComponent from "./OvVideo";
 import UserModel from "../../models/user-model";
-import IconReport from "@/assets/icons/IconReport";
 import { Session } from "openvidu-browser";
+import IconMegaphone from "@assets/icons/IconMegaphone.png";
 
 interface StreamComponentProps {
   user: UserModel;
@@ -54,7 +54,7 @@ const StreamComponent: React.FC<StreamComponentProps> = ({
           <span>{user.getNickname()}</span>
           {setReportedUserId && (
             <div className="cursor-pointer" onClick={handleClickReport}>
-              <IconReport width={30} height={22} fillColor="#DE3730" />
+              <img src={IconMegaphone} alt="신고 기능" className="w-[30px] h-[22px]" />
             </div>
           )}
         </div>
