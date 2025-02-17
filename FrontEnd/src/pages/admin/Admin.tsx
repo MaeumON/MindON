@@ -16,6 +16,7 @@ const Admin = () => {
     unblockUserApi(userId)
       .then(() => {
         alert("성공적으로 처리되었습니다.");
+        getReportedUsers();
       })
       .catch(() => {
         console.log("요청 처리에 실패했습니다. 잠시 후 다시 시도해 주세요.");
