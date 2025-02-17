@@ -3,7 +3,7 @@ import Header from "@components/Layout/Header";
 import Footer from "@components/Layout/Footer";
 import Button from "@components/common/Button";
 import groupDetailApi from "@apis/group/groupDetailApi";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import groupDetailJoinApi from "@/apis/group/groupDetailJoinApi";
@@ -14,6 +14,7 @@ import LoudSpeakerImg from "@assets/icons/loudspeaker.png";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 
 function GroupDetail() {
+  const nav = useNavigate();
   const { groupId } = useParams();
   const [isRegi, setIsRegi] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
@@ -83,6 +84,9 @@ function GroupDetail() {
         setShowJoinModal(true);
         setTimeout(() => {
           setShowJoinModal(false);
+          if (group?.totalMember === 1) {
+            nav("/groupslist");
+          }
         }, 2000);
       }
     } catch (error) {
