@@ -159,8 +159,10 @@ function CreateGroup() {
       if (result === "success") {
         alert("모임이 생성되었습니다.");
         nav(-1); // 페이지 이동
-      } else {
+      } else if (result === "fail") {
         alert("해당 시간에 이미 예정된 모임이 존재합니다."); // 실패 시 알림
+      } else if (result === "timeOver") {
+        alert("선택한 일정이 현재시간보다 빠릅니다. 시간을 다시 선택해주세요.");
       }
     } catch (error: any) {
       // if (error.response?.data?.message === "fail") {
