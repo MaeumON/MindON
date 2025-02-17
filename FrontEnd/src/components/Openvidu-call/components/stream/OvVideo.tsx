@@ -35,7 +35,7 @@ const OvVideoComponent: React.FC<OvVideoProps> = ({ user, session, mutedSound })
       streamManager?.on("streamAudioVolumeChange", (event: any) => {
         // Typically, background noise is around 0-15
         // Speaking is usually above 20-30
-        const SPEAKING_THRESHOLD = -35;
+        const SPEAKING_THRESHOLD = -45;
         setIsSpeaking(event.value.newValue > SPEAKING_THRESHOLD);
       });
     }

@@ -108,29 +108,57 @@ function GroupsFilter({ isOpen, onClose, onApplyFilter }: GroupsFilterProps) {
     // startDate가 선택되었을 경우, 로컬 시간 기준으로 변환
     if (startDate) {
       const localDate = new Date(startDate);
-      localDate.setHours(12, 0, 0, 0); // 🔥 12:00:00으로 설정 (UTC 변환 오류 방지)
-
+      localDate.setHours(12, 0, 0, 0);
       const year = localDate.getFullYear();
       const month = String(localDate.getMonth() + 1).padStart(2, "0");
       const day = String(localDate.getDate()).padStart(2, "0");
-
       formattedStartDateString = `${year}-${month}-${day}T00:00:01Z`;
-      console.log("formattedStartDateString : ", formattedStartDateString);
     }
 
-    // const formattedStartDateString = formattedStartDate.toISOString().split("T")[0] + "T00:00:00Z";
-    const filterData: RequestData = {
-      diseaseId: selectedDiseases.map((disease) => diseaseMap[disease] || null).filter((id) => id !== null),
-      isHost: selectedHost === "유" ? true : selectedHost === "무" ? false : null,
-      startDate: formattedStartDateString,
-      period: selectedPeriod,
-      startTime: Number(selectedStartTime.split(":")[0]),
-      endTime: Number(selectedEndTime.split(":")[0]),
-      dayOfWeek: selectedDays.map((day) => dayMap[day] ?? null).filter((id) => id !== null),
-    };
+    // 선택된 값만 필터에 포함
+    const filterData: Partial<RequestData> = {};
 
-    //  필터 값을 sessionStorage에 저장
-    sessionStorage.setItem("groupFilters", JSON.stringify(filterData));
+    // 질병이 선택된 경우만 포함
+    if (selectedDiseases.length > 0) {
+      filterData.diseaseId = selectedDiseases.map((disease) => diseaseMap[disease] || null).filter((id) => id !== null);
+    }
+
+    // 진행자가 선택된 경우만 포함
+    if (selectedHost !== null && selectedHost !== "관계 없음") {
+      filterData.isHost = selectedHost === "유";
+    }
+
+    // 시작 날짜가 선택된 경우만 포함
+    if (formattedStartDateString) {
+      filterData.startDate = formattedStartDateString;
+    }
+
+    // 기간이 선택된 경우만 포함 (0이 아닌 경우)
+    if (selectedPeriod > 0) {
+      filterData.period = selectedPeriod;
+    }
+
+    // 시작 시간이 기본값(0)이 아닌 경우만 포함
+    if (Number(selectedStartTime.split(":")[0]) > 0) {
+      filterData.startTime = Number(selectedStartTime.split(":")[0]);
+    }
+
+    // 종료 시간이 기본값(23)이 아닌 경우만 포함
+    if (Number(selectedEndTime.split(":")[0]) < 23) {
+      filterData.endTime = Number(selectedEndTime.split(":")[0]);
+    }
+
+    // 요일이 선택된 경우만 포함
+    if (selectedDays.length > 0) {
+      filterData.dayOfWeek = selectedDays.map((day) => dayMap[day] ?? null).filter((id) => id !== null);
+    }
+
+    // sessionStorage에 실제 선택된 필터만 저장
+    if (Object.keys(filterData).length > 0) {
+      sessionStorage.setItem("groupFilters", JSON.stringify(filterData));
+    } else {
+      sessionStorage.removeItem("groupFilters");
+    }
 
     console.log("FilterData : ", filterData);
     onApplyFilter(filterData);

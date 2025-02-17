@@ -11,9 +11,13 @@ function Footer() {
   const currentPath = location.pathname;
 
   const handleFooterClick = (path: string) => {
-    // setCurrentPath(path);
-    console.log(currentPath);
-    nav(path);
+    // 모임 목록으로 이동할 때 필터 초기화
+    if (path.includes("/groupslist")) {
+      sessionStorage.removeItem("groupFilters"); // 저장된 필터 제거
+      nav("/groupslist?page=1&size=10&sort=startDate,asc");
+    } else {
+      nav(path);
+    }
   };
 
   return (
