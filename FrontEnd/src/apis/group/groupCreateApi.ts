@@ -13,6 +13,8 @@ export const createGroupApi = async (requestData: CreateRoomReqestType): Promise
         return "success"; // 성공 메시지 반환
       } else if (response.data.message === "fail") {
         return "fail"; // 실패 메시지 반환
+      } else if (response.data.message === "timeOver") {
+        return "timeOver";
       } else {
         console.error("서버 응답 오류:", response.data);
         throw new Error(response.data.message || "모임 생성 중 서버 오류가 발생했습니다.");
