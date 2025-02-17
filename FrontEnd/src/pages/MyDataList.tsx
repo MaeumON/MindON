@@ -49,10 +49,18 @@ function MyDataList() {
   // ✅ 페이지네이션
   const [totalItems, setTotalItems] = useState(0);
 
-  // 파라미터 추출
+  // page 상태 추가
+  const [currentPage, setCurrentPage] = useState(1);
 
+  // URL 파라미터 변경 감지를 위한 useEffect 추가
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const newPage = Number(queryParams.get("page")) || 1;
+    setCurrentPage(newPage);
+  }, [location.search]);
+
+  // 파라미터 추출
   const queryParams = new URLSearchParams(location.search);
-  const page = Number(queryParams.get("page")) || 1;
   const size = Number(queryParams.get("size")) || 10;
   const sort = queryParams.get("sort") || "startDate,asc";
 
@@ -70,7 +78,7 @@ function MyDataList() {
   async function fetchGroups() {
     setLoading(true);
     try {
-      const result = await groupStatusApi({ groupStatus, keyword }, page, size, sort);
+      const result = await groupStatusApi({ groupStatus, keyword }, currentPage, size, sort);
       console.log("📌 그룹 목록 API 응답:", result);
       setGroups(result.content);
       setTotalItems(result.totalElements);
@@ -83,7 +91,7 @@ function MyDataList() {
 
   useEffect(() => {
     fetchGroups();
-  }, [page, size, sort]);
+  }, [currentPage, size, sort]);
 
   useEffect(() => {
     console.log("📌 groups 상태 변경됨:", groups);
@@ -185,7 +193,7 @@ function MyDataList() {
           <div className="flex justify-center items-center mb-[100px]">
             {totalItems > 0 && (
               <PaginationComponent
-                activePage={page}
+                activePage={currentPage}
                 itemsCountPerPage={size}
                 totalItemsCount={totalItems}
                 pageRangeDisplayed={5}
