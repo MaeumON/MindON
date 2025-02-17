@@ -47,10 +47,18 @@ function MyPageGroupList() {
   // ✅ 페이지네이션
   const [totalItems, setTotalItems] = useState(0);
 
-  // 파라미터 추출
+  // page 상태 추가
+  const [currentPage, setCurrentPage] = useState(1);
 
+  // URL 파라미터 변경 감지를 위한 useEffect 추가
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const newPage = Number(queryParams.get("page")) || 1;
+    setCurrentPage(newPage);
+  }, [location.search]);
+
+  // 파라미터 추출
   const queryParams = new URLSearchParams(location.search);
-  const page = Number(queryParams.get("page")) || 1;
   const size = Number(queryParams.get("size")) || 10;
   const sort = queryParams.get("sort") || "startDate,asc";
 
@@ -61,16 +69,23 @@ function MyPageGroupList() {
     searchParams.set("size", size.toString());
     searchParams.set("sort", sort);
 
-    nav(`/mypage/grouplist/${groupStatus}&${searchParams.toString()}`);
+    nav(`/mypage/grouplist/${groupStatus}?${searchParams.toString()}`); // & 대신 ? 사용
   }
+
+  // API 호출 useEffect 수정
   useEffect(() => {
     fetchGroups();
-  }, [page, size, sort]);
+  }, [currentPage, size, sort, groupStatus, keyword]); // page 대신 currentPage 사용
 
-  // ✅ 그룹 목록을 가져오는 API 함수
+  // fetchGroups 함수 수정
   async function fetchGroups() {
     try {
-      const result = await groupStatusApi({ groupStatus, keyword });
+      const result = await groupStatusApi(
+        { groupStatus, keyword },
+        currentPage, // page 대신 currentPage 사용
+        size,
+        sort
+      );
       console.log("📌 그룹 목록 API 응답:", result);
       setGroups(result.content);
       setTotalItems(result.totalElements);
@@ -168,7 +183,7 @@ function MyPageGroupList() {
       <div className="flex justify-center items-center mb-[100px]">
         {totalItems > 0 && (
           <PaginationComponent
-            activePage={page}
+            activePage={currentPage}
             itemsCountPerPage={size}
             totalItemsCount={totalItems}
             pageRangeDisplayed={5}
