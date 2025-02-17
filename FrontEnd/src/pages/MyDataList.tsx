@@ -41,10 +41,10 @@ function MyDataList() {
       setGroups([]); // 에러 발생 시 빈 배열 설정
     }
   };
-  // 첫 렌더링 시 accessToken만 보내서 그룹 목록 불러오기
-  useEffect(() => {
-    fetchInitialGroups(groupStatus, "");
-  }, []);
+  // // 첫 렌더링 시 accessToken만 보내서 그룹 목록 불러오기
+  // useEffect(() => {
+  //   fetchInitialGroups(groupStatus, "");
+  // }, []);
 
   // ✅ 페이지네이션
   const [totalItems, setTotalItems] = useState(0);
@@ -68,11 +68,13 @@ function MyDataList() {
 
   // ✅ 그룹 목록을 가져오는 API 함수
   async function fetchGroups() {
+    setLoading(true);
     try {
       const result = await groupStatusApi({ groupStatus, keyword }, page, size, sort);
       console.log("📌 그룹 목록 API 응답:", result);
       setGroups(result.content);
       setTotalItems(result.totalElements);
+      setLoading(false);
     } catch (error) {
       console.error("그룹 목록 요청 실패:", error);
       setGroups([]);
@@ -101,6 +103,7 @@ function MyDataList() {
       const result = await groupStatusApi({ groupStatus, keyword });
       console.log("📌 검색 API 응답:", result);
       setGroups(result.content);
+      setLoading(false);
     } catch (error) {
       console.log("검색 요청 실패 : ", error);
     }
