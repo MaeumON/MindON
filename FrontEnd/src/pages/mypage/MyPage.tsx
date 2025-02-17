@@ -11,6 +11,7 @@ import myPageApi from "@apis/mypage/myPageApi";
 import useLogoutApi from "@/apis/auth/logoutApi";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 function MyPage() {
   const router = useNavigate();
@@ -22,6 +23,10 @@ function MyPage() {
     console.log(result);
     return result;
   };
+
+  useEffect(() => {
+    fetchMyPage();
+  }, []);
 
   const { data: status } = useQuery({
     queryKey: ["myPage"],
