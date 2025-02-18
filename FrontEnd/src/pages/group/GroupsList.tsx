@@ -34,10 +34,18 @@ function GroupsList() {
   // 페이지네이션
   const [totalItems, setTotalItems] = useState(0);
 
-  // 파라미터 추출
+  // page 상태 추가
+  const [currentPage, setCurrentPage] = useState(1);
 
+  // URL 파라미터 변경 감지를 위한 useEffect 추가
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const newPage = Number(queryParams.get("page")) || 1;
+    setCurrentPage(newPage);
+  }, [location.search]);
+
+  // 파라미터 추출
   const queryParams = new URLSearchParams(location.search);
-  const page = Number(queryParams.get("page")) || 1;
   const size = Number(queryParams.get("size")) || 10;
   const sort = queryParams.get("sort") || "startDate,asc";
 
@@ -144,7 +152,7 @@ function GroupsList() {
       }
 
       // API 호출
-      const result = await groupListApi(currentFilters, page, size, sort);
+      const result = await groupListApi(currentFilters, currentPage, size, sort);
       setGroups(result.content);
       setTotalItems(result.totalElements);
     } catch (error) {
@@ -273,7 +281,7 @@ function GroupsList() {
   useEffect(() => {
     fetchGroups();
     console.log("UI 필터값", appliedFilters);
-  }, [page, size, sort, appliedFilters]);
+  }, [currentPage, size, sort, appliedFilters]);
 
   // ✅검색창
   // 검색 기능 처리
@@ -405,7 +413,7 @@ function GroupsList() {
       <div className="flex justify-center items-center mb-[100px]">
         {totalItems > 0 && (
           <PaginationComponent
-            activePage={page}
+            activePage={currentPage}
             itemsCountPerPage={size}
             totalItemsCount={totalItems}
             pageRangeDisplayed={5}

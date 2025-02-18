@@ -6,6 +6,7 @@ import Button from "@components/common/Button";
 import DiseaseDrop from "@components/common/DiseaseDrop";
 import signUpApi from "@/apis/auth/signUpApi";
 import checkUserIdApi from "@/apis/auth/checkUserIdApi";
+import Header from "@/components/Layout/Header";
 
 function SignUp() {
   const [userName, setUserName] = useState<string>("");
@@ -131,61 +132,64 @@ function SignUp() {
   }, []);
 
   return (
-    <Wrapper className="p-[30px]  gap-[30px] pb-[150px]">
-      <Form className="font-bold  gap-[20px] pb-[20px] w-full">
-        <InputForm
-          title={"이름"}
-          titleClassName="text-xl"
-          holder={"이름"}
-          value={userName}
-          onChange={onChangeUserName}
-        />
-        <span></span>
-        <div className="flex flex-col gap-3">
-          <div className="text-xl">아이디</div>
-          <div className="flex gap-[5px]">
-            <input
-              className="grow shrink basis-0 font-suite rounded-xl py-3 px-4 text-cardLongContent
+    <>
+      <Header title="회원가입" isicon={true} />
+      <Wrapper className="p-[30px] gap-[30px] pb-[150px]">
+        <Form className="font-bold  gap-[20px] pb-[20px] w-full">
+          <InputForm
+            title={"이름"}
+            titleClassName="text-xl"
+            holder={"이름"}
+            value={userName}
+            onChange={onChangeUserName}
+          />
+          <span></span>
+          <div className="flex flex-col gap-3">
+            <div className="text-xl">아이디</div>
+            <div className="flex gap-[5px]">
+              <input
+                className="grow shrink basis-0 font-suite rounded-xl py-3 px-4 text-cardLongContent
           disabled:text-cardContent disabled:bg-cardSubcontent disabled:cursor-not-allowed  bg-White text-lg justify-start items-center font-bold whitespace-nowrap w-full outline-none border-2 focus:border-yellow100 focus:border-yellow100  focus:ring-0.5 focus:ring-yellow100"
-              placeholder="아이디"
-              value={userId}
-              onChange={onChangeUserId}
-            ></input>
-            <Button text="중복확인" type="GREEN" className="basis-0" onClick={onClickCheckUserId} />
+                placeholder="아이디"
+                value={userId}
+                onChange={onChangeUserId}
+              ></input>
+              <Button text="중복확인" type="GREEN" className="basis-0" onClick={onClickCheckUserId} />
+            </div>
           </div>
-        </div>
-        <span className={`text-sm pl-2 ${isIdCheck ? "text-green100" : "text-red-500"}`}>{userIdCheckMsg}</span>
-        <InputForm
-          title={"비밀번호"}
-          type="password"
-          titleClassName="text-xl"
-          holder={"비밀번호"}
-          value={password}
-          onChange={onChangePassword}
-        />
-        <span className={`text-sm pl-2 ${isPwd ? "text-green100" : "text-red-500"}`}>{msg}</span>
-        <InputForm
-          title={"비밀번호 확인"}
-          type="password"
-          titleClassName="text-xl"
-          holder={"비밀번호 확인"}
-          value={passwordCheck}
-          onChange={onChangePasswordCheck}
-        />
-        <span className={`text-sm pl-2 ${isPwdCheck ? "text-green100" : "text-red-500"}`}>{checkMsg}</span>
-        <InputForm
-          title={"전화번호"}
-          titleClassName="text-xl"
-          holder={"01012341234"}
-          value={phone}
-          onChange={onChangePhone}
-        />
-        <span className={`text-sm pl-2 ${isPhone ? "text-green100" : "text-red-500"}`}>{phoneMsg}</span>
+          <span className={`text-sm pl-2 ${isIdCheck ? "text-green100" : "text-red-500"}`}>{userIdCheckMsg}</span>
+          <InputForm
+            title={"비밀번호"}
+            type="password"
+            titleClassName="text-xl"
+            holder={"비밀번호"}
+            value={password}
+            onChange={onChangePassword}
+          />
+          <span className={`text-sm pl-2 ${isPwd ? "text-green100" : "text-red-500"}`}>{msg}</span>
+          <InputForm
+            title={"비밀번호 확인"}
+            type="password"
+            titleClassName="text-xl"
+            holder={"비밀번호 확인"}
+            value={passwordCheck}
+            onChange={onChangePasswordCheck}
+          />
+          <span className={`text-sm pl-2 ${isPwdCheck ? "text-green100" : "text-red-500"}`}>{checkMsg}</span>
+          <InputForm
+            title={"전화번호"}
+            titleClassName="text-xl"
+            holder={"01012341234"}
+            value={phone}
+            onChange={onChangePhone}
+          />
+          <span className={`text-sm pl-2 ${isPhone ? "text-green100" : "text-red-500"}`}>{phoneMsg}</span>
 
-        <DiseaseDrop title="관심 질병" value={diseaseId} onSelect={setDiseaseId} />
-      </Form>
-      <Button text="회원가입" type="GREEN" onClick={handleSignUp} />
-    </Wrapper>
+          <DiseaseDrop title="관심 질병" value={diseaseId} onSelect={setDiseaseId} />
+        </Form>
+        <Button text="회원가입" type="GREEN" onClick={handleSignUp} />
+      </Wrapper>
+    </>
   );
 }
 

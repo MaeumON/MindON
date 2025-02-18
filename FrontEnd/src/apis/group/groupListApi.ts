@@ -14,7 +14,7 @@ interface GroupStatusRequest {
 
 const groupListApi = async (
   requestData: Partial<RequestData>,
-  page: number = 0,
+  page: number = 1,
   size: number = 10,
   sort: string = "startDate,asc"
 ): Promise<ApiResponse> => {
@@ -41,7 +41,7 @@ export default groupListApi;
 
 export const groupStatusApi = async (
   { groupStatus, keyword }: GroupStatusRequest,
-  page: number = 0,
+  page: number = 1,
   size: number = 10,
   sort: string = "startDate,asc"
 ): Promise<ApiResponse> => {

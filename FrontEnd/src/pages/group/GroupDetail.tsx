@@ -64,7 +64,12 @@ function GroupDetail() {
             ...oldData,
             registered: true,
           }));
+
+          // 마이페이지 쿼리 무효화
+          queryClient.invalidateQueries({ queryKey: ["myPage"] });
+
           setShowJoinModal(true);
+
           setTimeout(() => {
             setShowJoinModal(false);
           }, 2000);
@@ -81,6 +86,10 @@ function GroupDetail() {
           ...oldData,
           registered: false,
         }));
+
+        // 마이페이지 쿼리 무효화
+        queryClient.invalidateQueries({ queryKey: ["myPage"] });
+
         setShowJoinModal(true);
         setTimeout(() => {
           setShowJoinModal(false);
@@ -272,13 +281,13 @@ function GroupDetail() {
                   </div>
                 </div>
               </div>
-              <div className="flex inline-flex justify-center items-center  gap-3 w-full">
-                <div className="flex text-cardLongContent text-base font-medium leading-tight px-5 py-3 bg-yellow100 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl justify-center items-center gap-2.5 ">
+              <div className="flex flex-row justify-center items-center gap-3 sm:px-5 px-3 md:px-10">
+                <div className="flex text-cardLongContent text-base font-medium leading-tight px-5 py-3 bg-yellow100 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl justify-center items-center gap-2.5 text-center">
                   함께 마음의 온기를
                   <br /> 나누러 가볼까요??
                 </div>
-                <div className="flex flex-col justify-center items-center inline-flex">
-                  <img src={Introbear} alt="온이" className="w-[93px] h-[100px] sm:w-[103px] h-[105px]" />
+                <div className="flex justify-center items-center">
+                  <img src={Introbear} alt="온이" className="w-[93px] h-[100px] sm:w-[98px] sm:h-[105px]" />
                 </div>
               </div>
             </div>

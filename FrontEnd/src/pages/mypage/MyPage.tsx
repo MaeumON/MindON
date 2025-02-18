@@ -14,7 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 
 function MyPage() {
   const router = useNavigate();
-  const { userName } = useAuthStore();
+  const { userId, userName } = useAuthStore();
   const onClickLogout = useLogoutApi();
 
   const fetchMyPage = async () => {
@@ -24,9 +24,12 @@ function MyPage() {
   };
 
   const { data: status } = useQuery({
-    queryKey: ["myPage"],
+    queryKey: ["myPage", userId],
     queryFn: fetchMyPage,
     staleTime: 1000 * 50 * 5,
+
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   const preGroup = status?.preGroup || 0;
