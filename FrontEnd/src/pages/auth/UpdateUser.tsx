@@ -11,7 +11,7 @@ import deleteUserApi from "@apis/auth/deleteUserApi";
 
 function UpdateUser() {
   // User정보 가져오기
-  const { userId, userName, diseaseId: preDiseaseId } = useAuthStore();
+  const { userId, userName, diseaseId: preDiseaseId, setAuth } = useAuthStore();
 
   const [phone, setPhone] = useState<string>("");
   const [diseaseId, setDiseaseId] = useState<number>();
@@ -58,6 +58,11 @@ function UpdateUser() {
 
     try {
       await updateUserApi(requestData);
+
+      setAuth({
+        diseaseId: diseaseId ?? preDiseaseId,
+      });
+
       alert("회원 정보가 수정되었습니다.");
       console.log(requestData);
       router("/mypage");
