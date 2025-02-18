@@ -51,6 +51,18 @@ function CreateGroup() {
   const [isHost, setIsHost] = useState<boolean>(true);
   // const [isDateVisible, setIsDateVisible] = useState<boolean>(false);
 
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputText = e.target.value;
+
+    // ✅ 15자 초과 시 자동으로 잘라서 저장
+    if (inputText.length > 15) {
+      alert("모임명은 15자까지만 입력 가능합니다.");
+      setTitle(inputText.slice(0, 15));
+    } else {
+      setTitle(inputText);
+    }
+  };
+
   const handleDateChange = (date: Date | null) => {
     if (date) {
       setSelectedStartDate(date);
@@ -189,8 +201,8 @@ function CreateGroup() {
                 titleClassName="text-xl"
                 holder="모임명을 입력해주세요."
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                caption="10자 이하"
+                onChange={handleTitleChange}
+                caption="15자 이하"
               />
 
               <div>
