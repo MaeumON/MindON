@@ -72,6 +72,9 @@ function MypageDetail() {
             ...oldData,
             registered: true,
           }));
+          // 마이페이지 쿼리 무효화
+          queryClient.invalidateQueries({ queryKey: ["myPage"] });
+
           setShowJoinModal(true);
           setTimeout(() => {
             setShowJoinModal(false);
@@ -91,11 +94,14 @@ function MypageDetail() {
           ...oldData,
           registered: false,
         }));
+        // 마이페이지 쿼리 무효화
+        queryClient.invalidateQueries({ queryKey: ["myPage"] });
+
         setShowJoinModal(true);
         setTimeout(() => {
           setShowJoinModal(false);
           if (group?.totalMember === 1) {
-            router("/groupslist");
+            router("/mypage");
           }
         }, 2000);
       }
