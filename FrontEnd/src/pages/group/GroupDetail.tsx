@@ -64,7 +64,12 @@ function GroupDetail() {
             ...oldData,
             registered: true,
           }));
+
+          // 마이페이지 쿼리 무효화
+          queryClient.invalidateQueries({ queryKey: ["myPage"] });
+
           setShowJoinModal(true);
+
           setTimeout(() => {
             setShowJoinModal(false);
           }, 2000);
@@ -81,6 +86,10 @@ function GroupDetail() {
           ...oldData,
           registered: false,
         }));
+
+        // 마이페이지 쿼리 무효화
+        queryClient.invalidateQueries({ queryKey: ["myPage"] });
+
         setShowJoinModal(true);
         setTimeout(() => {
           setShowJoinModal(false);

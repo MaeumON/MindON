@@ -11,11 +11,10 @@ import myPageApi from "@apis/mypage/myPageApi";
 import useLogoutApi from "@/apis/auth/logoutApi";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 
 function MyPage() {
   const router = useNavigate();
-  const { userName } = useAuthStore();
+  const { userId, userName } = useAuthStore();
   const onClickLogout = useLogoutApi();
 
   const fetchMyPage = async () => {
@@ -24,14 +23,13 @@ function MyPage() {
     return result;
   };
 
-  useEffect(() => {
-    fetchMyPage();
-  }, []);
-
   const { data: status } = useQuery({
-    queryKey: ["myPage"],
+    queryKey: ["myPage", userId],
     queryFn: fetchMyPage,
     staleTime: 1000 * 50 * 5,
+
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   const preGroup = status?.preGroup || 0;
