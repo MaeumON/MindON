@@ -55,9 +55,9 @@ const TempertureChart = ({ username }: TempertureChartProps) => {
 
   let warmtitle: string = "OFF";
   if (temperture) {
-    if (temperture >= 50) {
+    if (temperture >= 70) {
       warmtitle = "뜨끈한 온돌";
-    } else if (temperture >= 30) {
+    } else if (temperture >= 40) {
       warmtitle = "따뜻한 핫팩";
     } else {
       warmtitle = "데워지는 중";
