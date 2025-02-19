@@ -124,15 +124,15 @@
 
 ## 설계 문서
 
-### 요구사항 정의서
+### [요구사항 정의서](https://lab.ssafy.com/s12-webmobile1-sub1/S12P11B103/-/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD_%EC%A0%95%EC%9D%98%EC%84%9C.pdf)
 
-### 기능 명세서
+### [기능 명세서](https://lab.ssafy.com/s12-webmobile1-sub1/S12P11B103/-/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%EA%B8%B0%EB%8A%A5_%EB%AA%85%EC%84%B8%EC%84%9C.pdf)
 
-### Flow Chart
+### [Flow Chart](https://lab.ssafy.com/s12-webmobile1-sub1/S12P11B103/-/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%ED%94%8C%EB%A1%9C%EC%9A%B0%EC%B0%A8%ED%8A%B8.pdf)
 
-### Mockup
+### [Mockup](https://lab.ssafy.com/s12-webmobile1-sub1/S12P11B103/-/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%ED%99%94%EB%A9%B4_%EB%AA%A9%EC%97%85.pdf)
 
-### API 명세서 
+### [API 명세서](https://lab.ssafy.com/s12-webmobile1-sub1/S12P11B103/-/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/API_%EB%AA%85%EC%84%B8%EC%84%9C.pdf) 
 
 ## ERD
 ![mind_on_2__4_](/uploads/41cbee8e02990fb74daa563bc65ce5a5/mind_on_2__4_.png)
@@ -259,9 +259,9 @@ mindon
     └── service
 ```
 
-### 포팅메뉴얼
+### [포팅메뉴얼](https://lab.ssafy.com/s12-webmobile1-sub1/S12P11B103/-/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%ED%8F%AC%ED%8C%85_%EB%A9%94%EB%89%B4%EC%96%BC.pdf)
 
-## 발표자료
+## [발표자료](https://lab.ssafy.com/s12-webmobile1-sub1/S12P11B103/-/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%EB%A7%88%EC%9D%8C%EC%98%A8-PPT-%EC%B5%9C%EC%A2%85%EB%B3%B8-PDF.pdf)
 
 ## 팀 구성원
 
