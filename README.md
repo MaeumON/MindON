@@ -2,8 +2,30 @@
 ![스크린샷_2025-02-19_093837](/uploads/f68e44207bbe210cf67e3f7d58b621e2/스크린샷_2025-02-19_093837.png)
 ### 마음ON 링크 : https://i12b103.p.ssafy.io/
 ## 목차
-
-## 포팅메뉴얼
+1. [프로젝트 콘셉트](#프로젝트-콘셉트)
+2. [핵심 기능](#핵심-기능)
+3. [추가 기능](#추가-기능)
+4. [기능 소개](#기능-소개)
+5. [기술 스택](#기술-스택)
+   - [Management Tool](#management-tool)
+   - [IDE](#ide)
+   - [Infra](#infra)
+   - [Frontend](#frontend)
+   - [Backend](#backend)
+6. [서비스 아키텍처](#서비스-아키텍처)
+7. [설계 문서](#설계-문서)
+   - [요구사항 정의서](#요구사항-정의서)
+   - [기능 명세서](#기능-명세서)
+   - [Flow Chart](#flow-chart)
+   - [Mockup](#mockup)
+   - [API 명세서](#api-명세서)
+8. [ERD](#erd)
+9. [프로젝트 구조](#프로젝트-구조)
+   - [Frontend](#frontend-1)
+   - [Backend](#backend-1)
+10. [포팅메뉴얼](#포팅메뉴얼)
+11. [발표자료](#발표자료)
+12. [팀 구성원](#팀-구성원)
 
 ## 프로젝트 콘셉트
 ### 질병으로 고통받는 사람들을 위한 온라인 자조모임 서비스
@@ -23,9 +45,28 @@
   - 감정 기록 & 트래킹
   - 온이의 한마디 & 발화량
 
-### 추가 기능
+### 상세 기능
+- **회원 관리**
+  - Spring Security와 JWT를 활용한 인증 시스템 구축
+  - 리프레시 토큰을 Redis에 저장함으로써 보안성 강화
+  - 회원 신고 기능으로 건전한 커뮤니티 환경 조성
+- **실시간 모임 관리**
+  - OpenVidu를 사용해 실시간 소통 / 채팅 / 질문 제공 / 녹음 기능 구현
+- **그룹 관리**
+  - 관심 질병 기반으로 그룹 생성
+  - 비밀방의 경우, 초대 코드를 통해야만 접근 가능
+- **미팅 관리**
+  - Spring scheduler를 활용해 데이터 상태 업데이트 자동화
 
 ## 기능 소개
+### 메인 화면
+![image](/uploads/afb30c648b9c93b1b364c269950172df/image.png){width=418 height=776}
+### 실시간 모임 참여
+![image](/uploads/60b40f2d82706781c3c137e34144f2bb/image.png){width=416 height=770}
+### 감정 기록 및 확인
+![image](/uploads/dfb39f818c77bc75237058faf682275e/image.png){width=502 height=714}
+### 모임 내용 분석
+![image](/uploads/d001454fb0b50ebe60db6e7205c40df5/image.png){width=410 height=763}
 
 ## 기술 스택
 
@@ -94,6 +135,55 @@
 ## 프로젝트 구조
 
 ### Frontend
+```
+frontend/
+│── public/            # 정적 파일 (favicon, index.html 등)
+│── src/               # 애플리케이션 코드
+│   ├── apis/          # API 요청 관련 코드
+│   │   ├── auth/      # 인증 관련 API
+│   │   ├── group/     # 그룹 관련 API
+│   │   ├── mypage/    # 마이페이지 API
+│   │   ├── openvidu/  # 영상 통화 관련 API
+│   │   ├── types/     # API 응답 타입 정의
+│   ├── assets/        # 정적 리소스 (이미지, 아이콘, 스타일)
+│   │   ├──fonts/
+│   │   ├──icons/
+│   │   ├──images/
+│   │   ├──styles/
+│   ├── components/    # UI 컴포넌트
+│   │   ├── auth/      # 로그인 관련 컴포넌트
+│   │   ├── common/    # 공통 UI 컴포넌트
+|   │   ├── group/     # 모임관련 컴포넌트
+│   │   ├── Layout/    # 헤더와 푸터 등 레이아웃상 컴포넌트
+│   │   ├── Mainpage/  # 메인페이지 관련 컴포넌트
+│   │   ├── Mydata/    # 마음리포트 관련 컴포넌트
+│   │   ├── OpenVidu-call # 오픈비두 관련 컴포넌트
+│   ├── data/          # 임시 데이터 또는 더미 데이터
+│   ├── hooks/         # 커스텀 훅 정의
+│   ├── mocks/         # MSW(Mock Service Worker) 관련 코드
+│   ├── pages/         # 개별 페이지 (라우트 단위)
+│   │   ├── admin/     # 관리자 페이지
+│   │   ├── auth/      # 로그인/회원가입 페이지
+│   │   ├── group/     # 그룹 관련 페이지
+│   │   ├── mypage/    # 마이페이지
+│   │   ├── openvidu/  # 영상 통화 페이지
+│   │   ├── Main.tsx   # 메인 페이지
+│   │   ├── Welcome.tsx # 환영 페이지
+│   ├── stores/        # Zustand 상태 관리 파일
+│   ├── utils/         # 유틸리티 함수 모음
+│   │   ├── openvidu   # 오픈비두 시그널 함수 모음
+│   ├── App.tsx        # 루트 컴포넌트
+│   ├── index.tsx      # 진입점 (ReactDOM.render)
+│   ├── main.css       # 글로벌 스타일
+│   ├── ProtectRouter.tsx # 라우트 보호 컴포넌트
+│   ├── vite-env.d.ts  # Vite 환경 변수 타입
+│── .env.development   # 환경 변수 파일
+│── package.json       # 패키지 및 스크립트 설정
+│── tsconfig.json      # TypeScript 설정 파일
+│── vite.config.ts     # Vite 설정 파일
+│── tailwind.config.js # Tailwind CSS 설정
+│── eslint.config.js   # ESLint 설정 파일
+```
 
 ### Backend
 ```
@@ -164,6 +254,8 @@ mindon
     └── service
 ```
 
+### 포팅메뉴얼
+
 ## 발표자료
 
 ## 팀 구성원
@@ -177,3 +269,4 @@ mindon
 | **BE** | 지수인 | 회원 관리 구현, 실시간 모임 관리 구현 |
 | **BE** | 박우담 | DB 담당, 그룹 관리 구현               |
 | **INFRA** | 전아현 | 인프라 담당, 미팅 관리 구현          |
+
