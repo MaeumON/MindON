@@ -94,11 +94,16 @@
 
 ### Frontend
 
-![javascript](https://img.shields.io/badge/javascript-F0DB4F?style=for-the-badge&logo=javascript&logoColor=white)
+![html](https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![css3](https://img.shields.io/badge/css3-1572B6?style=for-the-badge&logo=css3&logoColor=white) 
+<img src="https://img.shields.io/badge/Typescript_-3178C6?style=for-the-badge&logo=Typescript&logoColor=white"> 
+<img src="https://img.shields.io/badge/React_-61DAFB?style=for-the-badge&logo=React&logoColor=white"> 
 ![nodejs](https://img.shields.io/badge/nodejs-3C873A?style=for-the-badge&logo=node.js&logoColor=white)
 ![tailwind](https://img.shields.io/badge/tailwind-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
-![html](https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![css3](https://img.shields.io/badge/css3-1572B6?style=for-the-badge&logo=css3&logoColor=white)<img src="https://img.shields.io/badge/React_-61DAFB?style=for-the-badge&logo=React&logoColor=white"> <img src="https://img.shields.io/badge/Typescript_-3178C6?style=for-the-badge&logo=Typescript&logoColor=white"> <img src="https://img.shields.io/badge/zustand-000000?style=for-the-badge&logo=&logoColor=white"> <img src="https://img.shields.io/badge/Openvidu-232F3E?style=for-the-badge&logo=&logoColor=white">
+<img src="https://img.shields.io/badge/zustand-000000?style=for-the-badge&logo=&logoColor=white"> 
+<img src="https://img.shields.io/badge/React Query_-61DAFB?style=for-the-badge&logo=React&logoColor=white">
+<img src="https://img.shields.io/badge/AXIOS-000000?style=for-the-badge&logo=&logoColor=white">
+<img src="https://img.shields.io/badge/Openvidu-232F3E?style=for-the-badge&logo=&logoColor=white">
 
 
 ### Backend
