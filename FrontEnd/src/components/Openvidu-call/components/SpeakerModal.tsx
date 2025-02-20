@@ -8,6 +8,7 @@ interface SpeakerModalProps {
 
 const SpeakerModal = ({ speakingOrder, closeModal }: SpeakerModalProps) => {
   function handleCloseModal() {
+    console.log("closeModal");
     closeModal(false);
   }
 
@@ -17,9 +18,9 @@ const SpeakerModal = ({ speakingOrder, closeModal }: SpeakerModalProps) => {
         <div className="flex w-full h-[10%] items-center justify-center">
           <p className="w-[80%] font-suite font-bold text-28px text-center">발언자 순서</p>
           <div className="w-[5px]">
-            <div onClick={handleCloseModal}>
+            <button onClick={handleCloseModal} className="p-2 rounded-full">
               <IconExit width={25} height={25} fillColor="" />
-            </div>
+            </button>
           </div>
         </div>
         <div className="w-full h-[80%] mt-[20px] flex flex-col justify-center items-center gap-[10px]">
