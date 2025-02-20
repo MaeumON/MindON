@@ -248,6 +248,19 @@ function MypageDetail() {
     return null; // groupStatus === 2일 때 버튼 렌더링 안 함
   };
 
+  function getPassword() {
+    if (group?.isPrivate) {
+      return (
+        <div>
+          <span className="text-cardLongContent text-lg font-medium leading-[35px]">쉿! 비밀번호는 </span>
+          <span className="text-[#d98600] text-lg font-bold leading-[35px]">{group?.privatePassword}</span>
+          <span className="text-cardLongContent text-lg font-medium leading-[35px]">이에요</span>
+        </div>
+      );
+    }
+    return null;
+  }
+
   return (
     <div className="pb-[74px]">
       {showJoinModal && <GroupJoinModal isRegi={isRegi} />}
@@ -325,6 +338,11 @@ function MypageDetail() {
                     <span className="text-cardLongContent text-lg font-medium leading-[35px]">로 참여해요</span>
                     {getHostMessage()}
                     {getPrivateMessage()}
+                    <span className="text-[#d98600] text-lg font-bold leading-[35px]">
+                      초대 코드 {group?.inviteCode}
+                    </span>
+                    <span className="text-cardLongContent text-lg font-medium leading-[35px]">로 참여해요</span>
+                    {getPassword()}
                   </div>
                 </div>
               </div>
