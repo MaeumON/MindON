@@ -60,6 +60,9 @@
 
 ## 기능 소개
 ### 메인 화면
+[시연 영상 보기](https://lab.ssafy.com/s12-webmobile1-sub1/S12P11B103/-/blob/dev/산출물/시연영상.mp4)
+
+
 ![image](/uploads/afb30c648b9c93b1b364c269950172df/image.png){width=418 height=776}
 ### 실시간 모임 참여
 ![image](/uploads/60b40f2d82706781c3c137e34144f2bb/image.png){width=416 height=770}
