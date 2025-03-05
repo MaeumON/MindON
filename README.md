@@ -1,5 +1,8 @@
 # 마음ON(溫)
-![스크린샷_2025-02-19_093837](/uploads/f68e44207bbe210cf67e3f7d58b621e2/스크린샷_2025-02-19_093837.png)
+<p align="center">
+   <img width="80%" src="https://github.com/user-attachments/assets/f84d2d55-d473-4b88-8f34-f721676ac8b1" alt="대표이미지">   
+</p>
+
 ### 마음ON 링크 : https://i12b103.p.ssafy.io/
 ## 목차
 1. [프로젝트 콘셉트](#프로젝트-콘셉트)
@@ -60,16 +63,21 @@
 
 ## 기능 소개
 ### 메인 화면
-[시연 영상 보기](https://lab.ssafy.com/s12-webmobile1-sub1/S12P11B103/-/blob/dev/산출물/시연영상.mp4)
+[시연 영상 보기](https://github.com/MaeumON/MindON/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%EC%8B%9C%EC%97%B0%EC%98%81%EC%83%81.mp4)
 
+<img width="50%" src="https://github.com/user-attachments/assets/54592b5d-8286-41af-8155-d767e5c5005d" alt="메인화면">  
 
-![image](/uploads/afb30c648b9c93b1b364c269950172df/image.png){width=418 height=776}
 ### 실시간 모임 참여
-![image](/uploads/60b40f2d82706781c3c137e34144f2bb/image.png){width=416 height=770}
+
+<img width="50%" src="https://github.com/user-attachments/assets/16d7a4f5-a711-47fe-8d19-73cab5eb696c" alt="실시간 모임 참여">  
+
 ### 감정 기록 및 확인
-![image](/uploads/dfb39f818c77bc75237058faf682275e/image.png){width=502 height=714}
+
+<img width="50%" src="https://github.com/user-attachments/assets/eccc841e-123c-47cd-89a4-5edaed5f2921" alt="감정기록 및 확인"> 
+
 ### 모임 내용 분석
-![image](/uploads/d001454fb0b50ebe60db6e7205c40df5/image.png){width=410 height=763}
+
+<img width="50%" src="https://github.com/user-attachments/assets/bb0a6e41-afe2-4452-99ad-425bfda14124" alt="모임 내용 분석"> 
 
 ## 기술 스택
 
@@ -123,22 +131,23 @@
 
 ## 서비스 아키텍처
 
-![image](/uploads/11aac933e223de69c0a16811588f8d7a/image.png){width=1442 height=778}
+<img width="50%" src="https://github.com/user-attachments/assets/ed8bec8b-2df4-41a4-8b0c-069ab662ebc4" alt="서비스 아키텍처">  
 
 ## 설계 문서
 
-### [요구사항 정의서](https://lab.ssafy.com/s12-webmobile1-sub1/S12P11B103/-/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD_%EC%A0%95%EC%9D%98%EC%84%9C.pdf)
+### [요구사항 정의서](https://github.com/MaeumON/MindON/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD_%EC%A0%95%EC%9D%98%EC%84%9C.pdf)
 
-### [기능 명세서](https://lab.ssafy.com/s12-webmobile1-sub1/S12P11B103/-/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%EA%B8%B0%EB%8A%A5_%EB%AA%85%EC%84%B8%EC%84%9C.pdf)
+### [기능 명세서](https://github.com/MaeumON/MindON/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%EA%B8%B0%EB%8A%A5_%EB%AA%85%EC%84%B8%EC%84%9C.pdf)
 
-### [Flow Chart](https://lab.ssafy.com/s12-webmobile1-sub1/S12P11B103/-/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%ED%94%8C%EB%A1%9C%EC%9A%B0%EC%B0%A8%ED%8A%B8.pdf)
+### [Flow Chart](https://github.com/MaeumON/MindON/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%ED%94%8C%EB%A1%9C%EC%9A%B0%EC%B0%A8%ED%8A%B8.pdf)
 
-### [Mockup](https://lab.ssafy.com/s12-webmobile1-sub1/S12P11B103/-/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%ED%99%94%EB%A9%B4_%EB%AA%A9%EC%97%85.pdf)
+### [Mockup](https://github.com/MaeumON/MindON/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%ED%99%94%EB%A9%B4_%EB%AA%A9%EC%97%85.pdf)
 
-### [API 명세서](https://lab.ssafy.com/s12-webmobile1-sub1/S12P11B103/-/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/API_%EB%AA%85%EC%84%B8%EC%84%9C.pdf) 
+### [API 명세서](https://github.com/MaeumON/MindON/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/API_%EB%AA%85%EC%84%B8%EC%84%9C.pdf) 
 
 ## ERD
-![mind_on_2__4_](/uploads/41cbee8e02990fb74daa563bc65ce5a5/mind_on_2__4_.png)
+
+<img width="50%" src="https://github.com/user-attachments/assets/9122177e-8ae6-494c-9eb5-93aa01e0871a" alt="ERD">  
 
 ## 프로젝트 구조
 
@@ -262,9 +271,9 @@ mindon
     └── service
 ```
 
-### [포팅메뉴얼](https://lab.ssafy.com/s12-webmobile1-sub1/S12P11B103/-/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%ED%8F%AC%ED%8C%85_%EB%A9%94%EB%89%B4%EC%96%BC.pdf)
+### [포팅메뉴얼](https://github.com/MaeumON/MindON/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%ED%8F%AC%ED%8C%85_%EB%A9%94%EB%89%B4%EC%96%BC.pdf)
 
-## [발표자료](https://lab.ssafy.com/s12-webmobile1-sub1/S12P11B103/-/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%EB%A7%88%EC%9D%8C%EC%98%A8-PPT-%EC%B5%9C%EC%A2%85%EB%B3%B8-PDF.pdf)
+## [발표자료](https://github.com/MaeumON/MindON/blob/dev/%EC%82%B0%EC%B6%9C%EB%AC%BC/%EB%A7%88%EC%9D%8C%EC%98%A8-%EC%B5%9C%EC%A2%85%EB%B3%B8-PPT.pptx)
 
 ## 팀 구성원
 
